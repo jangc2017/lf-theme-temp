@@ -1,0 +1,674 @@
+{%- comment -%}
+  LE FIGUE — Pre-Appointment Survey (step 2 of the booking flow).
+  Reached from the "Reserve a time" button on /pages/book-appointment, which
+  carries the chosen type/day/time/name/email/phone in the query string.
+  This page prefills those, shows day/time as a locked summary, gathers richer
+  preferences, and submits via Shopify's native contact form (Option A): all
+  answers are compiled into one email to the store, then a confirmation shows.
+  CSS + ids namespaced .lf-survey / #lf-* to avoid theme collisions.
+{%- endcomment -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+
+<div class="lf-survey">
+  <section class="view active" id="lf-viewSurvey">
+    <div class="narrow">
+      <div class="s-hero">
+        <div class="eyebrow">The Suite · Before your visit</div>
+        <h1 class="display">Help us prepare<br>your edit.</h1>
+        <p>A few questions so your curator can set a small selection aside before you arrive. The first part takes under a minute. The rest is optional — share as much or as little as you like.</p>
+      </div>
+
+      <!-- carried summary from the booking widget -->
+      <div class="lf-carry" data-lf-carry hidden>
+        <div class="lf-carry-main"><span data-lf-sum-type></span></div>
+        <div class="lf-carry-when"><span data-lf-sum-day></span><span data-lf-sum-time-wrap> at <span data-lf-sum-time></span></span> · <span data-lf-sum-loc></span></div>
+        <a class="lf-carry-change" href="/pages/book-appointment#lf-book">Change time →</a>
+      </div>
+
+      {%- form 'contact', id: 'lf-survey-form' -%}
+        {%- if form.errors -%}
+          <div class="lf-bk-error">{{ form.errors | default_errors }}</div>
+        {%- endif -%}
+
+        <!-- STAGE 1 — REQUIRED -->
+        <div class="stage">
+          <div class="stage-head"><span class="stage-tag">Part one</span><h3 class="display">To reserve</h3><span class="hint">About 45 seconds</span></div>
+          <p class="stage-sub">Required for your booking. Everything below this is optional.</p>
+
+          <div class="field">
+            <span class="qlabel">Where would you like to meet?</span>
+            <div class="seg" id="lf-locSeg">
+              <button type="button" class="on" data-loc="Bleecker · NoHo"><div class="t">Bleecker · NoHo</div><div class="s">19 Bleecker Street · in person</div></button>
+              <button type="button" data-loc="Virtual"><div class="t">Virtual</div><div class="s">Video call · pieces shown live</div></button>
+            </div>
+          </div>
+
+          <div class="field"><label>Name</label><input type="text" name="contact[Name]" data-lf-field="name" placeholder="First and last name" required></div>
+          <div class="field"><div class="row2">
+            <div><label>Email</label><input type="email" name="contact[email]" data-lf-field="email" placeholder="you@email.com" required></div>
+            <div><label>Mobile</label><input type="tel" name="contact[Phone]" data-lf-field="phone" placeholder="(___) ___-____"></div>
+          </div></div>
+          <div class="field"><label>Bringing a guest? <span class="opt">· optional</span></label>
+            <div class="chips" data-group="guest" data-mode="single">
+              <button type="button" class="chip on">Just me</button><button type="button" class="chip">+1 guest</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- STAGE 2 — OPTIONAL, CASE-SPECIFIC -->
+        <div class="stage">
+          <div class="stage-head"><span class="stage-tag">Part two</span><h3 class="display" id="lf-p2Title">Prepare your edit</h3><span class="hint">Optional · 1–2 min</span></div>
+          <p class="stage-sub">The more you share, the more considered the selection — but none of this is required to book.</p>
+
+          <label class="defer">
+            <input type="checkbox" id="lf-deferToggle">
+            <span class="dt"><b>I'll share the rest in person.</b>Reserve now — we'll prepare your edit together in the room. Nothing more to fill in here.</span>
+          </label>
+
+          <div id="lf-part2Body">
+          <!-- GIFT PANEL -->
+          <div class="casepanel active" id="lf-panel-gift">
+            <div class="panel-banner"><b>The Gift Edit.</b> Three things help most: who it's for, the day, and a comfortable amount to spend.</div>
+
+            <div class="field">
+              <span class="qlabel">Who is it for?</span>
+              <div class="chips" data-group="g-who" data-mode="single">
+                <button type="button" class="chip">Partner</button><button type="button" class="chip">Parent</button><button type="button" class="chip">Sibling</button>
+                <button type="button" class="chip">Friend</button><button type="button" class="chip">Colleague</button><button type="button" class="chip">A treat for myself</button>
+                <button type="button" class="chip">Someone else</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="qlabel">The occasion</span>
+              <div class="chips" data-group="g-occ" data-mode="single">
+                <button type="button" class="chip">Birthday</button><button type="button" class="chip">Anniversary</button><button type="button" class="chip">Wedding</button>
+                <button type="button" class="chip">Thank-you</button><button type="button" class="chip">Holiday</button><button type="button" class="chip">Just because</button>
+              </div>
+            </div>
+
+            <div class="field"><label>Date it's needed by <span class="opt">· optional</span></label><input type="text" placeholder="e.g. anniversary on the 20th"></div>
+
+            <div class="field">
+              <span class="qlabel">A comfortable amount to spend <span class="opt">· optional</span></span>
+              <div class="chips" data-group="g-budget" data-mode="single">
+                <button type="button" class="chip">Under $150</button><button type="button" class="chip">$150–300</button><button type="button" class="chip">$300–600</button>
+                <button type="button" class="chip">$600–1,500</button><button type="button" class="chip">$1,500+</button><button type="button" class="chip">Open / prefer to discuss</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="qlabel">What do they tend to wear? <span class="opt">· if you know</span></span>
+              <div class="chips" data-group="g-style" data-mode="multi">
+                <button type="button" class="chip">Minimal</button><button type="button" class="chip">Romantic</button><button type="button" class="chip">Sculptural</button>
+                <button type="button" class="chip">Classic</button><button type="button" class="chip">Delicate</button><button type="button" class="chip">Bold</button>
+                <button type="button" class="chip">Vintage-inspired</button><button type="button" class="chip">Not sure</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="qlabel">Metal they wear most <span class="opt">· if you know</span></span>
+              <div class="chips" data-group="g-metal" data-mode="multi">
+                <button type="button" class="chip">Silver</button><button type="button" class="chip">Yellow gold</button><button type="button" class="chip">Rose gold</button>
+                <button type="button" class="chip">Solid gold</button><button type="button" class="chip">Mixed</button><button type="button" class="chip">Not sure</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="qlabel">Any sizes you happen to know? <span class="opt">· optional</span></span>
+              <p class="helptext">No need to know these — we keep gifts adjustable where we can, and every gift comes with an easy exchange.</p>
+              <div class="row3">
+                <input type="text" placeholder="Ring size">
+                <input type="text" placeholder="Pierced ears? lobe / helix">
+                <input type="text" placeholder="Necklace length they like">
+              </div>
+            </div>
+
+            <div class="field"><label>Anything they avoid? <span class="opt">· allergies, shapes, anything not their taste</span></label><textarea rows="2" placeholder="e.g. reacts to nickel, doesn't wear hoops, prefers nothing oversized"></textarea></div>
+          </div>
+
+          <!-- STYLING PANEL -->
+          <div class="casepanel" id="lf-panel-styling">
+            <div class="panel-banner"><b>The Styling Session.</b> Bring the question — what you own, what you'd like it to become. A photo of your current pieces helps most of all.</div>
+
+            <div class="field">
+              <span class="qlabel">What would you like to build? — choose any</span>
+              <div class="chips" data-group="s-build" data-mode="multi">
+                <button type="button" class="chip">Necklace layers</button><button type="button" class="chip">Ring stack</button><button type="button" class="chip">Ear curation</button>
+                <button type="button" class="chip">Bracelet stack</button><button type="button" class="chip">A bit of everything</button><button type="button" class="chip">Not sure — guide me</button>
+              </div>
+            </div>
+
+            <div class="field"><label>What do you reach for most? <span class="opt">· a photo of your current pieces is welcome at your visit</span></label><textarea rows="2" placeholder="e.g. a thin gold chain I never take off, two stud earrings, my grandmother's ring"></textarea></div>
+
+            <div class="field">
+              <span class="qlabel">For ears — where are you pierced? <span class="opt">· tap a point or a label · choose any</span></span>
+              <div class="ear-fig">
+                <svg viewBox="0 0 230 240" xmlns="http://www.w3.org/2000/svg" aria-label="Ear piercing positions">
+                  <path d="M150,32 C112,20 74,36 64,82 C56,118 58,150 72,176 C82,196 100,210 120,206 C137,202 140,190 134,176 C150,178 150,166 150,160 C168,154 174,128 170,98 C167,74 172,46 150,32 Z"
+                        fill="#f4eee2" stroke="#8a7250" stroke-width="2.2" stroke-linejoin="round"/>
+                  <path d="M148,52 C116,44 90,58 80,96 C74,118 76,140 86,158" fill="none" stroke="#8a7250" stroke-width="1.6" stroke-linecap="round" opacity=".85"/>
+                  <path d="M132,74 C112,86 104,118 116,146" fill="none" stroke="#cbb98f" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M140,104 C124,108 122,132 136,150" fill="none" stroke="#cbb98f" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M150,150 C162,150 164,166 152,172" fill="none" stroke="#cbb98f" stroke-width="1.5" stroke-linecap="round"/>
+                  <g class="ear-num">
+                    <g class="ear-pt" data-ear="Lobe"><circle cx="121" cy="199" r="9"/><text x="121" y="203">1</text></g>
+                    <g class="ear-pt" data-ear="Second lobe"><circle cx="110" cy="184" r="9"/><text x="110" y="188">2</text></g>
+                    <g class="ear-pt" data-ear="Third lobe"><circle cx="100" cy="168" r="9"/><text x="100" y="172">3</text></g>
+                    <g class="ear-pt" data-ear="Helix"><circle cx="74" cy="86" r="9"/><text x="74" y="90">4</text></g>
+                    <g class="ear-pt" data-ear="Forward helix"><circle cx="106" cy="56" r="9"/><text x="106" y="60">5</text></g>
+                    <g class="ear-pt" data-ear="Flat"><circle cx="120" cy="90" r="9"/><text x="120" y="94">6</text></g>
+                    <g class="ear-pt" data-ear="Auricle"><circle cx="66" cy="134" r="9"/><text x="66" y="138">7</text></g>
+                    <g class="ear-pt" data-ear="Conch"><circle cx="124" cy="126" r="9"/><text x="124" y="130">8</text></g>
+                    <g class="ear-pt" data-ear="Tragus"><circle cx="156" cy="160" r="9"/><text x="156" y="164">9</text></g>
+                    <g class="ear-pt" data-ear="Rook"><circle cx="106" cy="108" r="9"/><text x="106" y="112">10</text></g>
+                    <g class="ear-pt" data-ear="Daith"><circle cx="138" cy="142" r="9"/><text x="138" y="146">11</text></g>
+                    <g class="ear-pt" data-ear="Anti-tragus"><circle cx="140" cy="174" r="9"/><text x="140" y="178">12</text></g>
+                  </g>
+                </svg>
+              </div>
+              <div class="chips s-ear" data-group="s-ear" data-mode="multi">
+                <div class="earzone">Lobe</div>
+                <div class="chiprow">
+                  <button type="button" class="chip" data-ear="Lobe"><span class="cnum">1</span>Lobe</button>
+                  <button type="button" class="chip" data-ear="Second lobe"><span class="cnum">2</span>Second lobe</button>
+                  <button type="button" class="chip" data-ear="Third lobe"><span class="cnum">3</span>Third lobe</button>
+                </div>
+                <div class="earzone">Outer rim</div>
+                <div class="chiprow">
+                  <button type="button" class="chip" data-ear="Helix"><span class="cnum">4</span>Helix</button>
+                  <button type="button" class="chip" data-ear="Forward helix"><span class="cnum">5</span>Forward helix</button>
+                  <button type="button" class="chip" data-ear="Flat"><span class="cnum">6</span>Flat</button>
+                  <button type="button" class="chip" data-ear="Auricle"><span class="cnum">7</span>Auricle</button>
+                </div>
+                <div class="earzone">Inner ear</div>
+                <div class="chiprow">
+                  <button type="button" class="chip" data-ear="Conch"><span class="cnum">8</span>Conch</button>
+                  <button type="button" class="chip" data-ear="Tragus"><span class="cnum">9</span>Tragus</button>
+                  <button type="button" class="chip" data-ear="Rook"><span class="cnum">10</span>Rook</button>
+                  <button type="button" class="chip" data-ear="Daith"><span class="cnum">11</span>Daith</button>
+                  <button type="button" class="chip" data-ear="Anti-tragus"><span class="cnum">12</span>Anti-tragus</button>
+                </div>
+                <div class="earzone">Anything else</div>
+                <div class="chiprow">
+                  <button type="button" class="chip">Other / not sure</button>
+                  <button type="button" class="chip">Not pierced</button>
+                  <button type="button" class="chip">Prefer clip-on</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="qlabel">Sizes you know <span class="opt">· optional</span></span>
+              <div class="row3">
+                <input type="text" placeholder="Ring size">
+                <input type="text" placeholder="Wrist (cm / in)">
+                <input type="text" placeholder="Necklace length you like">
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="qlabel">Metals — and do you mix? <span class="opt">· choose any</span></span>
+              <div class="chips" data-group="s-metal" data-mode="multi">
+                <button type="button" class="chip">Silver</button><button type="button" class="chip">Yellow gold</button><button type="button" class="chip">Rose gold</button>
+                <button type="button" class="chip">Solid gold</button><button type="button" class="chip">I like to mix metals</button><button type="button" class="chip">Open</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="qlabel">Words that feel like your style <span class="opt">· up to three</span></span>
+              <div class="chips" data-group="s-style" data-mode="multi" data-max="3">
+                <button type="button" class="chip">Minimal</button><button type="button" class="chip">Romantic</button><button type="button" class="chip">Sculptural</button>
+                <button type="button" class="chip">Classic</button><button type="button" class="chip">Delicate</button><button type="button" class="chip">Bold</button>
+                <button type="button" class="chip">Vintage-inspired</button><button type="button" class="chip">Playful</button><button type="button" class="chip">Unexpected</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="qlabel">How do you like jewelry to feel?</span>
+              <div class="chips" data-group="s-feel" data-mode="single">
+                <button type="button" class="chip">Quiet and easy</button><button type="button" class="chip">Noticeable but versatile</button>
+                <button type="button" class="chip">A strong focal point</button><button type="button" class="chip">Depends on the day</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="qlabel">A comfortable range <span class="opt">· optional</span></span>
+              <div class="chips" data-group="s-budget" data-mode="single">
+                <button type="button" class="chip">Under $150</button><button type="button" class="chip">$150–300</button><button type="button" class="chip">$300–600</button>
+                <button type="button" class="chip">$600–1,500</button><button type="button" class="chip">$1,500+</button><button type="button" class="chip">Open / prefer to discuss</button>
+              </div>
+              <div class="chips" data-group="s-budgettype" data-mode="single" style="margin-top:8px;">
+                <button type="button" class="chip">Per piece</button><button type="button" class="chip">For the whole stack</button><button type="button" class="chip">Flexible</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="qlabel">How adventurous should we be?</span>
+              <div class="chips" data-group="s-adv" data-mode="single">
+                <button type="button" class="chip">Close to what I wear</button><button type="button" class="chip">One surprise</button>
+                <button type="button" class="chip">Something unexpected</button><button type="button" class="chip">Completely open</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- PERSONAL SHOPPING PANEL -->
+          <div class="casepanel" id="lf-panel-personal">
+            <div class="panel-banner"><b>Personal Shopping.</b> An unhurried hour. Tell us where your collection is now, and where you'd like it to go.</div>
+
+            <div class="field">
+              <span class="qlabel">Have you shopped with LE FIGUE before?</span>
+              <div class="chips" data-group="p-returning" data-mode="single">
+                <button type="button" class="chip">Returning</button><button type="button" class="chip">New to the house</button>
+              </div>
+            </div>
+
+            <div class="field"><label>Designers or pieces you've loved <span class="opt">· optional</span></label><input type="text" placeholder="Names you already know, or pieces you've kept coming back to"></div>
+
+            <div class="field">
+              <span class="qlabel">The focus today — choose any</span>
+              <div class="chips" data-group="p-focus" data-mode="multi">
+                <button type="button" class="chip">New arrivals first</button><button type="button" class="chip">Pair with my collection</button><button type="button" class="chip">A specific category</button>
+                <button type="button" class="chip">Fine jewelry</button><button type="button" class="chip">A special purchase</button><button type="button" class="chip">Open — surprise me</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="qlabel">Categories to explore <span class="opt">· choose any</span></span>
+              <div class="chips" data-group="p-cat" data-mode="multi">
+                <button type="button" class="chip">Earrings</button><button type="button" class="chip">Necklaces</button><button type="button" class="chip">Chains &amp; pendants</button>
+                <button type="button" class="chip">Rings</button><button type="button" class="chip">Bracelets</button><button type="button" class="chip">Fine jewelry</button><button type="button" class="chip">Open to recommendations</button>
+              </div>
+            </div>
+
+            <div class="field"><label>Your collection — what you wear most, what you're building toward <span class="opt">· optional</span></label><textarea rows="2" placeholder="e.g. building a gold ear stack, looking for one fine piece to mark a milestone"></textarea></div>
+
+            <div class="field">
+              <span class="qlabel">Words that feel like your style <span class="opt">· up to three</span></span>
+              <div class="chips" data-group="p-style" data-mode="multi" data-max="3">
+                <button type="button" class="chip">Minimal</button><button type="button" class="chip">Romantic</button><button type="button" class="chip">Sculptural</button>
+                <button type="button" class="chip">Classic</button><button type="button" class="chip">Delicate</button><button type="button" class="chip">Bold</button>
+                <button type="button" class="chip">Vintage-inspired</button><button type="button" class="chip">Playful</button><button type="button" class="chip">Unexpected</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="qlabel">Metals you wear <span class="opt">· choose any</span></span>
+              <div class="chips" data-group="p-metal" data-mode="multi">
+                <button type="button" class="chip">Silver</button><button type="button" class="chip">Yellow gold</button><button type="button" class="chip">Rose gold</button>
+                <button type="button" class="chip">Solid gold</button><button type="button" class="chip">Mixed</button><button type="button" class="chip">Pearls</button><button type="button" class="chip">Color stones</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="qlabel">Sizes you know <span class="opt">· optional</span></span>
+              <div class="row3">
+                <input type="text" placeholder="Ring size">
+                <input type="text" placeholder="Wrist (cm / in)">
+                <input type="text" placeholder="Necklace length you like">
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="qlabel">A comfortable range <span class="opt">· optional</span></span>
+              <div class="chips" data-group="p-budget" data-mode="single">
+                <button type="button" class="chip">$150–300</button><button type="button" class="chip">$300–600</button><button type="button" class="chip">$600–1,500</button>
+                <button type="button" class="chip">$1,500–5,000</button><button type="button" class="chip">$5,000+</button><button type="button" class="chip">Open / prefer to discuss</button>
+              </div>
+              <div class="chips" data-group="p-budgettype" data-mode="single" style="margin-top:8px;">
+                <button type="button" class="chip">Per piece</button><button type="button" class="chip">For the full visit</button><button type="button" class="chip">Flexible</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="qlabel">While you're with us <span class="opt">· optional</span></span>
+              <div class="row2">
+                <div>
+                  <div class="chips" data-group="p-drink" data-mode="single">
+                    <button type="button" class="chip">Still water</button><button type="button" class="chip">Sparkling</button><button type="button" class="chip">Tea</button>
+                    <button type="button" class="chip">Espresso</button><button type="button" class="chip">House drink</button><button type="button" class="chip">Nothing, thanks</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SHARED CLOSE (all cases) -->
+          <div id="lf-shared">
+            <div class="field" style="border-top:1px solid var(--line-soft);padding-top:22px;"><label>Anything you love — or prefer not to see? <span class="opt">· optional</span></label><input type="text" placeholder="Shapes, designers, colors, a piece you're styling around, or anything you'd rather we skip."></div>
+            <div class="field"><label>Share inspiration you love <span class="opt">· optional</span></label><input type="text" placeholder="LE FIGUE product link, an Instagram post, or a screenshot to bring along"></div>
+            <div class="field"><label>Anything we can prepare for a more comfortable visit? <span class="opt">· optional</span></label><input type="text" placeholder="Access needs, sensitivities, timing — anything at all"></div>
+
+            <label class="consent"><input type="checkbox" data-lf-consent><span>Email or text me LE FIGUE edits and event invitations. <i>Optional — separate from your appointment confirmation, and you can stop anytime.</i></span></label>
+          </div>
+          </div><!-- /lf-part2Body -->
+        </div>
+
+        <!-- hidden compiled fields -->
+        <input type="hidden" name="contact[Appointment Type]" value="" data-lf-h="type">
+        <input type="hidden" name="contact[Location]" value="" data-lf-h="loc">
+        <input type="hidden" name="contact[Day]" value="" data-lf-h="day">
+        <input type="hidden" name="contact[Time]" value="" data-lf-h="time">
+        <input type="hidden" name="contact[Guest]" value="" data-lf-h="guest">
+        <input type="hidden" name="contact[Marketing opt-in]" value="No" data-lf-h="marketing">
+        <textarea name="contact[body]" data-lf-h="body" hidden></textarea>
+
+        <!-- SUBMIT -->
+        <div class="submitbar">
+          <button class="submit" id="lf-submitBtn" type="submit">Send to my curator</button>
+          <div class="submitnote">Your answers are shared only with the curator preparing your visit. We'll confirm your sitting within 24 hours.</div>
+        </div>
+
+        <!-- CONFIRMATION (inside the form so form.posted_successfully? is in scope) -->
+        <div class="scrim{% if form.posted_successfully? %} open{% endif %}" id="lf-scrim"><div class="confirm">
+          <div class="seal">✓</div>
+          <h3 class="display">Thank you — this is with your curator.</h3>
+          <p class="sub">We'll confirm your sitting within 24 hours.</p>
+          <div class="expect"><b>What happens next.</b> Your curator prepares a small edit before you arrive — a few pieces chosen for you, not a tray of everything. There's no purchase required, you can leave whenever you like, and within two hours of your visit we'll send <b>Your Edit</b>: the pieces you saw, with your two favorites marked.</div>
+          <button type="button" class="cbtn" id="lf-closeConfirm">Done</button>
+        </div></div>
+      {%- endform -%}
+    </div>
+
+    <!-- LEGEND -->
+    <div class="legend"><div class="legend-in">
+      <div class="leg"><div class="ll">Fee</div><div class="lv">Every appointment is offered with our compliments.</div></div>
+      <div class="leg"><div class="ll">Privacy</div><div class="lv">Notes are staff-only and never shown on the floor. Marketing &amp; photo consent are always separate.</div></div>
+      <div class="leg"><div class="ll">No pressure</div><div class="lv">Nothing here commits you to buy. Leave fields blank and we'll ask gently in the room.</div></div>
+      <div class="leg"><div class="ll">After</div><div class="lv">Within two hours of your visit, we send Your Edit — the pieces you saw, two favorites marked.</div></div>
+    </div></div>
+  </section>
+</div>
+
+{% stylesheet %}
+  .lf-survey{
+    --ink:#2a2622; --ink-soft:#6b635a; --line:#e3dccf; --line-soft:#efe9dd;
+    --cream:#faf7f1; --cream-deep:#f3ede1; --accent:#8a7250; --gold:#b8975f; --paper:#fdfbf6;
+    background:var(--cream); color:var(--ink);
+    font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-weight:400; line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  .lf-survey *{ box-sizing:border-box; }
+  .lf-survey a{ color:inherit; text-decoration:none; }
+  .lf-survey .display{ font-family:'Cormorant Garamond',serif; }
+  .lf-survey .view{ display:none; }
+  .lf-survey .view.active{ display:block; }
+  .lf-survey .narrow{ max-width:760px; margin:0 auto; padding:0 28px; }
+  .lf-survey .eyebrow{ font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--accent); font-size:15px; letter-spacing:.02em; }
+
+  .lf-survey .s-hero{ padding:60px 0 8px; text-align:center; max-width:680px; margin:0 auto; }
+  .lf-survey .s-hero h1{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(34px,5vw,54px); line-height:1.06; margin:12px 0 16px; }
+  .lf-survey .s-hero p{ font-size:15.5px; color:var(--ink-soft); max-width:540px; margin:0 auto; }
+
+  .lf-survey .lf-carry{ max-width:760px; margin:8px auto 0; padding:16px 20px; border:1px solid var(--line); border-left:2px solid var(--accent); background:var(--paper); text-align:center; }
+  .lf-survey .lf-carry-main{ font-family:'Cormorant Garamond',serif; font-size:20px; color:var(--ink); }
+  .lf-survey .lf-carry-when{ font-size:13px; color:var(--ink-soft); margin-top:2px; }
+  .lf-survey .lf-carry-change{ display:inline-block; margin-top:8px; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:13.5px; color:var(--accent); border-bottom:1px solid var(--line); }
+
+  .lf-survey .stage{ border-top:1px solid var(--line); padding:32px 0; }
+  .lf-survey .stage:first-of-type{ border-top:none; }
+  .lf-survey .stage-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:6px; }
+  .lf-survey .stage-tag{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:var(--gold); }
+  .lf-survey .stage-head h3{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:25px; }
+  .lf-survey .stage-head .hint{ margin-left:auto; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); }
+  .lf-survey .stage-sub{ font-size:13.5px; color:var(--ink-soft); margin-bottom:22px; max-width:560px; }
+
+  .lf-survey .cases{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .lf-survey .case{ border:1px solid var(--line); background:var(--paper); padding:20px 20px 18px; cursor:pointer; transition:.18s; position:relative; text-align:left; display:flex; flex-direction:column; min-height:172px; }
+  .lf-survey .case:hover{ border-color:var(--accent); }
+  .lf-survey .case.on{ border-color:var(--accent); box-shadow:inset 0 0 0 1px var(--accent); background:#fffdf8; }
+  .lf-survey .case .ce{ font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--gold); font-size:13px; }
+  .lf-survey .case .cn{ font-family:'Cormorant Garamond',serif; font-size:21px; line-height:1.1; margin:3px 0 8px; }
+  .lf-survey .case .cd{ font-size:12.5px; color:var(--ink-soft); line-height:1.55; flex:1; }
+  .lf-survey .case .cdur{ font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); margin-top:10px; }
+  .lf-survey .case .tick{ position:absolute; top:16px; right:16px; width:18px; height:18px; border:1px solid var(--line); border-radius:50%; transition:.18s; }
+  .lf-survey .case.on .tick{ background:var(--accent); border-color:var(--accent); }
+  .lf-survey .case.on .tick::after{ content:""; position:absolute; left:5px; top:8px; width:4px; height:7px; border:1.6px solid #fff; border-top:none; border-left:none; transform:rotate(40deg); }
+
+  .lf-survey .seg{ display:flex; gap:10px; flex-wrap:wrap; }
+  .lf-survey .seg button{ flex:1; min-width:180px; border:1px solid var(--line); background:var(--paper); padding:14px 16px; cursor:pointer; text-align:left; transition:.18s; }
+  .lf-survey .seg button:hover{ border-color:var(--accent); }
+  .lf-survey .seg button.on{ border-color:var(--accent); box-shadow:inset 0 0 0 1px var(--accent); background:#fffdf8; }
+  .lf-survey .seg .t{ font-family:'Cormorant Garamond',serif; font-size:17px; }
+  .lf-survey .seg .s{ font-size:12px; color:var(--ink-soft); margin-top:2px; }
+
+  .lf-survey .field{ margin-bottom:18px; }
+  .lf-survey .field label,.lf-survey .qlabel{ display:block; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px; }
+  .lf-survey .opt{ text-transform:none; letter-spacing:0; color:#bcae93; font-style:normal; }
+  .lf-survey .helptext{ font-size:12px; color:var(--ink-soft); margin:-2px 0 9px; line-height:1.5; }
+  .lf-survey .ear-fig{ display:flex; justify-content:center; margin:4px 0 14px; }
+  .lf-survey .ear-fig svg{ width:100%; max-width:260px; height:auto; font-family:'Pretendard Variable',sans-serif; }
+  .lf-survey .ear-num text{ font-size:11px; font-weight:600; fill:#fff; text-anchor:middle; pointer-events:none; }
+  .lf-survey .ear-pt{ cursor:pointer; }
+  .lf-survey .ear-pt circle{ fill:#a4906c; transition:.16s; }
+  .lf-survey .ear-pt:hover circle{ fill:#8a7250; }
+  .lf-survey .ear-pt.on circle{ fill:#b8975f; stroke:#2a2622; stroke-width:1.6; }
+  .lf-survey .chips.s-ear{ display:block; }
+  .lf-survey .s-ear .earzone{ font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--gold); font-size:12.5px; margin:14px 0 8px; }
+  .lf-survey .s-ear .earzone:first-child{ margin-top:2px; }
+  .lf-survey .s-ear .chiprow{ display:flex; gap:8px; flex-wrap:wrap; }
+  .lf-survey .chip .cnum{ display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; border-radius:50%; background:var(--cream-deep); color:var(--accent); font-family:'Pretendard Variable',sans-serif; font-size:9.5px; font-weight:600; margin-right:7px; vertical-align:middle; }
+  .lf-survey .chip.on .cnum{ background:rgba(255,255,255,.28); color:#fff; }
+  .lf-survey .field input,.lf-survey .field textarea{ width:100%; border:1px solid var(--line); background:var(--paper); padding:11px 13px; font-family:'Pretendard Variable',sans-serif; font-size:14px; color:var(--ink); outline:none; transition:.18s; }
+  .lf-survey .field input:focus,.lf-survey .field textarea:focus{ border-color:var(--accent); }
+  .lf-survey .row2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .lf-survey .row3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+  .lf-survey .chips{ display:flex; gap:8px; flex-wrap:wrap; }
+  .lf-survey .chip{ font-family:'Cormorant Garamond',serif; font-size:14px; padding:8px 15px; border:1px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:pointer; border-radius:30px; transition:.16s; }
+  .lf-survey .chip:hover{ border-color:var(--accent); color:var(--ink); }
+  .lf-survey .chip.on{ background:var(--accent); color:#f7f1e6; border-color:var(--accent); }
+  .lf-survey .consent{ display:flex; gap:10px; align-items:flex-start; margin-top:10px; font-size:12.5px; color:var(--ink-soft); }
+  .lf-survey .consent input{ margin-top:3px; accent-color:var(--accent); width:auto; }
+  .lf-survey .casepanel{ display:none; }
+  .lf-survey .casepanel.active{ display:block; animation:lf-fade .4s ease both; }
+  @keyframes lf-fade{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+  @media(prefers-reduced-motion:reduce){ .lf-survey .casepanel.active{ animation:none } }
+  .lf-survey .panel-banner{ border:1px solid var(--line); border-left:2px solid var(--accent); background:var(--paper); padding:12px 16px; font-size:13px; color:var(--ink-soft); margin-bottom:22px; }
+  .lf-survey .panel-banner b{ color:var(--ink); font-weight:500; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; }
+
+  .lf-survey .defer{ display:flex; gap:12px; align-items:flex-start; border:1px solid var(--line); border-left:2px solid var(--gold); background:var(--paper); padding:14px 16px; margin-bottom:22px; cursor:pointer; transition:.18s; }
+  .lf-survey .defer:hover{ border-color:var(--accent); border-left-color:var(--accent); }
+  .lf-survey .defer:has(input:checked){ border-color:var(--accent); border-left-color:var(--accent); background:#fffdf8; }
+  .lf-survey .defer input{ margin-top:3px; accent-color:var(--accent); flex-shrink:0; width:auto; }
+  .lf-survey .defer .dt{ font-size:13px; color:var(--ink-soft); line-height:1.6; }
+  .lf-survey .defer .dt b{ display:block; color:var(--ink); font-weight:500; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; margin-bottom:1px; }
+  .lf-survey #lf-part2Body[hidden]{ display:none; }
+
+  .lf-survey .submitbar{ border-top:1px solid var(--line); padding:30px 0 8px; display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+  .lf-survey .submit{ background:var(--ink); color:#f4eee2; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; padding:15px 34px; border:none; cursor:pointer; transition:.2s; }
+  .lf-survey .submit:hover{ background:var(--accent); }
+  .lf-survey .submit:disabled{ background:#cabfa8; cursor:not-allowed; }
+  .lf-survey .submitnote{ font-size:12px; color:var(--ink-soft); max-width:360px; line-height:1.55; }
+
+  .lf-survey .lf-bk-error{ border:1px solid #c0392b; color:#c0392b; background:#fbeeec; padding:12px 14px; margin:16px 0; font-size:13px; }
+
+  .lf-survey .legend{ border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--cream-deep); margin-top:6px; }
+  .lf-survey .legend-in{ max-width:1100px; margin:0 auto; padding:26px 28px; display:grid; grid-template-columns:repeat(4,1fr); gap:22px; }
+  .lf-survey .leg .ll{ font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:5px; }
+  .lf-survey .leg .lv{ font-size:12.5px; color:var(--ink-soft); line-height:1.5; }
+
+  .lf-survey .scrim{ position:fixed; inset:0; background:rgba(33,29,25,.5); z-index:90; display:none; align-items:flex-start; justify-content:center; padding:40px 20px; overflow-y:auto; }
+  .lf-survey .scrim.open{ display:flex; }
+  .lf-survey .confirm{ background:var(--paper); max-width:500px; width:100%; border:1px solid var(--line); box-shadow:0 40px 80px -30px rgba(0,0,0,.5); padding:38px 34px 30px; }
+  .lf-survey .confirm .seal{ width:46px; height:46px; border:1px solid var(--accent); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--accent); font-size:20px; margin-bottom:18px; }
+  .lf-survey .confirm h3{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:27px; margin-bottom:6px; }
+  .lf-survey .confirm .sub{ font-size:14px; color:var(--ink-soft); margin-bottom:22px; }
+  .lf-survey .expect{ font-size:13px; color:var(--ink-soft); line-height:1.7; margin-bottom:20px; border:1px solid var(--line); background:var(--cream); padding:16px 18px; }
+  .lf-survey .expect b{ color:var(--ink); font-weight:500; }
+  .lf-survey .cbtn{ width:100%; text-align:center; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; padding:13px; border:1px solid var(--accent); color:#f7f1e6; background:var(--accent); cursor:pointer; transition:.18s; }
+  .lf-survey .cbtn:hover{ background:var(--ink); border-color:var(--ink); }
+
+  @media(max-width:880px){
+    .lf-survey .cases{ grid-template-columns:1fr; }
+    .lf-survey .legend-in{ grid-template-columns:1fr 1fr; }
+  }
+  @media(max-width:560px){
+    .lf-survey .row2,.lf-survey .row3{ grid-template-columns:1fr; }
+    .lf-survey .legend-in{ grid-template-columns:1fr; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    var root = document.querySelector('.lf-survey');
+    if (!root) return;
+
+    var titles = { gift:'For your gift', styling:'For your styling', personal:'For your visit' };
+    var caseLabel = { gift:'A gift (The Gift Edit)', styling:'Styling & layers (The Styling Session)', personal:'Personal Shopping' };
+    var typeToCase = { 'Gift Edit':'gift', 'Styling Session':'styling', 'Personal Shopping':'personal' };
+
+    var currentCase = 'gift';
+    var locSeg = root.querySelector('#lf-locSeg');
+    var form = root.querySelector('#lf-survey-form');
+    var carry = root.querySelector('[data-lf-carry]');
+
+    function q(sel){ return root.querySelector(sel); }
+    function activeCase(){ return currentCase; }
+    function activeLoc(){ var el = locSeg.querySelector('button.on'); return el ? el.dataset.loc : ''; }
+    function guestVal(){ var el = root.querySelector('[data-group="guest"] .chip.on'); return el ? el.textContent.trim() : ''; }
+
+    function selectCase(c){
+      currentCase = c;
+      root.querySelectorAll('.casepanel').forEach(function (p){ p.classList.remove('active'); });
+      var panel = root.querySelector('#lf-panel-' + c); if (panel) panel.classList.add('active');
+      var t = root.querySelector('#lf-p2Title'); if (t) t.textContent = titles[c] || 'Prepare your edit';
+      syncHidden();
+    }
+
+    locSeg.addEventListener('click', function (e){
+      var b = e.target.closest('button'); if (!b) return;
+      this.querySelectorAll('button').forEach(function (x){ x.classList.remove('on'); });
+      b.classList.add('on'); syncHidden();
+    });
+
+    // chip groups: single / multi (+ optional max)
+    root.querySelectorAll('.chips[data-mode]').forEach(function (group){
+      var mode = group.dataset.mode, max = parseInt(group.dataset.max || '0', 10);
+      group.addEventListener('click', function (e){
+        var b = e.target.closest('.chip'); if (!b || !group.contains(b)) return;
+        if (mode === 'single') {
+          group.querySelectorAll('.chip').forEach(function (c){ c.classList.remove('on'); });
+          b.classList.add('on');
+        } else {
+          if (!b.classList.contains('on') && max) {
+            if (group.querySelectorAll('.chip.on').length >= max) return;
+          }
+          b.classList.toggle('on');
+        }
+        if (group.dataset.group === 's-ear') syncEar();
+        if (group.dataset.group === 'guest') syncHidden();
+      });
+    });
+
+    // ear diagram <-> ear chips sync
+    var earGroup = root.querySelector('.chips[data-group="s-ear"]');
+    function earChip(name){ return earGroup ? earGroup.querySelector('.chip[data-ear="' + name + '"]') : null; }
+    function syncEar(){
+      root.querySelectorAll('.ear-pt').forEach(function (pt){
+        var chip = earChip(pt.dataset.ear);
+        pt.classList.toggle('on', !!(chip && chip.classList.contains('on')));
+      });
+    }
+    root.querySelectorAll('.ear-pt').forEach(function (pt){
+      pt.addEventListener('click', function (){
+        var chip = earChip(pt.dataset.ear);
+        if (chip){ chip.classList.toggle('on'); syncEar(); }
+      });
+    });
+
+    // defer: hide part-two prep when sharing in person
+    var deferToggle = root.querySelector('#lf-deferToggle');
+    var part2Body = root.querySelector('#lf-part2Body');
+    if (deferToggle && part2Body){
+      deferToggle.addEventListener('change', function (){ part2Body.hidden = this.checked; });
+    }
+
+    // ---- carried params from the booking widget ----
+    var params = new URLSearchParams(window.location.search);
+    var pType = params.get('type') || '', pDay = params.get('day') || '', pTime = params.get('time') || '',
+        pName = params.get('name') || '', pEmail = params.get('email') || '', pPhone = params.get('phone') || '',
+        pLoc = params.get('loc') || '', pGuest = params.get('guest') || '';
+
+    function prefill(field, val){ var el = root.querySelector('[data-lf-field="' + field + '"]'); if (el && val) el.value = val; }
+    prefill('name', pName); prefill('email', pEmail); prefill('phone', pPhone);
+
+    if (pType && typeToCase[pType]) selectCase(typeToCase[pType]);
+    if (pLoc) locSeg.querySelectorAll('button').forEach(function (b){ b.classList.toggle('on', b.dataset.loc === pLoc); });
+    if (pGuest) root.querySelectorAll('[data-group="guest"] .chip').forEach(function (c){ c.classList.toggle('on', c.textContent.trim() === pGuest); });
+
+    function fillSummary(){
+      q('[data-lf-sum-type]').textContent = pType || caseLabel[activeCase()] || '';
+      q('[data-lf-sum-day]').textContent = pDay || '';
+      var tw = q('[data-lf-sum-time-wrap]');
+      if (pTime){ q('[data-lf-sum-time]').textContent = pTime; tw.style.display = ''; } else { tw.style.display = 'none'; }
+      q('[data-lf-sum-loc]').textContent = activeLoc() || pLoc || '';
+    }
+    if (pType || pDay || pTime){ carry.hidden = false; fillSummary(); }
+
+    // ---- keep hidden contact fields current ----
+    function syncHidden(){
+      q('[data-lf-h="type"]').value = caseLabel[activeCase()] || activeCase();
+      q('[data-lf-h="loc"]').value = activeLoc();
+      q('[data-lf-h="day"]').value = pDay;
+      q('[data-lf-h="time"]').value = pTime;
+      q('[data-lf-h="guest"]').value = guestVal();
+      if (carry && !carry.hidden) fillSummary();
+    }
+    syncHidden();
+
+    // ---- compile preferences into contact[body] on submit ----
+    function cleanLabel(t){ return (t || '').replace(/·.*$/, '').replace(/\s+/g, ' ').trim(); }
+    function serialize(container){
+      var out = [];
+      container.querySelectorAll('.field').forEach(function (f){
+        var lbl = f.querySelector('.qlabel, label');
+        var label = lbl ? cleanLabel(lbl.textContent) : '';
+        var vals = [];
+        f.querySelectorAll('.chip.on').forEach(function (c){ vals.push(c.textContent.replace(/^\s*\d+\s*/, '').trim()); });
+        f.querySelectorAll('input[type="text"], input[type="tel"], textarea').forEach(function (i){ if (i.value.trim()) vals.push(i.value.trim()); });
+        if (label && vals.length) out.push('• ' + label + ': ' + vals.join(', '));
+      });
+      return out;
+    }
+
+    if (form){
+      form.addEventListener('submit', function (){
+        syncHidden();
+        var consent = root.querySelector('[data-lf-consent]');
+        q('[data-lf-h="marketing"]').value = (consent && consent.checked) ? 'Yes' : 'No';
+
+        var lines = ['Appointment request via The Suite — pre-appointment survey.', ''];
+        if (deferToggle && deferToggle.checked){
+          lines.push('Guest will share the rest in person.');
+        } else {
+          var panel = root.querySelector('.casepanel.active');
+          var prefs = (panel ? serialize(panel) : []).concat(serialize(root.querySelector('#lf-shared')));
+          if (prefs.length){ lines.push('— Preferences —'); lines = lines.concat(prefs); }
+          else { lines.push('(No additional preferences provided.)'); }
+        }
+        q('[data-lf-h="body"]').value = lines.join('\n');
+        // allow native submit to proceed
+      });
+    }
+
+    // confirmation modal
+    var scrim = root.querySelector('#lf-scrim');
+    var closeC = root.querySelector('#lf-closeConfirm');
+    function close(){ if (scrim) scrim.classList.remove('open'); }
+    if (closeC) closeC.addEventListener('click', close);
+    if (scrim) scrim.addEventListener('click', function (e){ if (e.target === scrim) close(); });
+    document.addEventListener('keydown', function (e){ if (e.key === 'Escape') close(); });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "LE FIGUE Survey",
+  "settings": [],
+  "presets": [{ "name": "LE FIGUE Survey" }]
+}
+{% endschema %}
