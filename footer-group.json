@@ -1,0 +1,92 @@
+{
+  "type": "footer",
+  "name": "t:groups.footer_group.name",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "newsletter_4NU4ga": {
+          "type": "newsletter",
+          "settings": {
+            "desktop_width": 31,
+            "desktop_padding": 2,
+            "collapse_on_mobile": true,
+            "title": "",
+            "show_title_on_desktop": true,
+            "enable_collect_customer_name": false,
+            "text": "<h5><em>Join the  LE FIGUE  Dispatch.</em></h5>",
+            "show_social_icons": false,
+            "enable_follow_on_shop": false
+          }
+        },
+        "links_x68M7T": {
+          "type": "links",
+          "settings": {
+            "desktop_width": 16,
+            "desktop_padding": 4,
+            "collapse_on_mobile": true,
+            "title": "LE FIGUE",
+            "show_title_on_desktop": true,
+            "link_list": "footer-company"
+          }
+        },
+        "links_bEbNkD": {
+          "type": "links",
+          "settings": {
+            "desktop_width": 18,
+            "desktop_padding": 4,
+            "collapse_on_mobile": true,
+            "title": "Discover",
+            "show_title_on_desktop": true,
+            "link_list": "footer-visit-services"
+          }
+        },
+        "footer-2": {
+          "type": "links",
+          "settings": {
+            "desktop_width": 17,
+            "desktop_padding": 4,
+            "collapse_on_mobile": true,
+            "title": "Learn",
+            "show_title_on_desktop": true,
+            "link_list": "footer-discover"
+          }
+        },
+        "links_nkjQNx": {
+          "type": "links",
+          "settings": {
+            "desktop_width": 17,
+            "desktop_padding": 4,
+            "collapse_on_mobile": true,
+            "title": "Client Services",
+            "show_title_on_desktop": true,
+            "link_list": "footer-client-services"
+          }
+        }
+      },
+      "block_order": [
+        "newsletter_4NU4ga",
+        "links_x68M7T",
+        "links_bEbNkD",
+        "footer-2",
+        "links_nkjQNx"
+      ],
+      "settings": {
+        "enable_locale_selector": false,
+        "enable_country_selector": false,
+        "show_payment_icons": true,
+        "additional_copyright_text": ""
+      }
+    },
+    "lf_dispatch_g": {
+      "type": "lefigue-dispatch",
+      "settings": {
+        "variant": "auto"
+      }
+    }
+  },
+  "order": [
+    "lf_dispatch_g",
+    "footer"
+  ]
+}
