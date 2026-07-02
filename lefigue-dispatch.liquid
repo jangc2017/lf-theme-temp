@@ -1,0 +1,371 @@
+{%- comment -%}
+  LE FIGUE — "The Dispatch" newsletter block (replaces the old "Join LE FIGUE Society").
+  Two variants via the "variant" setting:
+    - rich    : full block with a 3-column "what you get" grid (used on the main landing page).
+    - compact : text-only strip (used globally above the footer on all other pages).
+  Set "hide_on_homepage" on the global (footer-group) instance so the homepage shows only the rich one.
+  The signup is a real Shopify {% form 'customer' %} (captures the email as a customer tagged "newsletter").
+{%- endcomment -%}
+
+{%- liquid
+  assign v = section.settings.variant
+  if v == 'auto'
+    if request.page_type == 'index'
+      assign v = 'rich'
+    else
+      assign v = 'compact'
+    endif
+  endif
+-%}
+
+<section
+  class="lf-dispatch lf-dispatch--{{ v }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="lf-dispatch"
+>
+  <div class="lf-dispatch__in">
+    {%- if section.settings.eyebrow != blank -%}
+      <div class="lf-dispatch__eyebrow">{{ section.settings.eyebrow | escape }}</div>
+    {%- endif -%}
+
+    {%- if section.settings.title != blank -%}
+      <h2 class="lf-dispatch__title">{{ section.settings.title | escape }}</h2>
+    {%- endif -%}
+
+    {%- if v == 'rich' -%}
+      <div class="lf-dispatch__gets">
+        {%- if section.settings.get1_label != blank or section.settings.get1_value != blank -%}
+          <div class="lf-dispatch__get">
+            <span class="lf-dispatch__gk">{{ section.settings.get1_label | escape }}</span>
+            <span class="lf-dispatch__gv">{{ section.settings.get1_value | escape }}</span>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.get2_label != blank or section.settings.get2_value != blank -%}
+          <div class="lf-dispatch__get">
+            <span class="lf-dispatch__gk">{{ section.settings.get2_label | escape }}</span>
+            <span class="lf-dispatch__gv">{{ section.settings.get2_value | escape }}</span>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.get3_label != blank or section.settings.get3_value != blank -%}
+          <div class="lf-dispatch__get">
+            <span class="lf-dispatch__gk">{{ section.settings.get3_label | escape }}</span>
+            <span class="lf-dispatch__gv">{{ section.settings.get3_value | escape }}</span>
+          </div>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.hook != blank -%}
+        <p class="lf-dispatch__hook">{{ section.settings.hook | escape }}</p>
+      {%- endif -%}
+    {%- else -%}
+      {%- if section.settings.line1 != blank -%}
+        <p class="lf-dispatch__line">{{ section.settings.line1 | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.line2_gold != blank or section.settings.line2_text != blank -%}
+        <p class="lf-dispatch__line">
+          {%- if section.settings.line2_gold != blank -%}<span class="lf-dispatch__gold">{{ section.settings.line2_gold | escape }}</span> {% endif -%}
+          {{ section.settings.line2_text | escape }}
+        </p>
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- form 'customer' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      {%- if form.posted_successfully? -%}
+        <p class="lf-dispatch__thanks">{{ section.settings.success_text | escape }}</p>
+      {%- else -%}
+        <div class="lf-dispatch__form">
+          <input
+            id="footer-subscribe-email"
+            class="lf-dispatch__input"
+            type="email"
+            name="contact[email]"
+            placeholder="{{ section.settings.email_placeholder | escape }}"
+            aria-label="Email"
+            required
+          >
+          <button class="lf-dispatch__btn" type="submit" name="commit">
+            {{ section.settings.button_text | escape }}
+          </button>
+        </div>
+        {%- if form.errors -%}
+          <p class="lf-dispatch__error">Please enter a valid email address.</p>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endform -%}
+
+    {%- if section.settings.fine_print != blank -%}
+      <p class="lf-dispatch__fine">{{ section.settings.fine_print | escape }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{%- comment -%} styles {%- endcomment -%}
+<style>
+  .lf-dispatch {
+    --lfd-ink: #2a2622;
+    --lfd-gold: #b8975f;
+    --lfd-gold-pale: #d4bc8e;
+    --lfd-paper: #fdfbf6;
+    background: var(--lfd-ink);
+    color: var(--lfd-paper);
+    padding: 84px 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .lf-dispatch--compact { padding: 72px 30px; }
+  .lf-dispatch::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% -10%, rgba(184, 151, 95, 0.18), transparent 55%);
+    pointer-events: none;
+  }
+  .lf-dispatch__in {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .lf-dispatch--compact .lf-dispatch__in { max-width: 520px; }
+  .lf-dispatch__eyebrow {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--lfd-gold-pale);
+    margin-bottom: 24px;
+  }
+  .lf-dispatch--compact .lf-dispatch__eyebrow { margin-bottom: 22px; }
+  .lf-dispatch__title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: clamp(40px, 6vw, 62px);
+    line-height: 1;
+    letter-spacing: -0.015em;
+    margin-bottom: 38px;
+    color: var(--lfd-paper);
+  }
+  .lf-dispatch--compact .lf-dispatch__title {
+    font-size: clamp(34px, 5vw, 52px);
+    line-height: 1.04;
+    margin-bottom: 18px;
+  }
+  .lf-dispatch__gets {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    margin: 0 auto 16px;
+    max-width: 540px;
+    border-top: 1px solid rgba(212, 188, 142, 0.22);
+    border-bottom: 1px solid rgba(212, 188, 142, 0.22);
+  }
+  .lf-dispatch__get {
+    flex: 1;
+    padding: 18px 14px;
+    border-left: 1px solid rgba(212, 188, 142, 0.22);
+  }
+  .lf-dispatch__get:first-child { border-left: none; }
+  .lf-dispatch__gk {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--lfd-gold);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .lf-dispatch__gv {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    line-height: 1.3;
+    color: rgba(253, 251, 246, 0.92);
+  }
+  .lf-dispatch__hook {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--lfd-gold-pale);
+    margin-bottom: 40px;
+    letter-spacing: 0.01em;
+  }
+  .lf-dispatch__line {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(16px, 2.2vw, 19px);
+    line-height: 1.6;
+    color: rgba(253, 251, 246, 0.74);
+    margin-bottom: 8px;
+  }
+  .lf-dispatch__gold { color: var(--lfd-gold-pale); font-style: normal; }
+  .lf-dispatch__form {
+    display: flex;
+    max-width: 400px;
+    margin: 0 auto;
+    border-bottom: 1px solid rgba(212, 188, 142, 0.55);
+  }
+  .lf-dispatch--compact .lf-dispatch__form { max-width: 380px; margin-top: 34px; }
+  .lf-dispatch__input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    padding: 14px 4px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    color: #fff;
+    letter-spacing: 0.01em;
+  }
+  .lf-dispatch__input::placeholder { color: rgba(253, 251, 246, 0.4); }
+  .lf-dispatch__btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--lfd-gold-pale);
+    padding: 0 6px;
+    transition: color 0.2s;
+    white-space: nowrap;
+  }
+  .lf-dispatch__btn:hover { color: #fff; }
+  .lf-dispatch__thanks {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--lfd-gold-pale);
+    margin-top: 34px;
+  }
+  .lf-dispatch__error {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 12px;
+    color: #e5b3a3;
+    margin-top: 12px;
+  }
+  .lf-dispatch__fine {
+    margin-top: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: rgba(253, 251, 246, 0.38);
+  }
+  @media (max-width: 560px) {
+    .lf-dispatch { padding: 60px 22px; }
+    .lf-dispatch--compact { padding: 56px 22px; }
+    .lf-dispatch__gets { flex-direction: column; max-width: 300px; }
+    .lf-dispatch__get {
+      border-left: none;
+      border-top: 1px solid rgba(212, 188, 142, 0.22);
+      padding: 14px;
+    }
+    .lf-dispatch__get:first-child { border-top: none; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "The Dispatch",
+  "tag": "section",
+  "class": "lf-dispatch-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "variant",
+      "label": "Layout",
+      "options": [
+        { "value": "auto", "label": "Auto (rich on homepage, compact elsewhere)" },
+        { "value": "rich", "label": "Rich (always)" },
+        { "value": "compact", "label": "Compact (always)" }
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The Dispatch"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "A letter, not a list."
+    },
+    {
+      "type": "header",
+      "content": "Rich layout — what you get"
+    },
+    { "type": "text", "id": "get1_label", "label": "Column 1 label", "default": "Styling" },
+    { "type": "text", "id": "get1_value", "label": "Column 1 text", "default": "This week's stack, worn" },
+    { "type": "text", "id": "get2_label", "label": "Column 2 label", "default": "Makers" },
+    { "type": "text", "id": "get2_value", "label": "Column 2 text", "default": "Studio visits, off the map" },
+    { "type": "text", "id": "get3_label", "label": "Column 3 label", "default": "The City" },
+    { "type": "text", "id": "get3_value", "label": "Column 3 text", "default": "Where we eat, look, wander" },
+    {
+      "type": "text",
+      "id": "hook",
+      "label": "Hook line",
+      "default": "And first word on new arrivals, private previews, and events."
+    },
+    {
+      "type": "header",
+      "content": "Compact layout — text lines"
+    },
+    {
+      "type": "text",
+      "id": "line1",
+      "label": "Line 1",
+      "default": "Styling, makers, and the cities we wander."
+    },
+    {
+      "type": "text",
+      "id": "line2_gold",
+      "label": "Line 2 — highlighted words",
+      "default": "First word"
+    },
+    {
+      "type": "text",
+      "id": "line2_text",
+      "label": "Line 2 — rest",
+      "default": "on new arrivals, previews, and events."
+    },
+    {
+      "type": "header",
+      "content": "Signup form"
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Email placeholder",
+      "default": "Your email"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Subscribe"
+    },
+    {
+      "type": "text",
+      "id": "success_text",
+      "label": "Success message",
+      "default": "Thank you. The next letter is on its way."
+    },
+    {
+      "type": "text",
+      "id": "fine_print",
+      "label": "Fine print",
+      "default": "Once a week. No noise. Unsubscribe anytime."
+    }
+  ],
+  "presets": [
+    { "name": "The Dispatch" }
+  ]
+}
+{% endschema %}
