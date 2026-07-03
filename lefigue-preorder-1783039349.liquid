@@ -1,0 +1,424 @@
+{%- comment -%}
+  LE FIGUE — Pre-order listing ("Found first, offered first").
+  Ported from ~/Downloads/le-figue-preorder.html; theme header/footer wrap it
+  (design's own topbar/footer removed). Namespaced under .lf-preorder.
+  The design's "Join the Dispatch" band was dropped — the global Dispatch
+  section already renders above the footer on every page.
+  DEMO DATA: the 7 cards below are hardcoded demo pieces (placeholder tiles,
+  demo variant ids 410010xx). Cards link to /pages/pre-order-piece (the demo
+  detail page). Open cards auto-flip to Closed when their data-close date
+  passes. Notify modal + Klaviyo logic = shared snippet
+  'lefigue-notify-modal' (demo mode until keys are filled there).
+  Fixed from the design file: the Hånd card was missing its closing </a>.
+{%- endcomment -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+
+<div class="lf-preorder">
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <span class="eyebrow">New · Pre-order</span>
+    <h1 class="display">Found first,<br><em>offered first.</em></h1>
+    <p class="hero-lead">On every buying trip we meet pieces that are not yet ready for the floor. A limited objet, a designer's next season, a single piece we cannot leave behind. We reserve them here first, at the pre-order rate of fifteen percent, before they reach the shop.</p>
+  </section>
+
+  <!-- ===== FILTER BAR ===== -->
+  <div class="bar">
+    <div class="bar-in">
+      <div class="bar-title">The pre-order edit</div>
+      <div class="filters">
+        <button class="chip on" data-f="all">All</button>
+        <button class="chip" data-f="open">Open now</button>
+        <button class="chip" data-f="soon">Coming soon</button>
+        <button class="chip" data-f="limited">Limited</button>
+        <button class="chip" data-f="closed">Closed</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PRODUCT GRID ===== -->
+  <section class="grid" id="lfpGrid">
+
+    <!-- OPEN -->
+    <a class="card" href="/pages/pre-order-piece" data-state="open" data-limited="false" data-close="2026-07-12T23:59:00" data-variant="41001001">
+      <div class="frame">
+        <span class="state-tag open"><span class="dot"></span>Open</span>
+        <div class="ph"><span class="mono">R</span></div>
+      </div>
+      <div class="meta">
+        <div class="bc">Romilt · Seoul</div>
+        <div class="nm">Volute Ear Cuff</div>
+        <div class="price-row"><span class="p-pre">$238</span><span class="p-was">$280</span><span class="p-rate">Pre-order rate</span></div>
+        <div class="window-line"><span class="count" data-count></span><span class="sep"></span><span>Ships early Sep</span></div>
+      </div>
+    </a>
+
+    <!-- CLOSING SOON + LIMITED -->
+    <a class="card" href="/pages/pre-order-piece" data-state="open" data-limited="true" data-close="2026-07-06T23:59:00" data-variant="41001002">
+      <div class="frame">
+        <span class="state-tag closing"><span class="dot"></span>Closing soon</span>
+        <span class="limited">Limited</span>
+        <div class="ph"><span class="mono">L</span></div>
+      </div>
+      <div class="meta">
+        <div class="bc">LA2L · Paris</div>
+        <div class="nm">Galet Signet Ring</div>
+        <div class="price-row"><span class="p-pre">$357</span><span class="p-was">$420</span><span class="p-rate">Pre-order rate</span></div>
+        <div class="window-line"><span class="count" data-count></span><span class="sep"></span><span>Ships Aug</span></div>
+      </div>
+    </a>
+
+    <!-- COMING SOON -->
+    <a class="card" href="/pages/pre-order-piece" data-state="soon" data-limited="false" data-open="2026-07-15">
+      <div class="frame">
+        <span class="state-tag soon"><span class="dot"></span>Coming soon</span>
+        <div class="ph"><span class="mono">M</span></div>
+      </div>
+      <div class="meta">
+        <div class="bc">Maison · Paris</div>
+        <div class="nm">Ruban Chain Bracelet</div>
+        <div class="soon-line">Opens <b data-open-date></b>. Price revealed when the window opens.</div>
+      </div>
+    </a>
+
+    <!-- OPEN -->
+    <a class="card" href="/pages/pre-order-piece" data-state="open" data-limited="false" data-close="2026-07-18T23:59:00" data-variant="41001003">
+      <div class="frame">
+        <span class="state-tag open"><span class="dot"></span>Open</span>
+        <div class="ph"><span class="mono">M</span></div>
+      </div>
+      <div class="meta">
+        <div class="bc">Miliemoon · New York</div>
+        <div class="nm">Crescent Drop, Pearl</div>
+        <div class="price-row"><span class="p-pre">$170</span><span class="p-was">$200</span><span class="p-rate">Pre-order rate</span></div>
+        <div class="window-line"><span class="count" data-count></span><span class="sep"></span><span>Ships late Aug</span></div>
+      </div>
+    </a>
+
+    <!-- COMING SOON + LIMITED -->
+    <a class="card" href="/pages/pre-order-piece" data-state="soon" data-limited="true" data-open="2026-07-22">
+      <div class="frame">
+        <span class="state-tag soon"><span class="dot"></span>Coming soon</span>
+        <span class="limited">Limited</span>
+        <div class="ph"><span class="mono">S</span></div>
+      </div>
+      <div class="meta">
+        <div class="bc">Stilla · Milan</div>
+        <div class="nm">Onda Cuff</div>
+        <div class="soon-line">Opens <b data-open-date></b>. A single run, from the Milan trip.</div>
+      </div>
+    </a>
+
+    <!-- OPEN -->
+    <a class="card" href="/pages/pre-order-piece" data-state="open" data-limited="false" data-close="2026-07-20T23:59:00" data-variant="41001004">
+      <div class="frame">
+        <span class="state-tag open"><span class="dot"></span>Open</span>
+        <div class="ph"><span class="mono">H</span></div>
+      </div>
+      <div class="meta">
+        <div class="bc">Hånd · Copenhagen</div>
+        <div class="nm">Pebble Studs</div>
+        <div class="price-row"><span class="p-pre">$204</span><span class="p-was">$240</span><span class="p-rate">Pre-order rate</span></div>
+        <div class="window-line"><span class="count" data-count></span><span class="sep"></span><span>Ships Sep</span></div>
+      </div>
+    </a>
+
+    <!-- SOLD OUT (limited run filled before close) -->
+    <div class="card is-closed" data-state="closed" data-limited="true" data-variant="41001005">
+      <div class="frame">
+        <span class="state-tag sold"><span class="dot"></span>Sold out</span>
+        <span class="limited">Limited</span>
+        <div class="ph"><span class="mono">M</span></div>
+      </div>
+      <div class="meta">
+        <div class="bc">Miliemoon · New York</div>
+        <div class="nm">Halo Cuff</div>
+        <div class="closed-line"><span class="st">A limited run, now placed</span><button class="notify" type="button">Notify me</button></div>
+      </div>
+    </div>
+
+    <!-- CLOSED (window ended) -->
+    <div class="card is-closed" data-state="closed" data-limited="false" data-variant="41001006">
+      <div class="frame">
+        <span class="state-tag closed"><span class="dot"></span>Closed</span>
+        <div class="ph"><span class="mono">R</span></div>
+      </div>
+      <div class="meta">
+        <div class="bc">Romilt · Seoul</div>
+        <div class="nm">Ribbon Drop</div>
+        <div class="closed-line"><span class="st">Reservations closed</span><button class="notify" type="button">Notify me</button></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===== PRE-ORDER FAQ ===== -->
+  <section class="faq">
+    <div class="faq-in">
+      <div class="faq-head">
+        <span class="eyebrow">Pre-order</span>
+        <h2 class="display">Questions,<br>answered.</h2>
+        <p>Anything we have not covered, we are happy to answer in person or by note.</p>
+        <a href="/pages/contact">Customer Service</a>
+      </div>
+      <div class="acc">
+        <div class="acc-item open">
+          <button class="acc-q">What is a pre-order at Le Figue <span class="pl">+</span></button>
+          <div class="acc-a"><div class="acc-a-in">A pre-order reserves a piece before it reaches the floor. Some are limited objets we find on a buying trip. Others are a designer's next season, shown to us early in the studio. You reserve while the window is open, and we deliver once the piece is ready.</div></div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-q">When am I charged <span class="pl">+</span></button>
+          <div class="acc-a"><div class="acc-a-in">Payment is taken at checkout, at the pre-order rate shown on the page, and that settles your reservation. In the rare case we cannot fulfill a piece, we refund you in full.</div></div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-q">When will my piece ship <span class="pl">+</span></button>
+          <div class="acc-a"><div class="acc-a-in">Each piece carries an estimated ship date on its page. Pre-order pieces are made or released after the window closes, so timing follows the studio. We write to you the moment yours leaves for New York, with tracking.</div></div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-q">What if the ship date moves <span class="pl">+</span></button>
+          <div class="acc-a"><div class="acc-a-in">Makers work to their own season, and a date can shift. If yours changes we write to you first with the new estimate. You are free to keep the reservation or step away with a full refund.</div></div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-q">Can I change or release a reservation <span class="pl">+</span></button>
+          <div class="acc-a"><div class="acc-a-in">While the window is open you may change or release a reservation for a full refund. Once it closes and the piece enters production, limited and made to order pieces are final, which we note on each page.</div></div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-q">Can I order a pre-order piece with in stock pieces <span class="pl">+</span></button>
+          <div class="acc-a"><div class="acc-a-in">Yes. In stock pieces can ship right away, or we hold the order and send it complete when your pre-order is ready. Tell us which you prefer at checkout, and there is no second shipping fee either way.</div></div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-q">Is the pre-order rate the final price <span class="pl">+</span></button>
+          <div class="acc-a"><div class="acc-a-in">The fifteen percent rate holds for the life of the window. If a piece returns to the floor afterward it returns at full. Should the studio's price move before we settle, we honor the rate you reserved at.</div></div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-q">A piece I wanted has closed. What now <span class="pl">+</span></button>
+          <div class="acc-a"><div class="acc-a-in">Pre-order runs are small and they close quietly. If a window has closed, write to us or join the Dispatch, and we will tell you if it returns.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+{% render 'lefigue-notify-modal' %}
+
+{% stylesheet %}
+  .lf-preorder{ --ink:#2a2622; --ink-soft:#6b635a; --line:#e3dccf; --line-soft:#efe9dd;
+    --cream:#faf7f1; --cream-deep:#f3ede1; --accent:#8a7250; --gold:#b8975f; --paper:#fdfbf6;
+    background:var(--cream); color:var(--ink);
+    font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-weight:400; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .lf-preorder *{ margin:0; padding:0; box-sizing:border-box; }
+  .lf-preorder .display{ font-family:'Cormorant Garamond',serif; }
+  .lf-preorder a{ color:inherit; text-decoration:none; }
+  .lf-preorder img{ max-width:100%; display:block; }
+  .lf-preorder .eyebrow{ font-size:11px; letter-spacing:.34em; text-transform:uppercase; color:var(--accent); }
+
+  /* ---------- hero ---------- */
+  .lf-preorder .hero{ max-width:1240px; margin:0 auto; padding:80px 32px 54px; }
+  .lf-preorder .hero h1{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(46px,7vw,82px); line-height:1.02; letter-spacing:-.01em; margin:20px 0 0; }
+  .lf-preorder .hero h1 em{ font-style:italic; color:var(--accent); }
+  .lf-preorder .hero-lead{ max-width:560px; margin-top:26px; font-size:16px; color:var(--ink-soft); line-height:1.85; }
+
+  /* ---------- faq ---------- */
+  .lf-preorder .faq{ max-width:1240px; margin:0 auto; padding:0 32px; }
+  .lf-preorder .faq-in{ border-top:1px solid var(--line); padding:64px 0 84px; display:grid; grid-template-columns:.7fr 1.3fr; gap:56px; align-items:start; margin-top:40px; }
+  .lf-preorder .faq-head{ position:sticky; top:96px; }
+  .lf-preorder .faq-head .eyebrow{ display:block; }
+  .lf-preorder .faq-head h2{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(30px,4vw,44px); margin-top:14px; line-height:1.1; }
+  .lf-preorder .faq-head p{ margin-top:16px; font-size:13.5px; color:var(--ink-soft); max-width:240px; line-height:1.75; }
+  .lf-preorder .faq-head a{ display:inline-block; margin-top:18px; font-size:12px; letter-spacing:.18em; text-transform:uppercase; border-bottom:1px solid var(--accent); padding-bottom:4px; color:var(--ink); }
+  .lf-preorder .acc{ border-top:1px solid var(--line); }
+  .lf-preorder .acc-item{ border-bottom:1px solid var(--line); }
+  .lf-preorder .acc-q{ width:100%; background:none; border:none; font-family:inherit; cursor:pointer;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:20px 2px; text-align:left; font-size:14.5px; color:var(--ink); font-weight:500; }
+  .lf-preorder .acc-q .pl{ font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--accent); transition:transform .3s; line-height:1; flex-shrink:0; }
+  .lf-preorder .acc-item.open .pl{ transform:rotate(45deg); }
+  .lf-preorder .acc-a{ max-height:0; overflow:hidden; transition:max-height .35s ease; }
+  .lf-preorder .acc-a-in{ padding:0 2px 22px; font-size:13.5px; color:var(--ink-soft); line-height:1.85; max-width:560px; }
+
+  /* ---------- filter bar ---------- */
+  .lf-preorder .bar{ max-width:1240px; margin:0 auto; padding:0 32px; }
+  .lf-preorder .bar-in{ display:flex; align-items:flex-end; justify-content:space-between; gap:18px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:18px 0; flex-wrap:wrap; }
+  .lf-preorder .bar-title{ font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:600; }
+  .lf-preorder .filters{ display:flex; gap:8px; flex-wrap:wrap; }
+  .lf-preorder .chip{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft);
+    padding:8px 16px; border:1px solid var(--line); border-radius:999px; background:transparent; cursor:pointer; transition:all .2s; font-family:inherit; }
+  .lf-preorder .chip:hover{ border-color:var(--accent); color:var(--ink); }
+  .lf-preorder .chip.on{ background:var(--ink); color:var(--cream); border-color:var(--ink); }
+
+  /* ---------- product grid ---------- */
+  .lf-preorder .grid{ max-width:1240px; margin:0 auto; padding:38px 32px 30px;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:44px 38px; }
+  .lf-preorder .card{ display:block; cursor:pointer; }
+  .lf-preorder .card.is-hidden{ display:none; }
+  .lf-preorder .frame{ position:relative; aspect-ratio:4/5; overflow:hidden; background:var(--cream-deep); }
+  .lf-preorder .ph{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 30% 18%, #fbf8f2 0%, #f0e8da 55%, #e7ddca 100%); }
+  .lf-preorder .ph::after{ content:""; position:absolute; inset:0; background:
+      repeating-linear-gradient(135deg, rgba(138,114,80,.04) 0 2px, transparent 2px 9px); }
+  .lf-preorder .ph .mono{ font-family:'Cormorant Garamond',serif; font-size:64px; font-weight:500; color:rgba(138,114,80,.32); letter-spacing:.04em; }
+  .lf-preorder .frame img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .lf-preorder .card:hover .frame img,.lf-preorder .card:hover .ph{ transform:scale(1.03); }
+  .lf-preorder .frame img,.lf-preorder .ph{ transition:transform 1.1s cubic-bezier(.2,.7,.2,1); }
+
+  .lf-preorder .state-tag{ position:absolute; top:14px; left:14px; z-index:2;
+    font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+    padding:6px 11px; background:rgba(253,251,246,.92); color:var(--ink);
+    display:inline-flex; align-items:center; gap:7px; }
+  .lf-preorder .dot{ width:5px; height:5px; border-radius:50%; background:var(--accent); }
+  .lf-preorder .state-tag.open .dot{ background:#5e7d52; }
+  .lf-preorder .state-tag.soon .dot{ background:var(--gold); }
+  .lf-preorder .state-tag.closing .dot{ background:#b06a4a; animation:lfp-pulse 1.6s infinite; }
+  @keyframes lfp-pulse{ 0%,100%{opacity:1;} 50%{opacity:.35;} }
+  .lf-preorder .limited{ position:absolute; top:14px; right:14px; z-index:2; font-size:10px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--cream); background:rgba(42,38,34,.78); padding:6px 10px; }
+
+  .lf-preorder .meta{ padding:16px 2px 0; }
+  .lf-preorder .meta .bc{ font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); }
+  .lf-preorder .meta .nm{ font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:600; margin:5px 0 0; line-height:1.2; }
+  .lf-preorder .price-row{ display:flex; align-items:baseline; gap:10px; margin-top:9px; }
+  .lf-preorder .p-pre{ font-size:15px; color:var(--ink); }
+  .lf-preorder .p-was{ font-size:13px; color:var(--ink-soft); text-decoration:line-through; text-decoration-thickness:1px; opacity:.7; }
+  .lf-preorder .p-rate{ font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); }
+  .lf-preorder .window-line{ margin-top:10px; display:flex; align-items:center; gap:8px; font-size:12px; color:var(--ink-soft); }
+  .lf-preorder .window-line .sep{ width:14px; height:1px; background:var(--line); }
+  .lf-preorder .count{ color:var(--ink); }
+  .lf-preorder .count.urgent{ color:#b06a4a; }
+  .lf-preorder .soon-line{ margin-top:10px; font-size:12px; color:var(--ink-soft); letter-spacing:.02em; }
+  .lf-preorder .soon-line b{ color:var(--ink); font-weight:500; }
+
+  /* ---- closed / sold out ---- */
+  .lf-preorder .card.is-closed{ cursor:default; }
+  .lf-preorder .card.is-closed .ph{ filter:grayscale(.45) brightness(.99); opacity:.72; }
+  .lf-preorder .card.is-closed:hover .ph,.lf-preorder .card.is-closed:hover .frame img{ transform:none; }
+  .lf-preorder .card.is-closed .meta .nm{ color:var(--ink-soft); }
+  .lf-preorder .card.is-closed .price-row{ opacity:.55; }
+  .lf-preorder .state-tag.closed .dot,.lf-preorder .state-tag.sold .dot{ background:#9a9087; animation:none; }
+  .lf-preorder .closed-line{ margin-top:11px; font-size:12.5px; color:var(--ink-soft); display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .lf-preorder .closed-line .st{ letter-spacing:.01em; }
+  .lf-preorder .notify{ font:inherit; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink);
+    background:none; border:none; border-bottom:1px solid var(--accent); padding:0 0 2px; cursor:pointer; transition:color .2s; }
+  .lf-preorder .notify:hover{ color:var(--accent); }
+
+  @media(max-width:900px){
+    .lf-preorder .faq-in{ grid-template-columns:1fr; gap:28px; }
+    .lf-preorder .faq-head{ position:static; }
+    .lf-preorder .faq-head p,.lf-preorder .faq-head a{ display:none; }
+    .lf-preorder .grid{ grid-template-columns:repeat(2,1fr); gap:34px 22px; }
+  }
+  @media(max-width:560px){
+    .lf-preorder .hero,.lf-preorder .faq,.lf-preorder .bar,.lf-preorder .grid{ padding-left:20px; padding-right:20px; }
+    .lf-preorder .hero{ padding-top:54px; }
+    .lf-preorder .grid{ grid-template-columns:1fr; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function(){
+    var root = document.querySelector('.lf-preorder');
+    if (!root) return;
+    var MS_DAY = 86400000, MS_HR = 3600000;
+
+    /* ---- live countdown for OPEN cards ---- */
+    function fmtOpen(d){
+      return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    }
+    function renderCounts(){
+      var now = new Date();
+      root.querySelectorAll('.card[data-state="open"]').forEach(function(card){
+        var close = new Date(card.dataset.close);
+        var el = card.querySelector('[data-count]');
+        if(!el) return;
+        var diff = close - now;
+        if(diff <= 0){
+          card.classList.add('is-closed');
+          card.dataset.state = 'closed';
+          var tag = card.querySelector('.state-tag');
+          if(tag){ tag.className = 'state-tag closed'; tag.innerHTML = '<span class="dot"></span>Closed'; }
+          var wl = card.querySelector('.window-line');
+          if(wl){ wl.className = 'closed-line'; wl.innerHTML = '<span class="st">Reservations closed</span><button class="notify" type="button">Notify me</button>'; }
+          return;
+        }
+        var days = Math.floor(diff/MS_DAY);
+        var hrs  = Math.floor((diff%MS_DAY)/MS_HR);
+        if(days >= 1){
+          el.textContent = 'Closes in ' + days + (days===1?' day':' days');
+        }else{
+          el.textContent = 'Closes in ' + hrs + (hrs===1?' hour':' hours');
+        }
+        if(days < 7) el.classList.add('urgent');
+      });
+      root.querySelectorAll('.card[data-state="soon"]').forEach(function(card){
+        var b = card.querySelector('[data-open-date]');
+        if(b) b.textContent = fmtOpen(card.dataset.open);
+      });
+    }
+    renderCounts();
+    setInterval(renderCounts, 60000);
+
+    /* ---- filters ---- */
+    var chips = root.querySelectorAll('.chip');
+    chips.forEach(function(chip){
+      chip.addEventListener('click', function(){
+        chips.forEach(function(c){ c.classList.remove('on'); });
+        chip.classList.add('on');
+        var f = chip.dataset.f;
+        root.querySelectorAll('.card').forEach(function(card){
+          var show = true;
+          if(f==='open')    show = card.dataset.state==='open';
+          if(f==='soon')    show = card.dataset.state==='soon';
+          if(f==='closed')  show = card.dataset.state==='closed';
+          if(f==='limited') show = card.dataset.limited==='true';
+          card.classList.toggle('is-hidden', !show);
+        });
+      });
+    });
+
+    /* ---- faq accordions ---- */
+    root.querySelectorAll('.acc-q').forEach(function(q){
+      q.addEventListener('click', function(){
+        var item = q.parentElement;
+        var ans = item.querySelector('.acc-a');
+        if(item.classList.contains('open')){
+          item.classList.remove('open'); ans.style.maxHeight = null;
+        }else{
+          item.classList.add('open'); ans.style.maxHeight = ans.scrollHeight + 'px';
+        }
+      });
+    });
+    var faqFirst = root.querySelector('.acc-item.open .acc-a');
+    if(faqFirst) faqFirst.style.maxHeight = faqFirst.scrollHeight + 'px';
+
+    /* ---- notify: delegate to the shared modal (snippet lefigue-notify-modal) ----
+       works for static closed cards and cards that auto-flip to closed */
+    root.addEventListener('click', function(e){
+      var btn = e.target.closest('.notify');
+      if(!btn) return;
+      e.preventDefault();
+      var card = btn.closest('.card');
+      if(!card || !window.lfNotify) return;
+      var bc = card.querySelector('.bc');
+      var nm = card.querySelector('.nm');
+      window.lfNotify.open({
+        brand: bc ? bc.textContent : '',
+        title: nm ? nm.textContent : 'this piece',
+        variant: card.dataset.variant || '',
+        trigger: btn
+      });
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "LE FIGUE Pre-order",
+  "settings": [],
+  "presets": [{ "name": "LE FIGUE Pre-order" }]
+}
+{% endschema %}
