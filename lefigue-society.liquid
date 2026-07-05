@@ -1,0 +1,276 @@
+{%- comment -%}
+  LE FIGUE — LE FIGUE Society. Ported from le-figue-society.html.
+  Design's own masthead + dark-mode block stripped; theme header/footer wrap it.
+  CSS scoped under .lf-society. Internal links repointed to /pages/*.
+{%- endcomment -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+
+<div class="lf-society">
+<!-- HERO -->
+  <section class="hero">
+    <div class="seal-bg" id="seal-bg"></div>
+    <div class="inner wrap">
+      <div class="ov">Private Client Program</div>
+      <h1>Le Figue Society</h1>
+      <div class="sub">A society, not a sale.</div>
+      <p>LE FIGUE SOCIETY is our private circle, for those who return, collect, and slowly compose a language of jewelry that is their own. Membership is not earned by spending. It is a relationship that opens gently, with House Credits that find their way back to you, member pricing kept quiet, private access, and personal services that deepen the longer you stay with us.</p>
+      <button class="scrolldown" onclick="document.getElementById('join').scrollIntoView()">Enter the society</button>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- MANIFESTO + PILLARS -->
+  <div class="wrap">
+    <div class="manifesto">
+      <div class="ov">The idea</div>
+      <h2>Not a sale. A relationship.</h2>
+      <p>We do not follow the rhythm of ordinary sales. Every purchase brings you closer to the next tier, and every tier opens a quieter, more personal way to experience LE FIGUE.</p>
+    </div>
+    <div class="pillars">
+      <div class="pillar"><div class="pi"></div><div class="pn">House Credits</div><div class="pd">A quiet share of every purchase returns to you as House Credits, worth two dollars for every hundred, kept for whatever you discover next.</div></div>
+      <div class="pillar"><div class="pi"></div><div class="pn">Member Pricing</div><div class="pd">A quieter price, applied at checkout. No codes, and no season to wait for.</div></div>
+      <div class="pillar"><div class="pi"></div><div class="pn">Private Access</div><div class="pd">Previews, appointments, and styling that open as your relationship with the society deepens.</div></div>
+    </div>
+
+    <div class="how">
+      <div class="ov">How it works</div>
+      <p>Seven tiers, each one a step further into the society. You move with what you collect, never with a sale.</p>
+    </div>
+
+    <!-- TIER EXPLORER -->
+    <div class="tiers-wrap">
+      <div class="tiers-head"><div class="ov">The Tiers</div><h2>Seven ways into the society</h2>
+        <div class="tier-toggle"><button class="on" data-v="explore">Explore</button><button data-v="compare">Compare</button></div>
+      </div>
+      <div id="explore-view"><div class="explorer">
+        <div class="rail" id="rail"></div>
+        <div class="tier-detail" id="tier-detail"></div>
+      </div></div>
+      <div id="compare-view"></div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq">
+      <div class="faq-head"><div class="ov">FAQ</div><h2>A few questions</h2></div>
+      <div class="faq-list">
+        <div class="faq-item"><button class="faq-q">Can I share or transfer my membership?<span class="faq-ic">+</span></button><div class="faq-a"><p>Membership is personal. Your tier, House Credits, and member pricing belong to you alone. They cannot be transferred, gifted, or used by anyone else on your behalf.</p></div></div>
+        <div class="faq-item"><button class="faq-q">What happens if I leave and rejoin?<span class="faq-ic">+</span></button><div class="faq-a"><p>You are always welcome back, though a new membership begins again at The Guest. A previous tier is not restored, as each tier is earned through the relationship as it grows.</p></div></div>
+        <div class="faq-item"><button class="faq-q">Does membership work online and in store?<span class="faq-ic">+</span></button><div class="faq-a"><p>Yes. Your tier, House Credits, and member pricing are recognized the same way online and at our locations.</p></div></div>
+        <div class="faq-item"><button class="faq-q">Does member pricing combine with other prices?<span class="faq-ic">+</span></button><div class="faq-a"><p>Member pricing applies to eligible full price pieces. It does not stack on prices that are already composed at a special rate, such as pairings at Set 15% or pieces offered on pre-order.</p></div></div>
+        <div class="faq-item"><button class="faq-q">Which pieces are eligible?<span class="faq-ic">+</span></button><div class="faq-a"><p>Most full price pieces are eligible. Fine jewelry, bespoke orders, repairs, special collaborations, limited editions, gift cards, taxes, shipping, and selected designer pieces may not be. We may refine tier benefits, eligibility, and terms as the society evolves.</p></div></div>
+        <div class="faq-item"><button class="faq-q">How do I earn House Credits?<span class="faq-ic">+</span></button><div class="faq-a"><p>House Credits are the currency of the society, valued at one hundred credits to two dollars. You earn them as a share of each eligible purchase, from one percent at The Guest rising to two and a half percent at the highest tiers, and through welcome, birthday, anniversary, and referral rewards. When you enter a higher tier directly, that tier's welcome credits are granted once on entry, and earlier tier credits are not added retroactively.</p></div></div>
+        <div class="faq-item"><button class="faq-q">How do I use my House Credits?<span class="faq-ic">+</span></button><div class="faq-a"><p>Your House Credits are applied at checkout, the same way online and in store, at one hundred credits to two dollars. They may be used once your balance reaches five hundred credits, which is ten dollars, and in increments of one hundred above that. Eligibility is shown at checkout.</p></div></div>
+      </div>
+      <div style="text-align:center;margin-top:34px"><a href="/pages/society-terms" style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--gold);padding-bottom:3px;text-decoration:none">Read the full Society terms &rarr;</a></div>
+    </div>
+
+
+  </div>
+
+  <!-- JOIN -->
+  <section class="join" id="join">
+    <div class="wrap">
+      <div class="seal" id="join-seal"></div>
+      <div class="ov">Membership</div>
+      <h2>Enter the society</h2>
+      <p class="lede">Membership begins the moment you join. The Guest receives 250 House Credits, and the society opens from there.</p>
+
+      <div class="join-card" id="join-card">
+        <div class="grid2">
+          <div class="field"><label>First name</label><input id="fn" autocomplete="given-name"></div>
+          <div class="field"><label>Last name</label><input id="ln" autocomplete="family-name"></div>
+        </div>
+        <div class="field full"><label>Email</label><input id="em" type="email" autocomplete="email"></div>
+        <div class="grid2">
+          <div class="field"><label>Password</label><input id="pw" type="password" autocomplete="new-password"></div>
+          <div class="field"><label>Confirm password</label><input id="pw2" type="password" autocomplete="new-password"></div>
+        </div>
+        <div class="field full"><label>Birthday month <span class="opt">for your birthday House Credits</span></label>
+          <select id="bm">
+            <option value="">Prefer not to say</option>
+            <option>January</option><option>February</option><option>March</option><option>April</option>
+            <option>May</option><option>June</option><option>July</option><option>August</option>
+            <option>September</option><option>October</option><option>November</option><option>December</option>
+          </select>
+        </div>
+        <label class="consent"><input type="checkbox" id="cs" checked> I would like to receive previews, appointments, and the occasional note from the society.</label>
+        <button class="join-cta" id="join-cta">Enter the society</button>
+        <div class="err-msg" id="err"></div>
+        <p class="join-fine">By joining you become a member of LE FIGUE SOCIETY at The Guest. You may leave the society at any time.</p>
+      </div>
+
+      <div class="join-done" id="join-done" hidden>
+        <div class="seal" id="done-seal"></div>
+        <h3>Welcome to the society</h3>
+        <p id="done-msg"></p>
+        <div class="credits">250 House Credits are yours.</div>
+        <a class="join-cta" href="#" style="display:inline-block;text-decoration:none;max-width:300px;margin:26px auto 0">Enter your Society &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="refer-min"><div class="wrap"><div class="rm-inner">
+    <div class="rm-mark"></div>
+    <div class="rm-ov">Bring a friend</div>
+    <p class="rm-line">When someone you invite joins, <span class="amt">$50 in House Credits</span> arrives for you both.</p>
+    <div class="rm-link"><input id="ref-link" readonly value="lefigue.com/society/invite"><button id="ref-copy">Copy</button></div>
+    <p class="rm-fine">Credited once they join and make a first eligible purchase.</p>
+  </div></div></section>
+
+  <div class="figline"><span class="mark">·&nbsp;·&nbsp;·</span><p>A society is not a sale. It is a place you are known.</p></div>
+</div>
+
+{% stylesheet %}
+.lf-society{--cream:#faf7f1;--cream-2:#f3eee4;--gold:#b8975f;--ink:#2a2622;--ink-soft:#5b554d;--accent:#8a7250;--hair:#e3dccd;--line:#cdc4b2;--ph:#cdc4b2;
+    --d:"Cormorant Garamond",Georgia,serif;--b:"Pretendard Variable",Pretendard,-apple-system,sans-serif}.lf-society *{box-sizing:border-box;margin:0;padding:0}.lf-society{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;scroll-behavior:smooth}.lf-society{background:var(--cream);color:var(--ink);font-family:var(--b);font-weight:350;line-height:1.6;letter-spacing:.01em}.lf-society ::selection{background:rgba(184,151,95,.22)}.lf-society button{font-family:inherit;cursor:pointer;color:inherit}.lf-society .wrap{max-width:1180px;margin:0 auto;padding:0 32px}.lf-society .masthead{padding:34px 0 0;text-align:center}.lf-society .brand{font-family:var(--d);font-size:14px;letter-spacing:.6em;text-transform:uppercase;padding-left:.6em;background:none;border:none}.lf-society .masthead .rule{height:1px;background:var(--hair);margin:26px auto 0;max-width:1180px}.lf-society .hero{position:relative;text-align:center;padding:78px 0 64px;overflow:hidden}.lf-society .hero .seal-bg{position:absolute;top:18px;left:50%;transform:translateX(-50%);width:560px;height:560px;color:var(--gold);opacity:.06;pointer-events:none}.lf-society .hero .seal-bg svg{width:100%;height:100%}.lf-society .hero .inner{position:relative;z-index:2;max-width:720px;margin:0 auto}.lf-society .hero .ov{font-size:11px;letter-spacing:.46em;text-transform:uppercase;color:var(--accent);font-weight:600;padding-left:.46em}.lf-society .hero h1{font-family:var(--d);font-weight:500;font-size:clamp(50px,8vw,96px);line-height:.98;margin-top:18px;letter-spacing:.01em}.lf-society .hero .sub{font-family:var(--d);font-style:italic;font-size:clamp(19px,2.4vw,25px);color:var(--ink-soft);margin-top:14px}.lf-society .hero p{font-size:14px;line-height:1.8;color:var(--ink-soft);max-width:560px;margin:26px auto 0}.lf-society .hero .scrolldown{display:inline-flex;align-items:center;gap:9px;margin-top:34px;background:var(--ink);color:var(--cream);border:1px solid var(--ink);font-size:11px;letter-spacing:.24em;text-transform:uppercase;padding:15px 34px;transition:background .35s,color .35s}.lf-society .hero .scrolldown:hover{background:transparent;color:var(--ink)}.lf-society .sep{height:1px;background:var(--hair);max-width:1180px;margin:0 auto}.lf-society .manifesto{text-align:center;padding:74px 0 8px;max-width:720px;margin:0 auto}.lf-society .manifesto .ov{font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--accent);font-weight:600}.lf-society .manifesto h2{font-family:var(--d);font-weight:500;font-size:clamp(34px,4.6vw,52px);line-height:1.04;margin-top:14px}.lf-society .manifesto p{font-size:14px;line-height:1.8;color:var(--ink-soft);margin-top:20px}.lf-society .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--hair);margin:54px 0 0}.lf-society .pillar{padding:40px 34px;border-right:1px solid var(--hair)}.lf-society .pillar:last-child{border-right:none}.lf-society .pillar .pn{font-family:var(--d);font-size:25px;line-height:1.1}.lf-society .pillar .pd{font-size:13px;line-height:1.74;color:var(--ink-soft);margin-top:12px}.lf-society .pillar .pi{width:26px;height:1px;background:var(--gold);margin-bottom:18px}.lf-society .how{text-align:center;padding:78px 0 0;max-width:660px;margin:0 auto}.lf-society .how .ov{font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--accent);font-weight:600}.lf-society .how p{font-family:var(--d);font-style:italic;font-size:clamp(20px,2.6vw,27px);line-height:1.4;color:var(--ink-soft);margin-top:18px}.lf-society .tiers-wrap{padding:50px 0 0}.lf-society .tiers-head{text-align:center;margin-bottom:34px}.lf-society .tiers-head .ov{font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--accent);font-weight:600}.lf-society .tiers-head h2{font-family:var(--d);font-weight:500;font-size:clamp(30px,4.2vw,46px);margin-top:12px}.lf-society .explorer{display:grid;grid-template-columns:.86fr 1.14fr;border:1px solid var(--hair)}.lf-society .rail{border-right:1px solid var(--hair);padding:14px 0;position:relative}.lf-society .rail::before{content:"";position:absolute;left:38px;top:34px;bottom:34px;width:1px;background:var(--hair)}.lf-society .tier-item{display:flex;align-items:center;gap:18px;width:100%;background:none;border:none;text-align:left;padding:15px 26px 15px 26px;position:relative;transition:background .25s}.lf-society .tier-item:hover{background:rgba(184,151,95,.05)}.lf-society .tier-item .node{flex:0 0 13px;height:13px;border-radius:50%;background:var(--cream);border:1px solid var(--line);z-index:2;transition:all .3s}.lf-society .tier-item.on .node{background:var(--gold);border-color:var(--gold);box-shadow:0 0 0 4px rgba(184,151,95,.15)}.lf-society .tier-item .ti-name{font-family:var(--d);font-size:22px;line-height:1.05;color:var(--ink-soft);transition:color .3s}.lf-society .tier-item.on .ti-name{color:var(--ink)}.lf-society .tier-item .ti-entry{display:block;font-size:10.5px;letter-spacing:.1em;color:var(--ink-soft);margin-top:3px;opacity:.8}.lf-society .tier-item .ti-inv{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);border:1px solid var(--gold);border-radius:30px;padding:3px 8px;margin-left:auto}.lf-society .tier-detail{padding:46px 44px;display:flex;flex-direction:column;min-height:480px}.lf-society .td-kick{font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);font-weight:600}.lf-society .td-name{font-family:var(--d);font-weight:500;font-size:clamp(34px,4.4vw,50px);line-height:1.0;margin-top:10px}.lf-society .td-who{font-family:var(--d);font-style:italic;font-size:18px;color:var(--ink-soft);margin-top:8px}.lf-society .td-stats{display:flex;gap:0;margin-top:26px;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}.lf-society .stat{flex:1;padding:18px 0;border-right:1px solid var(--hair)}.lf-society .stat:last-child{border-right:none}.lf-society .stat .k{display:block;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}.lf-society .stat .v{display:block;font-family:var(--d);font-size:23px;margin-top:6px;color:var(--ink)}.lf-society .td-benefits{list-style:none;margin-top:24px}.lf-society .td-benefits li{display:flex;gap:13px;align-items:baseline;padding:9px 0;font-size:13.5px;color:var(--ink);line-height:1.55}.lf-society .td-benefits li::before{content:"";flex:0 0 5px;height:5px;border-radius:50%;background:var(--gold);transform:translateY(7px)}.lf-society .td-note{font-family:var(--d);font-style:italic;font-size:14px;color:var(--ink-soft);line-height:1.6;margin-top:auto;padding-top:22px;border-top:1px solid var(--hair)}.lf-society .tier-toggle{display:inline-flex;border:1px solid var(--hair);border-radius:40px;padding:4px;margin-top:18px}.lf-society .tier-toggle button{border:none;background:none;color:var(--ink-soft);font-size:11px;letter-spacing:.18em;text-transform:uppercase;padding:9px 22px;border-radius:30px;transition:all .3s}.lf-society .tier-toggle button.on{background:var(--ink);color:var(--cream)}.lf-society #compare-view{display:none}.lf-society .cmp-scroll{overflow-x:auto;border:1px solid var(--hair);scrollbar-width:thin}.lf-society .cmp{border-collapse:collapse;width:100%;min-width:880px}.lf-society .cmp th, .lf-society .cmp td{padding:14px 16px;text-align:center;border-bottom:1px solid var(--hair);font-size:12.5px;white-space:nowrap}.lf-society .cmp thead th{position:sticky;top:0;background:var(--cream);z-index:2;border-bottom:1px solid var(--line)}.lf-society .cmp thead th .tn{font-family:var(--d);font-size:18px;color:var(--ink);display:block}.lf-society .cmp thead th .te{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:3px;display:block;font-weight:400}.lf-society .cmp thead th.inv .tn{color:var(--accent)}.lf-society .cmp tbody th{position:sticky;left:0;background:var(--cream);text-align:left;font-weight:500;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);z-index:1;min-width:172px;border-right:1px solid var(--hair)}.lf-society .cmp td.yes{color:var(--accent)}.lf-society .cmp td .dash{color:var(--line)}.lf-society .cmp tbody tr:hover td, .lf-society .cmp tbody tr:hover th{background:rgba(184,151,95,.05)}.lf-society .cmp-note{font-size:11.5px;color:var(--ink-soft);margin-top:14px;text-align:center}.lf-society .terms{margin:74px 0 0;border:1px solid var(--hair);background:var(--cream-2);padding:40px 44px}.lf-society .terms .tt{font-family:var(--d);font-size:24px;margin-bottom:14px}.lf-society .terms p{font-size:12.5px;line-height:1.85;color:var(--ink-soft);max-width:78ch}.lf-society .terms .full{display:inline-block;margin-top:16px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--gold);padding-bottom:2px;text-decoration:none}.lf-society .join{text-align:center;padding:82px 0 30px;position:relative}.lf-society .join .seal{width:96px;height:96px;color:var(--gold);margin:0 auto 24px}.lf-society .join .seal svg{width:100%;height:100%}.lf-society .join .ov{font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--accent);font-weight:600}.lf-society .join h2{font-family:var(--d);font-weight:500;font-size:clamp(38px,5.4vw,64px);line-height:1.0;margin-top:14px}.lf-society .join .lede{font-size:14px;line-height:1.8;color:var(--ink-soft);max-width:520px;margin:18px auto 0}.lf-society .join-card{max-width:520px;margin:42px auto 0;border:1px solid var(--hair);padding:40px 38px;text-align:left;background:var(--cream)}.lf-society .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}.lf-society .field{display:flex;flex-direction:column;margin-bottom:18px}.lf-society .field.full{grid-column:1/-1}.lf-society .field label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px}.lf-society .field label .opt{color:var(--line);letter-spacing:.06em;text-transform:none;margin-left:6px;font-style:italic;font-family:var(--d);font-size:12px}.lf-society .field input, .lf-society .field select{font-family:var(--b);font-size:14px;color:var(--ink);background:transparent;border:none;border-bottom:1px solid var(--line);padding:9px 2px;transition:border-color .3s;border-radius:0}.lf-society .field input:focus, .lf-society .field select:focus{outline:none;border-color:var(--gold)}.lf-society .field.err input{border-color:#b4554d}.lf-society .consent{display:flex;align-items:flex-start;gap:11px;font-size:12px;color:var(--ink-soft);line-height:1.5;margin:6px 0 4px;cursor:pointer}.lf-society .consent input{margin-top:3px;accent-color:var(--gold);width:15px;height:15px;flex:0 0 15px}.lf-society .join-cta{margin-top:24px;width:100%;background:var(--ink);color:var(--cream);border:1px solid var(--ink);font-size:12px;letter-spacing:.24em;text-transform:uppercase;padding:18px;transition:background .35s,color .35s}.lf-society .join-cta:hover{background:transparent;color:var(--ink)}.lf-society .join-fine{font-size:11px;color:var(--ink-soft);text-align:center;margin-top:16px;line-height:1.6}.lf-society .err-msg{color:#b4554d;font-size:11.5px;margin-top:12px;text-align:center;min-height:14px}.lf-society .join-done{max-width:520px;margin:42px auto 0;border:1px solid var(--gold);padding:48px 40px;text-align:center;background:rgba(184,151,95,.06)}.lf-society .join-done .seal{width:84px;height:84px;margin:0 auto 22px}.lf-society .join-done h3{font-family:var(--d);font-weight:500;font-size:34px;line-height:1.05}.lf-society .join-done p{font-size:13.5px;color:var(--ink-soft);line-height:1.75;margin-top:16px;max-width:40ch;margin-left:auto;margin-right:auto}.lf-society .join-done .credits{font-family:var(--d);font-style:italic;font-size:19px;color:var(--accent);margin-top:18px}.lf-society .figline{text-align:center;padding:60px 0 86px}.lf-society .figline .mark{color:var(--gold);font-size:15px;letter-spacing:.4em;display:block;margin-bottom:20px}.lf-society .figline p{font-family:var(--d);font-style:italic;font-size:20px;color:var(--ink-soft);max-width:560px;margin:0 auto;line-height:1.5}@media(max-width:860px){.lf-society .wrap{padding:0 20px}.lf-society .pillars{grid-template-columns:1fr}.lf-society .pillar{border-right:none;border-bottom:1px solid var(--hair)}.lf-society .pillar:last-child{border-bottom:none}.lf-society .explorer{grid-template-columns:1fr}.lf-society .rail{border-right:none;border-bottom:1px solid var(--hair);display:flex;overflow-x:auto;padding:8px;scrollbar-width:none}.lf-society .rail::before{display:none}.lf-society .rail::-webkit-scrollbar{display:none}.lf-society .tier-item{flex:0 0 auto;flex-direction:column;align-items:flex-start;gap:8px;padding:14px 16px;min-width:150px}.lf-society .tier-item .node{display:none}.lf-society .tier-item .ti-inv{margin-left:0}.lf-society .tier-detail{padding:36px 26px;min-height:0}.lf-society .terms, .lf-society .join-card, .lf-society .join-done{padding:32px 24px}.lf-society .grid2{grid-template-columns:1fr}}.lf-society .faq{margin:74px 0 0}.lf-society .faq-head{text-align:center;margin-bottom:30px}.lf-society .faq-head .ov{font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--accent);font-weight:600}.lf-society .faq-head h2{font-family:var(--d);font-weight:500;font-size:clamp(30px,4.2vw,46px);margin-top:12px}.lf-society .faq-list{max-width:760px;margin:0 auto;border-top:1px solid var(--hair)}.lf-society .faq-item{border-bottom:1px solid var(--hair)}.lf-society .faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;gap:20px;background:none;border:none;text-align:left;padding:22px 4px;font-family:var(--d);font-size:21px;color:var(--ink);transition:color .3s}.lf-society .faq-q:hover{color:var(--accent)}.lf-society .faq-ic{flex:0 0 auto;font-family:var(--b);font-size:20px;color:var(--accent);transition:transform .3s;line-height:1}.lf-society .faq-item.open .faq-ic{transform:rotate(45deg)}.lf-society .faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease}.lf-society .faq-a p{font-size:13.5px;line-height:1.8;color:var(--ink-soft);padding:0 4px 24px;max-width:66ch}.lf-society .refer{margin:74px 0 0}.lf-society .refer-card{max-width:620px;margin:0 auto;border:1px solid var(--gold);background:rgba(184,151,95,.06);padding:48px 44px;text-align:center}.lf-society .refer-card .ov{font-size:11px;letter-spacing:.36em;text-transform:uppercase;color:var(--accent);font-weight:600}.lf-society .refer-card h2{font-family:var(--d);font-weight:500;font-size:clamp(30px,4.2vw,44px);line-height:1.04;margin-top:12px}.lf-society .refer-card>p{font-size:14px;color:var(--ink-soft);line-height:1.7;margin-top:14px;max-width:42ch;margin-left:auto;margin-right:auto}.lf-society .refer-card>p b{color:var(--accent);font-weight:500}.lf-society .refer-link{margin-top:28px;text-align:left}.lf-society .rl-label{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}.lf-society .rl-row{display:flex;gap:10px;margin-top:9px}.lf-society .rl-row input{flex:1;font-family:var(--b);font-size:13px;color:var(--ink);background:var(--cream);border:1px solid var(--hair);padding:13px 14px;border-radius:0;min-width:0}.lf-society .rl-row button, .lf-society .refer-send button{background:var(--ink);color:var(--cream);border:1px solid var(--ink);font-size:11px;letter-spacing:.18em;text-transform:uppercase;padding:13px 22px;white-space:nowrap;transition:background .3s,color .3s}.lf-society .rl-row button:hover, .lf-society .refer-send button:hover{background:transparent;color:var(--ink)}.lf-society .refer-or{font-family:var(--d);font-style:italic;color:var(--ink-soft);font-size:14px;margin:22px 0 14px}.lf-society .refer-send{display:flex;gap:10px}.lf-society .refer-send input{flex:1;font-family:var(--b);font-size:14px;color:var(--ink);background:transparent;border:none;border-bottom:1px solid var(--line);padding:11px 2px;border-radius:0;transition:border-color .3s;min-width:0}.lf-society .refer-send input:focus{outline:none;border-color:var(--gold)}.lf-society .refer-done{font-family:var(--d);font-style:italic;font-size:15px;color:var(--accent);margin-top:18px}.lf-society .refer-fine{font-size:11px;color:var(--ink-soft);margin-top:18px;line-height:1.6}@media(max-width:560px){.lf-society .rl-row, .lf-society .refer-send{flex-direction:column}.lf-society .refer-card{padding:32px 24px}}.lf-society .refer-min{text-align:center;padding:20px 0 0}.lf-society .rm-inner{max-width:460px;margin:0 auto}.lf-society .rm-mark{width:26px;height:1px;background:var(--gold);margin:0 auto 22px}.lf-society .rm-ov{font-size:10.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--accent);font-weight:600}.lf-society .rm-line{font-family:var(--d);font-style:italic;font-size:19px;line-height:1.5;color:var(--ink-soft);margin-top:12px}.lf-society .rm-line .amt{color:var(--accent);font-style:normal}.lf-society .rm-link{display:flex;align-items:center;gap:10px;max-width:360px;margin:24px auto 0;border-bottom:1px solid var(--line);padding-bottom:9px}.lf-society .rm-link input{flex:1;border:none;background:transparent;font-family:var(--b);font-size:13px;color:var(--ink);padding:2px 0;border-radius:0;min-width:0}.lf-society .rm-link input:focus{outline:none}.lf-society .rm-link button{background:none;border:none;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);white-space:nowrap;transition:opacity .3s;cursor:pointer}.lf-society .rm-link button:hover{opacity:.55}.lf-society .rm-fine{font-size:11px;color:var(--ink-soft);margin-top:16px}
+{% endstylesheet %}
+
+{% javascript %}
+/* ── seal motif ── */
+  const SEAL = `<svg viewBox="0 0 200 200" fill="none">
+    <circle cx="100" cy="100" r="82" stroke="currentColor" stroke-width="1"/>
+    <circle cx="100" cy="100" r="73" stroke="currentColor" stroke-width="0.6"/>
+    <defs><path id="arc" d="M46 100 A54 54 0 0 0 154 100"/></defs>
+    <text font-family="'Pretendard Variable',sans-serif" font-size="10.5" letter-spacing="3.4" fill="currentColor"><textPath href="#arc" startOffset="50%" text-anchor="middle">LE FIGUE SOCIETY</textPath></text>
+    <text x="100" y="118" text-anchor="middle" font-family="'Cormorant Garamond',serif" font-weight="500" font-size="50" fill="currentColor">LF</text>
+    <circle cx="78" cy="150" r="1.5" fill="currentColor"/><circle cx="100" cy="153" r="1.5" fill="currentColor"/><circle cx="122" cy="150" r="1.5" fill="currentColor"/>
+  </svg>`;
+  ['seal-bg','join-seal','done-seal'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=SEAL;});
+
+  /* ── tiers ── */
+  const TIERS=[
+    {name:'The Guest', who:'For the one who has just arrived.', entry:'Sign up', credit:'1%', pricing:'—',
+     benefits:['Welcome 250 House Credits','Member account access']},
+    {name:'The Explorer', who:'For the one who discovers first.', entry:'$350, or 3 orders', credit:'1%', pricing:'3%',
+     benefits:['250 House Credits on entry','Complimentary standard shipping','Birthday month House Credit bonus']},
+    {name:'The Connoisseur', who:'For the one who knows how to choose.', entry:'$700, or 5 orders', credit:'1.25%', pricing:'5%',
+     benefits:['500 House Credits on entry','Complimentary standard shipping','Birthday House Credits, doubled','Anniversary House Credit bonus']},
+    {name:'The Resident', who:'For the one who has become part of the society.', entry:'$1,300, or 9 orders', credit:'1.5%', pricing:'7%',
+     benefits:['500 House Credits on entry','Complimentary standard and express shipping','Anniversary House Credit bonus','Early access, twelve hours, to selected previews and restocks']},
+    {name:'The Keeper', who:'For the one who has found their own language.', entry:'$2,000, or 15 orders', credit:'1.75%', pricing:'10%',
+     benefits:['750 House Credits on entry','Complimentary standard and express shipping','Birthday House Credits, doubled','Early access, twenty four hours, to selected releases and restocks','Private shopping appointment']},
+    {name:'The Confidant', who:'For the one others look to.', entry:'$3,500, or 20 orders', credit:'2%', pricing:'12%',
+     benefits:['1,000 House Credits on entry','International shipping courtesy on eligible orders','A seasonal gift from the society','Private shopping appointment','Personal styling suggestions','Designer preview access']},
+    {name:'The Figure', who:'For the one who becomes part of the LE FIGUE story.', entry:'By invitation', credit:'2.5%', pricing:'Private', invitation:true,
+     benefits:['1,500 House Credits on entry','Priority access to selected designer previews','Private appointment priority','Personal styling and edit suggestions','A seasonal gift from the society','An annual private LE FIGUE gift','Dedicated client support for special requests'],
+     note:'The Figure is our private invitation tier, reserved for clients with an ongoing relationship with the society. It remains selective, personal, and quietly extended.'}
+  ];
+
+  const rail=document.getElementById('rail');
+  rail.innerHTML=TIERS.map((t,i)=>`<button class="tier-item ${i===0?'on':''}" data-i="${i}">
+    <span class="node"></span>
+    <span class="ti-main"><span class="ti-name">${t.name}</span><span class="ti-entry">${t.entry}</span></span>
+    ${t.invitation?'<span class="ti-inv">Invitation</span>':''}
+  </button>`).join('');
+
+  function renderTier(i){
+    const t=TIERS[i];
+    const pricing = t.pricing==='—' ? '<span style="color:var(--line)">&mdash;</span>' : t.pricing;
+    document.getElementById('tier-detail').innerHTML=`
+      <div class="td-kick">Tier</div>
+      <div class="td-name">${t.name}</div>
+      <div class="td-who">${t.who}</div>
+      <div class="td-stats">
+        <div class="stat"><span class="k">Credit rate</span><span class="v">${t.credit}</span></div>
+        <div class="stat"><span class="k">Member Pricing</span><span class="v">${pricing}</span></div>
+        <div class="stat"><span class="k">How to enter</span><span class="v" style="font-size:17px">${t.entry}</span></div>
+      </div>
+      <ul class="td-benefits">${t.benefits.map(b=>`<li>${b}</li>`).join('')}</ul>
+      ${t.note?`<p class="td-note">${t.note}</p>`:''}`;
+  }
+  rail.addEventListener('click',e=>{const b=e.target.closest('.tier-item');if(!b)return;
+    [...rail.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');renderTier(+b.dataset.i);});
+  renderTier(0);
+
+  /* ── compare matrix (cumulative: higher tiers keep lower benefits) ── */
+  const ROWS=[
+    {k:'How to enter', v:['Sign up','$350 or 3 orders','$700 or 5 orders','$1,300 or 9 orders','$2,000 or 15 orders','$3,500 or 20 orders','By invitation']},
+    {k:'House Credits earned', v:['1%','1%','1.25%','1.5%','1.75%','2%','2.5%']},
+    {k:'Member Pricing', v:['—','3%','5%','7%','10%','12%','Private']},
+    {k:'Welcome credits', v:['250','250','500','500','750','1,000','1,500']},
+    {k:'Complimentary shipping', v:['—','Standard','Standard','Standard, Express','Standard, Express','International courtesy','International courtesy']},
+    {k:'Birthday House Credits', v:['—','Bonus','Doubled','Doubled','Doubled','Doubled','Doubled']},
+    {k:'Anniversary credits', v:['—','—','Yes','Yes','Yes','Yes','Yes']},
+    {k:'Early access', v:['—','—','—','12 hours','24 hours','24 hours','Priority']},
+    {k:'Private appointment', v:['—','—','—','—','Yes','Yes','Priority']},
+    {k:'Personal styling', v:['—','—','—','—','—','Yes','Yes']},
+    {k:'Designer previews', v:['—','—','—','—','—','Access','Priority']},
+    {k:'Seasonal gift', v:['—','—','—','—','—','Yes','Yes']},
+    {k:'Annual private gift', v:['—','—','—','—','—','—','Yes']},
+    {k:'Dedicated support', v:['—','—','—','—','—','—','Yes']}
+  ];
+  let compareBuilt=false;
+  function buildCompare(){
+    const head='<tr><th></th>'+TIERS.map(t=>`<th class="${t.invitation?'inv':''}"><span class="tn">${t.name}</span><span class="te">${t.entry}</span></th>`).join('')+'</tr>';
+    const body=ROWS.map(r=>'<tr><th>'+r.k+'</th>'+r.v.map(v=>{
+      if(v==='Yes')return '<td class="yes">&#10003;</td>';
+      if(v==='—')return '<td><span class="dash">&mdash;</span></td>';
+      return '<td>'+v+'</td>';
+    }).join('')+'</tr>').join('');
+    document.getElementById('compare-view').innerHTML=`<div class="cmp-scroll"><table class="cmp"><thead>${head}</thead><tbody>${body}</tbody></table></div><p class="cmp-note">Higher tiers keep the benefits of every tier below, and House Credits are worth two dollars for every hundred. The Figure is extended by invitation.</p>`;
+  }
+  document.querySelectorAll('.tier-toggle button').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.tier-toggle button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+    const v=b.dataset.v;
+    document.getElementById('explore-view').style.display=v==='explore'?'block':'none';
+    document.getElementById('compare-view').style.display=v==='compare'?'block':'none';
+    if(v==='compare'&&!compareBuilt){buildCompare();compareBuilt=true;}
+  }));
+
+  /* ── join ── */
+  const cta=document.getElementById('join-cta');
+  cta.addEventListener('click',()=>{
+    const fn=document.getElementById('fn'), em=document.getElementById('em');
+    const pw=document.getElementById('pw'), pw2=document.getElementById('pw2');
+    const err=document.getElementById('err');
+    document.querySelectorAll('.field').forEach(f=>f.classList.remove('err'));
+    let ok=true, msg='Please complete the fields to create your account.';
+    if(!fn.value.trim()){fn.closest('.field').classList.add('err');ok=false;}
+    const emv=em.value.trim();
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emv)){em.closest('.field').classList.add('err');ok=false;}
+    if(pw.value.length<8){pw.closest('.field').classList.add('err');ok=false;msg='Please choose a password of at least 8 characters.';}
+    if(pw.value && pw.value!==pw2.value){pw2.closest('.field').classList.add('err');ok=false;msg='Your passwords do not match.';}
+    if(!ok){err.textContent=msg;return;}
+    err.textContent='';
+    const name=fn.value.trim();
+    const member={name, lastName:document.getElementById('ln').value.trim(), email:emv,
+      birthday:document.getElementById('bm').value, tierIndex:0, joined:'2026'};
+    try{localStorage.setItem('lf_member',JSON.stringify(member));}catch(e){}
+    document.getElementById('done-msg').textContent=`${name}, your account is open. The Guest is where the society begins, and every purchase moves you quietly toward the next tier.`;
+    document.getElementById('join-card').hidden=true;
+    document.getElementById('join-done').hidden=false;
+    document.getElementById('join-done').scrollIntoView({block:'center'});
+  });
+
+  /* FAQ accordion */
+  document.querySelectorAll('.faq-q').forEach(q=>q.addEventListener('click',()=>{
+    const it=q.closest('.faq-item'), a=it.querySelector('.faq-a');
+    const open=it.classList.toggle('open');
+    a.style.maxHeight=open?a.scrollHeight+'px':'0';
+  }));
+  /* referral */
+  (function(){
+    const link=document.getElementById('ref-link'); if(!link)return;
+    try{const m=JSON.parse(localStorage.getItem('lf_member')||'null');
+      if(m&&m.name){link.value='lefigue.com/society?ref='+m.name.toUpperCase().replace(/[^A-Z0-9]/g,'')+'50';}}catch(e){}
+    const cp=document.getElementById('ref-copy');
+    cp&&cp.addEventListener('click',()=>{
+      if(navigator.clipboard){navigator.clipboard.writeText(link.value).catch(()=>{});}
+      else{link.select();try{document.execCommand('copy');}catch(e){}}
+      cp.textContent='Copied'; setTimeout(()=>cp.textContent='Copy',1600);});
+    const rs=document.getElementById('ref-send');
+    rs&&rs.addEventListener('click',()=>{const e=document.getElementById('ref-email'),v=e.value.trim();
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){e.style.borderColor='#b4554d';return;}
+      document.querySelector('.refer-send').style.display='none';
+      document.getElementById('ref-done').hidden=false;});
+  })();
+{% endjavascript %}
+
+{% schema %}
+{ "name": "LE FIGUE Society", "settings": [], "presets": [{ "name": "LE FIGUE Society" }] }
+{% endschema %}
