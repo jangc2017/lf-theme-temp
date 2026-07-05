@@ -1,0 +1,75 @@
+{%- comment -%}
+  LE FIGUE — My Status (loyalty). Renders LoyaltyLion's panel unconditionally and
+  lets the LoyaltyLion SDK (loaded site-wide via the app embed) decide the state:
+  a signed-in member sees their tier / House Credits / rewards; a signed-out
+  visitor sees LoyaltyLion's own sign-in / join prompt. We do NOT gate with
+  Liquid `{% if customer %}` — the store uses Shopify NEW customer accounts, where
+  that check is unreliable. A guaranteed "Open your rewards" button (data-lion-
+  account-link opens the panel as a modal) is provided as a fallback in case the
+  inline panel embed doesn't render. Sign-in / Create-account links always shown.
+  Colors match the Society pages (cream/gold, light + dark).
+{%- endcomment -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+
+<div class="lf-mystatus">
+  <div class="wrap">
+    <section class="ms-head">
+      <div class="ms-ov">LE FIGUE Society</div>
+      <h1>Your Society.</h1>
+      <p class="ms-sub">Your tier, House Credits, and rewards, all in one place.</p>
+      <div class="ms-cta">
+        <a class="ms-btn" data-lion-account-link>Open your rewards</a>
+      </div>
+    </section>
+
+    <div class="ms-panel">
+      <div data-lion-account></div>
+    </div>
+
+    <div class="ms-foot">
+      <a href="/account/login?return_url=%2Fpages%2Fmy-status">Sign in</a>
+      <span class="dot">·</span>
+      <a href="/account/register">Create an account</a>
+      <span class="dot">·</span>
+      <a href="/pages/society">About the Society</a>
+      <span class="dot">·</span>
+      <a href="/pages/society-terms">Society Terms</a>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .lf-mystatus{--cream:#faf7f1;--cream-2:#f3eee4;--gold:#b8975f;--ink:#2a2622;--ink-soft:#5b554d;--accent:#8a7250;--hair:#e3dccd;--line:#cdc4b2;--paper:#fdfbf6;
+    --d:"Cormorant Garamond",Georgia,serif;--b:"Pretendard Variable",Pretendard,-apple-system,sans-serif;
+    background:var(--cream);color:var(--ink);font-family:var(--b);font-weight:350;line-height:1.6;letter-spacing:.01em;-webkit-font-smoothing:antialiased;}
+  .lf-mystatus *{box-sizing:border-box;margin:0;padding:0}
+  .lf-mystatus a{color:inherit;text-decoration:none}
+  .lf-mystatus .wrap{max-width:1000px;margin:0 auto;padding:0 32px}
+  .lf-mystatus .ms-head{text-align:center;padding:64px 0 26px;max-width:640px;margin:0 auto}
+  .lf-mystatus .ms-ov{font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--accent);font-weight:600;padding-left:.42em}
+  .lf-mystatus .ms-head h1{font-family:var(--d);font-weight:500;font-size:clamp(38px,6vw,66px);line-height:1.0;letter-spacing:.01em;margin-top:16px}
+  .lf-mystatus .ms-sub{font-family:var(--d);font-style:italic;font-size:clamp(16px,2.2vw,21px);color:var(--ink-soft);margin-top:14px}
+  .lf-mystatus .ms-cta{margin-top:26px}
+  .lf-mystatus .ms-btn{display:inline-block;background:var(--ink);color:var(--cream);border:1px solid var(--ink);font-size:12px;letter-spacing:.22em;text-transform:uppercase;padding:16px 40px;cursor:pointer;transition:background .35s,color .35s}
+  .lf-mystatus .ms-btn:hover{background:transparent;color:var(--ink)}
+  .lf-mystatus .ms-panel{max-width:920px;margin:20px auto 0;min-height:60px}
+  .lf-mystatus .ms-panel [data-lion-account]{width:100%}
+  .lf-mystatus .ms-foot{text-align:center;padding:44px 0 80px;font-size:12px;letter-spacing:.04em;color:var(--ink-soft)}
+  .lf-mystatus .ms-foot a{border-bottom:1px solid var(--hair);padding-bottom:2px;transition:color .25s,border-color .25s}
+  .lf-mystatus .ms-foot a:hover{color:var(--ink);border-color:var(--gold)}
+  .lf-mystatus .ms-foot .dot{color:var(--line);margin:0 12px}
+  @media(max-width:640px){ .lf-mystatus .wrap{padding:0 20px} .lf-mystatus .ms-btn{padding:15px 30px} .lf-mystatus .ms-foot .dot{margin:0 7px} }
+  @media (prefers-color-scheme: dark){
+    .lf-mystatus{--cream:#1b1714;--cream-2:#241f19;--ink:#f5efe3;--ink-soft:#cabfa9;--gold:#d6b27d;--accent:#d6b27d;--hair:#3c352b;--line:#7c7361;--paper:#241f19}
+    .lf-mystatus .ms-btn{background:var(--gold);color:#1b1714;border-color:var(--gold)}
+    .lf-mystatus .ms-btn:hover{background:transparent;color:var(--gold)}
+  }
+{% endstylesheet %}
+
+{% schema %}
+{ "name": "LE FIGUE My Status", "settings": [], "presets": [{ "name": "LE FIGUE My Status" }] }
+{% endschema %}
