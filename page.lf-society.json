@@ -1,0 +1,4 @@
+{
+  "sections": { "main": { "type": "lefigue-society", "settings": {} } },
+  "order": ["main"]
+}
