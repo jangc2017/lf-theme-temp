@@ -1,0 +1,619 @@
+{%- comment -%}
+  LE FIGUE — Pre-order piece (detail) page, demo: "Romilt Volute Ear Cuff".
+  Ported from ~/Downloads/le-figue-preorder-detail.html; theme header/footer
+  wrap it (design's own topbar/footer removed). Namespaced .lf-preorder-d,
+  ids prefixed lfd*.
+  The design's PIECE config is exposed as SECTION SETTINGS (theme editor):
+  state (auto = derive from close date; open/closed/sold force a preview),
+  Shopify variant id (for the Klaviyo alert), window open/close datetimes,
+  ships label. JS reads them from the JSON config tag below.
+  Notify modal + Klaviyo logic = shared snippet 'lefigue-notify-modal'
+  (demo mode until keys are filled there).
+  DATA MODES: theme setting "Demo mode" (default ON) keeps the hardcoded
+  Romilt demo below. When unticked, the piece is picked from the collection
+  "pre-order" payload (snippet 'lefigue-preorder-data') by location.hash
+  (#<product-handle>, default = first piece) and the copy/price/specs/dates
+  are rewritten from the product + its custom.preorder_* metafields.
+{%- endcomment -%}
+
+{%- assign cfg_state = section.settings.piece_state | default: 'auto' -%}
+{%- assign cfg_variant = section.settings.variant_id | default: '' -%}
+{%- assign cfg_open = section.settings.open_at | default: '2026-06-22T00:00:00' -%}
+{%- assign cfg_close = section.settings.close_at | default: '2026-07-12T23:59:00' -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+
+<div class="lf-preorder-d" data-demo="{{ section.settings.demo_mode }}">
+{% render 'lefigue-preorder-data' %}
+
+  <script type="application/json" data-lfd-config>
+    {
+      "state": {{ cfg_state | json }},
+      "variant": {{ cfg_variant | json }},
+      "openAt": {{ cfg_open | json }},
+      "closeAt": {{ cfg_close | json }},
+      "brand": "Romilt · Seoul",
+      "title": "Volute Ear Cuff"
+    }
+  </script>
+
+  <!-- ===== BREADCRUMB ===== -->
+  <nav class="crumb">
+    <a href="/pages/pre-order">Pre-order</a><span>/</span>
+    <span id="lfdCrumbName">Volute Ear Cuff</span>
+  </nav>
+
+  <!-- ===== PRODUCT ===== -->
+  <section class="product">
+
+    <!-- gallery -->
+    <div class="gallery">
+      <div class="g-main" id="lfdGMain">
+        <!-- swap .ph for <img src="..." alt="Volute Ear Cuff"> when photography is ready -->
+        <div class="ph"><span class="mono">R</span></div>
+      </div>
+      <div class="g-thumbs" id="lfdGThumbs">
+        <div class="thumb on"><div class="ph"><span class="mono">R</span></div></div>
+        <div class="thumb"><div class="ph"><span class="mono">R</span></div></div>
+        <div class="thumb"><div class="ph"><span class="mono">R</span></div></div>
+        <div class="thumb"><div class="ph"><span class="mono">R</span></div></div>
+      </div>
+    </div>
+
+    <!-- info -->
+    <div class="info">
+      <span class="eyebrow" id="lfdBrandLine">Romilt · Seoul, Korea</span>
+      <h1 class="ptitle" id="lfdTitle">Volute Ear Cuff</h1>
+      <p class="ptag" id="lfdTag">A coiled cuff from Romilt's next season, shown to us in the Seoul studio before its release. We reserved a small run for the floor, and offer it to you first.</p>
+
+      <div class="state-row">
+        <span class="state-pill" id="lfdStatePill"><span class="dot"></span>Open for pre-order</span>
+        <span class="limited-pill" id="lfdLimitedPill">Next season preview</span>
+      </div>
+
+      <!-- price -->
+      <div class="price" id="lfdPriceBlock">
+        <div class="price-top">
+          <span class="pre-amt" id="lfdPreAmt">$238</span>
+          <span class="was-amt" id="lfdWasAmt">$280</span>
+          <span class="rate-badge" id="lfdRateBadge">Pre-order rate · 15%</span>
+        </div>
+        <p class="price-note" id="lfdPriceNote">The pre-order rate holds only while the window below is open. It is the price you pay at checkout.</p>
+      </div>
+
+      <!-- ===== WINDOW TIMELINE ===== -->
+      <div class="window" id="lfdWindowBlock">
+        <div class="window-head">
+          <span class="lab">The window</span>
+          <span class="live" id="lfdWindowLive"><span class="dot"></span>Closing</span>
+        </div>
+        <div class="count-big" id="lfdCountBig">—</div>
+        <div class="count-sub" id="lfdCountSub">until reservations close</div>
+
+        <div class="track"><div class="fill" id="lfdFill"></div></div>
+        <div class="nodes">
+          <div class="node done">
+            <span class="pt"></span>
+            <span class="nl">Opened</span>
+            <span class="nd" id="lfdNodeOpen">{{ cfg_open | date: '%b %-d' }}</span>
+          </div>
+          <div class="node now">
+            <span class="pt"></span>
+            <span class="nl">Closes</span>
+            <span class="nd" id="lfdNodeClose">{{ cfg_close | date: '%b %-d' }}</span>
+          </div>
+          <div class="node">
+            <span class="pt"></span>
+            <span class="nl">Ships</span>
+            <span class="nd" id="lfdNodeShips">{{ section.settings.ships_label | default: 'Early Sep' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- reserve -->
+      <div class="reserve">
+        <button class="btn" id="lfdReserveBtn">Reserve your piece</button>
+        <p class="reserve-note" id="lfdReserveNote">Payment is taken at checkout, at the pre-order rate. We write to you the day it ships.</p>
+      </div>
+
+      <!-- accordions -->
+      <div class="acc">
+        <div class="acc-item open">
+          <button class="acc-q">Details <span class="pl">+</span></button>
+          <div class="acc-a">
+            <div class="acc-a-in">
+              <dl class="spec" id="lfdSpec">
+                <dt>Maker</dt><dd>Romilt</dd>
+                <dt>Found in</dt><dd>Seoul, Korea</dd>
+                <dt>Material</dt><dd>Recycled sterling silver, 18k gold vermeil</dd>
+                <dt>Form</dt><dd>Coiled cuff, no piercing required</dd>
+                <dt>Edition</dt><dd>Reserved run, next season preview</dd>
+                <dt>Sold as</dt><dd>Single, also styled as a pair</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-q">How pre-order works <span class="pl">+</span></button>
+          <div class="acc-a">
+            <div class="acc-a-in" id="lfdHowIn">
+              A reservation holds your place in the run we placed with Romilt. While the window is open you settle at the pre-order rate of fifteen percent. When the window closes we confirm final quantities with the studio, the rate closes, and the piece enters production. This is a held place, not stock on a shelf, so timing follows the studio.
+            </div>
+          </div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-q">Shipping &amp; timing <span class="pl">+</span></button>
+          <div class="acc-a">
+            <div class="acc-a-in" id="lfdShipIn">
+              Reservations close <b>{{ cfg_close | date: '%B %-d' }}</b>. The piece ships from the studio to New York in <b>early September</b>, and we write to you the moment it leaves. From New York we deliver within three to five business days, or hold it for collection at Bleecker or West Village. Estimated dates can shift with the studio, and we tell you first if they do.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MAKER ===== -->
+  <section class="maker" id="lfdMakerSec">
+    <div class="maker-in">
+      <div class="maker-frame"><div class="ph"><span class="mono">R</span></div></div>
+      <div class="maker-txt">
+        <span class="eyebrow">The maker</span>
+        <h2 id="lfdMakerH2">Romilt, from a Seoul studio</h2>
+        <p id="lfdMakerP">We met Romilt on a Seoul buying trip, drawn to the way the work treats metal like ribbon, coiled and folded rather than set. The Volute is from a season not yet on the floor, which is why it lives here, in pre-order, before anywhere else.</p>
+        <a class="maker-link" id="lfdMakerLink" href="/pages/all-designers#romilt-1">Read the Designer Story</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MORE FROM BRAND + MORE IN PRE-ORDER ===== -->
+  <section class="more" id="lfdMoreSec">
+    <div class="more-in">
+
+      <!-- More from this brand -->
+      <div class="more-head">
+        <h3>More from Romilt</h3>
+        <a href="/collections/romilt-1">Shop all Romilt</a>
+      </div>
+      <div class="more-grid">
+        <a class="mc" href="/collections/romilt-1">
+          <div class="frame"><div class="ph"><span class="mono">R</span></div></div>
+          <div class="bc">Romilt · Seoul</div>
+          <div class="nm">Coil Band Ring</div>
+          <div class="pr"><b>$260</b> · In stock</div>
+        </a>
+        <a class="mc" href="/collections/romilt-1">
+          <div class="frame"><div class="ph"><span class="mono">R</span></div></div>
+          <div class="bc">Romilt · Seoul</div>
+          <div class="nm">Ribbon Hoops</div>
+          <div class="pr"><b>$190</b> · In stock</div>
+        </a>
+        <a class="mc" href="/collections/romilt-1">
+          <div class="frame"><div class="ph"><span class="mono">R</span></div></div>
+          <div class="bc">Romilt · Seoul</div>
+          <div class="nm">Folded Cuff, Silver</div>
+          <div class="pr"><b>$240</b> · In stock</div>
+        </a>
+      </div>
+
+      <!-- More in pre-order -->
+      <div class="more-head mt">
+        <h3>More in pre-order</h3>
+        <a href="/pages/pre-order">View all</a>
+      </div>
+      <div class="more-grid">
+        <a class="mc" href="/pages/pre-order">
+          <div class="frame"><div class="ph"><span class="mono">L</span></div></div>
+          <div class="bc">LA2L · Paris</div>
+          <div class="nm">Galet Signet Ring</div>
+          <div class="pr"><b>$357</b> · Closing soon</div>
+        </a>
+        <a class="mc" href="/pages/pre-order">
+          <div class="frame"><div class="ph"><span class="mono">M</span></div></div>
+          <div class="bc">Miliemoon · New York</div>
+          <div class="nm">Crescent Drop, Pearl</div>
+          <div class="pr"><b>$170</b> · Ships late Aug</div>
+        </a>
+        <a class="mc" href="/pages/pre-order">
+          <div class="frame"><div class="ph"><span class="mono">H</span></div></div>
+          <div class="bc">Hånd · Copenhagen</div>
+          <div class="nm">Pebble Studs</div>
+          <div class="pr"><b>$204</b> · Ships Sep</div>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+{% render 'lefigue-notify-modal' %}
+
+{% stylesheet %}
+  .lf-preorder-d{ --ink:#2a2622; --ink-soft:#6b635a; --line:#e3dccf; --line-soft:#efe9dd;
+    --cream:#faf7f1; --cream-deep:#f3ede1; --accent:#8a7250; --gold:#b8975f; --paper:#fdfbf6;
+    background:var(--cream); color:var(--ink);
+    font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-weight:400; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .lf-preorder-d *{ margin:0; padding:0; box-sizing:border-box; }
+  .lf-preorder-d a{ color:inherit; text-decoration:none; }
+  .lf-preorder-d img{ max-width:100%; display:block; }
+
+  /* ---------- breadcrumb ---------- */
+  .lf-preorder-d .crumb{ max-width:1240px; margin:0 auto; padding:22px 32px 0; font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft); }
+  .lf-preorder-d .crumb a:hover{ color:var(--ink); }
+  .lf-preorder-d .crumb span{ margin:0 8px; color:var(--line); }
+
+  /* ---------- product layout ---------- */
+  .lf-preorder-d .product{ max-width:1240px; margin:0 auto; padding:24px 32px 20px;
+    display:grid; grid-template-columns:1.05fr .95fr; gap:64px; align-items:start; }
+
+  /* gallery */
+  .lf-preorder-d .gallery{ position:sticky; top:96px; }
+  .lf-preorder-d .g-main{ position:relative; aspect-ratio:4/5; overflow:hidden; background:var(--cream-deep); }
+  .lf-preorder-d .ph{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 32% 16%, #fbf8f2 0%, #f0e8da 55%, #e7ddca 100%); }
+  .lf-preorder-d .ph::after{ content:""; position:absolute; inset:0; background:
+      repeating-linear-gradient(135deg, rgba(138,114,80,.04) 0 2px, transparent 2px 9px); }
+  .lf-preorder-d .ph .mono{ font-family:'Cormorant Garamond',serif; font-size:96px; font-weight:500; color:rgba(138,114,80,.30); }
+  .lf-preorder-d .g-main img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .lf-preorder-d .g-thumbs{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:10px; }
+  .lf-preorder-d .thumb{ position:relative; aspect-ratio:1/1; overflow:hidden; background:var(--cream-deep); cursor:pointer; }
+  .lf-preorder-d .thumb .ph .mono{ font-size:32px; }
+  .lf-preorder-d .thumb.on{ outline:1px solid var(--accent); outline-offset:2px; }
+
+  /* info column */
+  .lf-preorder-d .eyebrow{ font-size:11px; letter-spacing:.3em; text-transform:uppercase; color:var(--accent); }
+  .lf-preorder-d .ptitle{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(34px,4.6vw,52px); line-height:1.04; margin:14px 0 0; letter-spacing:-.01em; }
+  .lf-preorder-d .ptag{ margin-top:14px; font-size:14.5px; color:var(--ink-soft); line-height:1.8; max-width:430px; }
+
+  .lf-preorder-d .state-row{ display:flex; align-items:center; gap:10px; margin-top:22px; }
+  .lf-preorder-d .state-pill{ font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink);
+    display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); padding:7px 13px; border-radius:999px; }
+  .lf-preorder-d .state-pill .dot{ width:6px; height:6px; border-radius:50%; background:#5e7d52; }
+  .lf-preorder-d .limited-pill{ font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--cream); background:var(--ink); padding:7px 12px; }
+
+  /* price block */
+  .lf-preorder-d .price{ margin-top:26px; padding:24px 0 22px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .lf-preorder-d .price-top{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+  .lf-preorder-d .pre-amt{ font-family:'Cormorant Garamond',serif; font-size:40px; font-weight:600; line-height:1; }
+  .lf-preorder-d .was-amt{ font-size:16px; color:var(--ink-soft); text-decoration:line-through; text-decoration-thickness:1px; opacity:.75; }
+  .lf-preorder-d .rate-badge{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); border:1px solid var(--gold); padding:5px 10px; border-radius:999px; }
+  .lf-preorder-d .price-note{ margin-top:10px; font-size:12.5px; color:var(--ink-soft); }
+
+  /* ===== WINDOW TIMELINE ===== */
+  .lf-preorder-d .window{ margin-top:26px; background:var(--paper); border:1px solid var(--line); padding:26px 26px 24px; }
+  .lf-preorder-d .window-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+  .lf-preorder-d .window-head .lab{ font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); }
+  .lf-preorder-d .window-head .live{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); display:flex; align-items:center; gap:7px; }
+  .lf-preorder-d .window-head .live .dot{ width:6px; height:6px; border-radius:50%; background:#b06a4a; animation:lfd-pulse 1.6s infinite; }
+  @keyframes lfd-pulse{ 0%,100%{opacity:1;} 50%{opacity:.3;} }
+
+  .lf-preorder-d .count-big{ font-family:'Cormorant Garamond',serif; font-size:38px; font-weight:600; line-height:1.05; margin:12px 0 2px; }
+  .lf-preorder-d .count-sub{ font-size:12.5px; color:var(--ink-soft); }
+
+  .lf-preorder-d .track{ position:relative; margin:26px 0 8px; height:2px; background:var(--line); }
+  .lf-preorder-d .track .fill{ position:absolute; left:0; top:0; height:100%; background:var(--accent); width:0; transition:width 1s ease; }
+  .lf-preorder-d .nodes{ display:flex; justify-content:space-between; margin-top:-7px; }
+  .lf-preorder-d .node{ position:relative; text-align:center; flex:1; }
+  .lf-preorder-d .node:first-child{ text-align:left; }
+  .lf-preorder-d .node:last-child{ text-align:right; }
+  .lf-preorder-d .node .pt{ width:11px; height:11px; border-radius:50%; background:var(--cream); border:2px solid var(--line); display:inline-block; margin-bottom:9px; }
+  .lf-preorder-d .node.done .pt{ background:var(--accent); border-color:var(--accent); }
+  .lf-preorder-d .node.now .pt{ background:var(--gold); border-color:var(--gold); box-shadow:0 0 0 4px rgba(184,151,95,.18); }
+  .lf-preorder-d .node .nl{ font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft); display:block; }
+  .lf-preorder-d .node .nd{ font-size:12.5px; color:var(--ink); margin-top:3px; display:block; }
+
+  /* reserve */
+  .lf-preorder-d .reserve{ margin-top:24px; }
+  .lf-preorder-d .btn{ display:block; width:100%; text-align:center; background:var(--ink); color:var(--cream);
+    font-family:inherit; font-size:13px; letter-spacing:.18em; text-transform:uppercase;
+    padding:18px; border:none; cursor:pointer; transition:background .2s; }
+  .lf-preorder-d .btn:hover{ background:#3a342d; }
+  .lf-preorder-d .reserve-note{ margin-top:12px; font-size:12px; color:var(--ink-soft); text-align:center; line-height:1.7; }
+
+  /* ---- closed / sold state ---- */
+  .lf-preorder-d .state-pill.closed .dot{ background:#9a9087; }
+  .lf-preorder-d .price.is-closed{ opacity:.5; }
+  .lf-preorder-d .window.is-closed .live .dot{ animation:none; background:#9a9087; }
+
+  /* accordions */
+  .lf-preorder-d .acc{ margin-top:30px; border-top:1px solid var(--line); }
+  .lf-preorder-d .acc-item{ border-bottom:1px solid var(--line); }
+  .lf-preorder-d .acc-q{ width:100%; background:none; border:none; font-family:inherit; cursor:pointer;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:18px 2px; text-align:left; font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink); }
+  .lf-preorder-d .acc-q .pl{ font-family:'Cormorant Garamond',serif; font-size:20px; color:var(--accent); transition:transform .3s; line-height:1; }
+  .lf-preorder-d .acc-item.open .pl{ transform:rotate(45deg); }
+  .lf-preorder-d .acc-a{ max-height:0; overflow:hidden; transition:max-height .35s ease; }
+  .lf-preorder-d .acc-a-in{ padding:0 2px 22px; font-size:13.5px; color:var(--ink-soft); line-height:1.8; }
+  .lf-preorder-d .spec{ display:grid; grid-template-columns:120px 1fr; gap:8px 18px; font-size:13.5px; }
+  .lf-preorder-d .spec dt{ color:var(--ink-soft); }
+  .lf-preorder-d .spec dd{ color:var(--ink); }
+
+  /* ---------- maker block ---------- */
+  .lf-preorder-d .maker{ max-width:1240px; margin:60px auto 0; padding:0 32px; }
+  .lf-preorder-d .maker-in{ border-top:1px solid var(--line); padding:56px 0; display:grid; grid-template-columns:.85fr 1.15fr; gap:56px; align-items:center; }
+  .lf-preorder-d .maker-frame{ position:relative; aspect-ratio:5/4; overflow:hidden; background:var(--cream-deep); }
+  .lf-preorder-d .maker-frame .ph .mono{ font-size:72px; }
+  .lf-preorder-d .maker-txt .eyebrow{ display:block; }
+  .lf-preorder-d .maker-txt h2{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(28px,3.6vw,40px); margin:14px 0 0; line-height:1.12; }
+  .lf-preorder-d .maker-txt p{ margin-top:18px; color:var(--ink-soft); font-size:14.5px; line-height:1.85; max-width:520px; }
+  .lf-preorder-d .maker-link{ display:inline-block; margin-top:20px; font-size:12px; letter-spacing:.2em; text-transform:uppercase; border-bottom:1px solid var(--accent); padding-bottom:4px; }
+
+  /* ---------- more ---------- */
+  .lf-preorder-d .more{ max-width:1240px; margin:0 auto; padding:0 32px; }
+  .lf-preorder-d .more-in{ border-top:1px solid var(--line); padding:48px 0 64px; }
+  .lf-preorder-d .more-head{ display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:30px; }
+  .lf-preorder-d .more-head.mt{ margin-top:60px; padding-top:46px; border-top:1px solid var(--line); }
+  .lf-preorder-d .more-head h3{ font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:600; }
+  .lf-preorder-d .more-head a{ font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft); }
+  .lf-preorder-d .more-head a:hover{ color:var(--ink); }
+  .lf-preorder-d .more-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:34px; }
+  .lf-preorder-d .mc .frame{ position:relative; aspect-ratio:4/5; overflow:hidden; background:var(--cream-deep); }
+  .lf-preorder-d .mc .frame .ph .mono{ font-size:54px; }
+  .lf-preorder-d .mc .bc{ font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin-top:14px; }
+  .lf-preorder-d .mc .nm{ font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:600; margin-top:4px; }
+  .lf-preorder-d .mc .pr{ font-size:13.5px; color:var(--ink-soft); margin-top:6px; }
+  .lf-preorder-d .mc .pr b{ color:var(--ink); font-weight:500; }
+
+  @media(max-width:980px){
+    .lf-preorder-d .product{ grid-template-columns:1fr; gap:34px; }
+    .lf-preorder-d .gallery{ position:static; }
+    .lf-preorder-d .maker-in{ grid-template-columns:1fr; gap:30px; }
+    .lf-preorder-d .more-grid{ grid-template-columns:repeat(2,1fr); }
+  }
+  @media(max-width:560px){
+    .lf-preorder-d .crumb,.lf-preorder-d .product,.lf-preorder-d .maker,.lf-preorder-d .more{ padding-left:20px; padding-right:20px; }
+    .lf-preorder-d .count-big{ font-size:32px; }
+    .lf-preorder-d .more-grid{ grid-template-columns:1fr; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function(){
+    var root = document.querySelector('.lf-preorder-d');
+    if (!root) return;
+    function $(id){ return root.querySelector('#' + id); }
+
+    /* ---- config (rendered by Liquid from section settings) ---- */
+    var cfg = { state:'auto', variant:'', openAt:'2026-06-22T00:00:00', closeAt:'2026-07-12T23:59:00', brand:'', title:'this piece' };
+    try {
+      cfg = JSON.parse(root.querySelector('script[data-lfd-config]').textContent);
+    } catch(e) {}
+
+    /* ---- REAL DATA MODE: piece from collection "pre-order" via location.hash ---- */
+    var DEMO = root.getAttribute('data-demo') !== 'false';
+    var PIECES = (function(){
+      try { return JSON.parse(root.querySelector('script[data-lf-preorder]').textContent) || []; }
+      catch(e){ return []; }
+    })();
+    function ptime(s){
+      if(!s) return null;
+      var t = Date.parse(s);
+      if(!isNaN(t)) return t;
+      t = Date.parse(String(s).replace(/([+-]\d\d)(\d\d)$/,'$1:$2'));
+      return isNaN(t) ? null : t;
+    }
+    function money(n){ n = Number(n)||0; return '$' + (n % 1 ? n.toFixed(2) : n.toFixed(0)); }
+    function escT(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function fmtD(ms){ return new Date(ms).toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+    function fmtL(ms){ return new Date(ms).toLocaleDateString('en-US',{month:'long',day:'numeric'}); }
+    function pieceFromHash(){
+      var h = (location.hash||'').replace(/^#/,'');
+      for(var i=0;i<PIECES.length;i++) if(PIECES[i].handle===h) return PIECES[i];
+      return PIECES[0] || null;
+    }
+    var RP = DEMO ? null : pieceFromHash();
+    if(!DEMO) window.addEventListener('hashchange', function(){ location.reload(); });
+    if(!DEMO && !RP){
+      var prodSec = root.querySelector('.product');
+      if(prodSec) prodSec.innerHTML = '<div style="grid-column:1/-1;padding:60px 0;font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:22px;color:var(--ink-soft);">Nothing is open for pre-order right now. <a href="/pages/pre-order" style="border-bottom:1px solid var(--accent);">Back to Pre-Order</a></div>';
+      var mk0 = $('lfdMakerSec'); if(mk0) mk0.style.display='none';
+      var mo0 = $('lfdMoreSec'); if(mo0) mo0.style.display='none';
+    }
+    if(RP){
+      var oMs = ptime(RP.open_at), cMs = ptime(RP.close_at);
+      cfg.state = 'auto';
+      cfg.variant = RP.variant || '';
+      cfg.openAt = oMs ? new Date(oMs).toISOString() : new Date(Date.now()-86400000).toISOString();
+      cfg.closeAt = cMs ? new Date(cMs).toISOString() : '2099-12-31T23:59:59Z';
+      cfg.brand = RP.brand || '';
+      cfg.title = RP.title || 'this piece';
+      document.title = RP.title + ' — Pre-Order · LE FIGUE';
+      var el;
+      el=$('lfdCrumbName'); if(el) el.textContent = RP.title;
+      el=$('lfdBrandLine'); if(el) el.textContent = RP.brand || '';
+      el=$('lfdTitle'); if(el) el.textContent = RP.title;
+      el=$('lfdTag'); if(el){ var tg = RP.note || RP.desc || ''; if(tg){ el.textContent = tg; } else { el.style.display='none'; } }
+      el=$('lfdLimitedPill'); if(el){ if(RP.limited){ el.textContent='Limited'; } else { el.style.display='none'; } }
+      el=$('lfdPreAmt'); if(el) el.textContent = money(RP.price);
+      el=$('lfdWasAmt'); if(el) el.style.display='none';
+      el=$('lfdRateBadge'); if(el) el.style.display='none';
+      el=$('lfdPriceNote'); if(el) el.textContent='This is the price you pay at checkout while the window is open.';
+      var gm=$('lfdGMain'); if(gm && RP.img){ gm.innerHTML='<img src="'+escT(RP.img)+'" alt="'+escT(RP.title)+'">'; }
+      var gt=$('lfdGThumbs'); if(gt) gt.style.display='none';
+      el=$('lfdNodeOpen'); if(el) el.textContent = oMs ? fmtD(oMs) : '—';
+      el=$('lfdNodeClose'); if(el) el.textContent = cMs ? fmtD(cMs) : '—';
+      el=$('lfdNodeShips'); if(el) el.textContent = RP.ships || '—';
+      if(!cMs){ var wb=$('lfdWindowBlock'); if(wb) wb.style.display='none'; }
+      var sp=$('lfdSpec');
+      if(sp){
+        var rows=[['Maker',RP.brand],['Material',RP.material],['Form',RP.form],['Edition',RP.limited?'Limited run':null]].filter(function(r){ return r[1]; });
+        sp.innerHTML = rows.map(function(r){ return '<dt>'+escT(r[0])+'</dt><dd>'+escT(r[1])+'</dd>'; }).join('');
+      }
+      el=$('lfdHowIn'); if(el) el.textContent='A reservation holds your place in the run we placed with the studio. When the window closes we confirm final quantities, and the piece enters production. This is a held place, not stock on a shelf, so timing follows the studio.';
+      el=$('lfdShipIn'); if(el) el.innerHTML=(cMs?('Reservations close <b>'+fmtL(cMs)+'</b>. '):'')+(RP.ships?('The piece ships <b>'+escT(RP.ships)+'</b> from the studio to New York. '):'')+'We write to you the moment it leaves. From New York we deliver within three to five business days, or hold it for collection. Estimated dates can shift with the studio, and we tell you first if they do.';
+      var mk=$('lfdMakerSec');
+      if(mk){
+        if(RP.maker_handle){
+          el=$('lfdMakerH2'); if(el) el.textContent = RP.brand;
+          el=$('lfdMakerP'); if(el) el.style.display='none';
+          var ml=$('lfdMakerLink'); if(ml) ml.href='/pages/all-designers#'+RP.maker_handle;
+        } else { mk.style.display='none'; }
+      }
+      var mo=$('lfdMoreSec'); if(mo) mo.style.display='none';
+      if(oMs && oMs > Date.now()){
+        el=$('lfdStatePill'); if(el) el.innerHTML='<span class="dot"></span>Coming soon';
+        el=$('lfdPriceBlock'); if(el) el.style.display='none';
+        el=$('lfdReserveBtn'); if(el) el.textContent='Notify me';
+        el=$('lfdWindowLive'); if(el) el.innerHTML='<span class="dot"></span>Opens '+fmtD(oMs);
+      }
+      if(cMs===null || Date.now() < cMs){
+        var rb=$('lfdReserveBtn');
+        if(rb) rb.addEventListener('click', function(){ openNotifyModal(rb); });
+      }
+    }
+
+    var OPEN  = new Date(cfg.openAt);
+    var CLOSE = new Date(cfg.closeAt);
+    var MS_DAY = 86400000, MS_HR = 3600000, MS_MIN = 60000;
+
+    function resolvedState(){
+      if(cfg.state === 'closed' || cfg.state === 'sold') return cfg.state;
+      if(cfg.state === 'open') return 'open';
+      return (new Date() >= CLOSE) ? 'closed' : 'open';
+    }
+
+    function openNotifyModal(trigger){
+      if(!window.lfNotify) return;
+      window.lfNotify.open({ brand: cfg.brand, title: cfg.title, variant: cfg.variant, trigger: trigger });
+    }
+
+    function applyClosed(kind){                 // kind: 'closed' | 'sold'
+      var sold = kind === 'sold';
+      var pill = $('lfdStatePill');
+      pill.classList.add('closed');
+      pill.innerHTML = '<span class="dot"></span>' + (sold ? 'Sold out' : 'Closed');
+      var lim = $('lfdLimitedPill');
+      if(lim && !sold) lim.style.display = 'none';
+      $('lfdPriceBlock').classList.add('is-closed');
+      $('lfdPriceNote').textContent = sold
+        ? 'This was a limited run, now placed with the studio.'
+        : 'Reservations have closed for this piece.';
+      $('lfdWindowBlock').classList.add('is-closed');
+      $('lfdWindowLive').innerHTML = '<span class="dot"></span>' + (sold ? 'Sold out' : 'Closed');
+      $('lfdCountBig').textContent = sold ? 'Sold out' : 'Window closed';
+      $('lfdCountSub').textContent = sold ? 'A limited run, now placed' : 'This piece is no longer in pre-order';
+      $('lfdFill').style.width = '100%';
+      var nowNode = root.querySelector('.node.now');
+      if(nowNode){ nowNode.classList.remove('now'); nowNode.classList.add('done'); }
+      var btn = $('lfdReserveBtn');
+      btn.textContent = 'Notify me';
+      btn.addEventListener('click', function(){ openNotifyModal(btn); });
+      $('lfdReserveNote').textContent = 'We will write to you the moment it returns.';
+    }
+
+    var openTimer = null;
+    function tickOpen(){
+      var now = new Date();
+      var diff = CLOSE - now;
+      if(diff <= 0){ if(openTimer) clearInterval(openTimer); applyClosed('closed'); return; }
+      var big = $('lfdCountBig');
+      var sub = $('lfdCountSub');
+      var days = Math.floor(diff/MS_DAY);
+      var hrs  = Math.floor((diff%MS_DAY)/MS_HR);
+      var mins = Math.floor((diff%MS_HR)/MS_MIN);
+      if(days >= 1){
+        big.textContent = days + (days===1?' day, ':' days, ') + hrs + (hrs===1?' hour':' hours');
+      }else{
+        big.textContent = hrs + 'h ' + mins + 'm';
+      }
+      sub.textContent = 'until reservations close';
+      var total = CLOSE - OPEN;
+      var elapsed = Math.min(Math.max(now - OPEN, 0), total);
+      $('lfdFill').style.width = (elapsed/total*100) + '%';
+    }
+
+    function initState(){
+      var st = resolvedState();
+      if(st === 'open'){ tickOpen(); openTimer = setInterval(tickOpen, 30000); }
+      else { applyClosed(st); }
+    }
+
+    /* ---- thumbnails ---- */
+    root.querySelectorAll('.thumb').forEach(function(t){
+      t.addEventListener('click', function(){
+        root.querySelectorAll('.thumb').forEach(function(x){ x.classList.remove('on'); });
+        t.classList.add('on');
+      });
+    });
+
+    /* ---- accordions ---- */
+    root.querySelectorAll('.acc-q').forEach(function(q){
+      q.addEventListener('click', function(){
+        var item = q.parentElement;
+        var ans = item.querySelector('.acc-a');
+        if(item.classList.contains('open')){
+          item.classList.remove('open'); ans.style.maxHeight = null;
+        }else{
+          item.classList.add('open'); ans.style.maxHeight = ans.scrollHeight + 'px';
+        }
+      });
+    });
+    var first = root.querySelector('.acc-item.open .acc-a');
+    if(first) first.style.maxHeight = first.scrollHeight + 'px';
+
+    /* start: render the piece in its current state */
+    initState();
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "LE FIGUE Pre-order piece",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "demo_mode",
+      "label": "Demo mode (show the sample Romilt piece; untick to render pieces from the Pre-Order collection)",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "PIECE state. 'Auto' derives Open/Closed from the close date below. Pick Open / Closed / Sold out to force a preview of that state."
+    },
+    {
+      "type": "select",
+      "id": "piece_state",
+      "label": "State",
+      "options": [
+        { "value": "auto", "label": "Auto (from close date)" },
+        { "value": "open", "label": "Open (force)" },
+        { "value": "closed", "label": "Closed (force)" },
+        { "value": "sold", "label": "Sold out (force)" }
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "text",
+      "id": "variant_id",
+      "label": "Shopify variant ID",
+      "info": "Used for the Klaviyo back-in-stock alert. Demo placeholder until the real pre-order product exists.",
+      "default": "41001001"
+    },
+    {
+      "type": "text",
+      "id": "open_at",
+      "label": "Window opens (YYYY-MM-DDTHH:MM:SS)",
+      "default": "2026-06-22T00:00:00"
+    },
+    {
+      "type": "text",
+      "id": "close_at",
+      "label": "Window closes (YYYY-MM-DDTHH:MM:SS)",
+      "default": "2026-07-12T23:59:00"
+    },
+    {
+      "type": "text",
+      "id": "ships_label",
+      "label": "Ships label",
+      "default": "Early Sep"
+    }
+  ],
+  "presets": [{ "name": "LE FIGUE Pre-order piece" }]
+}
+{% endschema %}
