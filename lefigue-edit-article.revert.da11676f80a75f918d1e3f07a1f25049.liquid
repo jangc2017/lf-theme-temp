@@ -1,0 +1,248 @@
+{% comment %}
+  LE FIGUE — The FIGUE Edit article (blog-driven, v5 design)
+  Reading view for posts in The FIGUE Edit blog. Moderators write
+  normal blog posts; the editorial styling is applied automatically:
+
+  - First paragraph            → drop cap
+  - Quote block (blockquote)   → gold italic pull quote
+  - Heading 3 "Name @ Place"   → place heading with rule
+  - Inserted images            → full-width; 2–3 back-to-back images
+                                 are auto-grouped side by side
+  - Italic-only line after an image → centered caption
+  - Shop band                  → article metafields custom.shop_*
+  - Card note / meta line      → article metafield custom.card_note
+{% endcomment %}
+
+{%- liquid
+  assign cat_names = section.settings.cat_names | split: ','
+  assign cat = ''
+  for name in cat_names
+    assign n = name | strip
+    if article.tags contains n
+      assign cat = n
+      break
+    endif
+  endfor
+  assign note = article.metafields.custom.card_note
+-%}
+
+<section class="lfe-art">
+  <div class="lfe-artwrap">
+    <a class="lfe-back" href="{{ section.settings.board_url }}">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg> Back to the edit
+    </a>
+    <div class="lfe-head">
+      <div class="lfe-tag">{{ cat | default: 'The Edit' }}</div>
+      <h1 class="lfe-title">{{ article.title }}</h1>
+      {%- if article.excerpt != blank -%}
+        <p class="lfe-stand">{{ article.excerpt | strip_html }}</p>
+      {%- endif -%}
+      <div class="lfe-meta">
+        {{ section.settings.meta_prefix }}{% if cat != '' %} · {{ cat }}{% endif %}{% if note != blank %} · {{ note }}{% endif %}
+      </div>
+    </div>
+    <div class="lfe-hero">
+      {%- if article.image -%}
+        {{ article.image | image_url: width: 2000 | image_tag: alt: article.title }}
+      {%- else -%}
+        <div class="ph">Lead photograph</div>
+      {%- endif -%}
+    </div>
+    <div class="lfe-body rte">
+      {{ article.content }}
+      {%- assign shop_name = article.metafields.custom.shop_name -%}
+      {%- if shop_name != blank -%}
+        {%- assign shop_url = article.metafields.custom.shop_url -%}
+        <div class="lfe-shop">
+          <div class="si"></div>
+          <div>
+            {%- if article.metafields.custom.shop_kicker != blank -%}<div class="sk">{{ article.metafields.custom.shop_kicker }}</div>{%- endif -%}
+            <div class="sn">{{ shop_name }}</div>
+            {%- if article.metafields.custom.shop_note != blank -%}<div class="sp">{{ article.metafields.custom.shop_note }}</div>{%- endif -%}
+          </div>
+          {%- if shop_url != blank -%}<a class="sbtn" href="{{ shop_url }}">Shop the piece</a>{%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- assign rel_max = 3 -%}
+  {%- assign rel_count = 0 -%}
+  {%- capture rel_cards -%}
+    {%- for a in blog.articles -%}
+      {%- if a.handle == article.handle or rel_count >= rel_max -%}{%- continue -%}{%- endif -%}
+      {%- if cat != '' and a.tags contains cat -%}
+        {%- assign rel_count = rel_count | plus: 1 -%}
+        <a class="lfe-relcard" href="{{ a.url }}">
+          <div class="ri">
+            {%- if a.image -%}{{ a.image | image_url: width: 600 | image_tag: alt: a.title, loading: 'lazy' }}{%- else -%}<div class="ph">{{ cat }}</div>{%- endif -%}
+          </div>
+          <div class="rt-tag">{% for name in cat_names %}{% assign n = name | strip %}{% if a.tags contains n %}{{ n }}{% break %}{% endif %}{% endfor %}</div>
+          <div class="rt">{{ a.title }}</div>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+    {%- for a in blog.articles -%}
+      {%- if a.handle == article.handle or rel_count >= rel_max -%}{%- continue -%}{%- endif -%}
+      {%- if cat != '' and a.tags contains cat -%}{%- continue -%}{%- endif -%}
+      {%- assign rel_count = rel_count | plus: 1 -%}
+      {%- assign a_cat = '' -%}
+      {%- for name in cat_names -%}
+        {%- assign n = name | strip -%}
+        {%- if a.tags contains n -%}{%- assign a_cat = n -%}{%- break -%}{%- endif -%}
+      {%- endfor -%}
+      <a class="lfe-relcard" href="{{ a.url }}">
+        <div class="ri">
+          {%- if a.image -%}{{ a.image | image_url: width: 600 | image_tag: alt: a.title, loading: 'lazy' }}{%- else -%}<div class="ph">{{ a_cat | default: 'The Edit' }}</div>{%- endif -%}
+        </div>
+        <div class="rt-tag">{{ a_cat }}</div>
+        <div class="rt">{{ a.title }}</div>
+      </a>
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- if rel_count > 0 -%}
+    <div class="lfe-rel">
+      <h4>More from the edit</h4>
+      <div class="lfe-relgrid">{{ rel_cards }}</div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+.lfe-art{--ink:#2a2622;--ink-soft:#6b635a;--line:#e3dccf;--line-soft:#efe9dd;--cream:#faf7f1;--accent:#8a7250;--gold:#b8975f;--paper:#fdfbf6;--lfe-sans:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--cream);color:var(--ink);font-family:var(--lfe-sans);font-weight:400;line-height:1.7;padding-bottom:60px;}
+.lfe-art a{color:inherit;text-decoration:none;}
+.lfe-art img{display:block;}
+.lfe-artwrap{max-width:1000px;margin:0 auto;padding:0 30px;}
+.lfe-back{display:inline-flex;align-items:center;gap:8px;margin:32px 0 0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--ink-soft);transition:color .18s;}
+.lfe-back:hover{color:var(--accent);}
+.lfe-back svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.4;fill:none;}
+.lfe-head{padding:36px 0 26px;text-align:center;margin-bottom:36px;position:relative;}
+.lfe-head::after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:64px;height:1px;background:var(--gold);}
+.lfe-tag{font-family:var(--lfe-sans);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;}
+.lfe-title{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(38px,6vw,70px);line-height:1.02;letter-spacing:-.015em;margin:0 0 18px;}
+.lfe-stand{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(18px,2.4vw,22px);color:var(--ink-soft);max-width:620px;margin:0 auto;line-height:1.5;}
+.lfe-meta{margin-top:22px;font-family:var(--lfe-sans);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);}
+.lfe-hero{aspect-ratio:16/9;overflow:hidden;background:linear-gradient(135deg,#e9e1d2,#ddd2c0);margin-bottom:44px;}
+.lfe-hero .ph{height:100%;display:flex;align-items:center;justify-content:center;color:#cbbfa6;font-family:'Cormorant Garamond',serif;font-style:italic;}
+.lfe-hero img{width:100%;height:100%;object-fit:cover;}
+.lfe-body{max-width:680px;margin:0 auto;}
+.lfe-body p{font-family:var(--lfe-sans);font-size:16.5px;line-height:1.95;color:var(--ink);margin:0 0 22px;}
+.lfe-body > p:first-child::first-letter{font-family:'Cormorant Garamond',serif;font-size:62px;line-height:.8;float:left;margin:6px 12px 0 0;color:var(--accent);font-weight:500;}
+.lfe-body blockquote{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:27px;line-height:1.4;color:var(--accent);text-align:center;margin:44px 0;padding:0 20px;border:none;}
+.lfe-body blockquote p{font-family:inherit;font-size:inherit;line-height:inherit;color:inherit;margin:0;}
+.lfe-body h3{margin:54px 0 18px;display:flex;align-items:baseline;gap:14px;font-weight:500;}
+.lfe-body h3::after{content:"";height:1px;flex:1;background:var(--line);}
+.lfe-body h3 .pn,.lfe-body h3{font-family:'Cormorant Garamond',serif;font-size:26px;line-height:1.15;color:var(--ink);}
+.lfe-body h3 .pt{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13.5px;color:var(--gold);letter-spacing:.04em;white-space:nowrap;}
+.lfe-body img{width:100%;height:auto;margin:40px 0;}
+.lfe-body .lfe-ph{aspect-ratio:3/2;background:linear-gradient(135deg,#e9e1d2,#ddd2c0);margin:40px 0;display:flex;align-items:center;justify-content:center;color:#cbbfa6;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;text-align:center;padding:0 10px;}
+.lfe-body .lfe-duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:40px 0;}
+.lfe-body .lfe-duo .lfe-ph,.lfe-body .lfe-duo img{aspect-ratio:4/5;margin:0;object-fit:cover;height:auto;}
+.lfe-body .lfe-trio{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:40px 0;}
+.lfe-body .lfe-trio .lfe-ph,.lfe-body .lfe-trio img{aspect-ratio:3/4;margin:0;object-fit:cover;height:auto;font-size:12px;}
+.lfe-body .lfe-duo img,.lfe-body .lfe-trio img{width:100%;height:100%;}
+.lfe-body p.lfe-cap{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13.5px;color:var(--ink-soft);text-align:center;margin:-28px 0 40px;}
+.lfe-shop{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:30px 0;margin:48px 0 20px;display:grid;grid-template-columns:90px 1fr auto;gap:20px;align-items:center;}
+.lfe-shop .si{width:90px;aspect-ratio:1/1;background:linear-gradient(135deg,#f3ede1,#e9e1d2);overflow:hidden;}
+.lfe-shop .sk{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--gold);}
+.lfe-shop .sn{font-family:'Cormorant Garamond',serif;font-size:21px;color:var(--ink);margin-top:2px;}
+.lfe-shop .sp{font-family:var(--lfe-sans);font-size:13px;color:var(--ink-soft);margin-top:3px;}
+.lfe-shop .sbtn{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--ink);border:1px solid var(--accent);padding:11px 26px;background:none;cursor:pointer;white-space:nowrap;transition:.2s;}
+.lfe-shop .sbtn:hover{background:var(--accent);color:var(--paper);}
+.lfe-rel{max-width:1000px;margin:60px auto 0;padding:0 30px;}
+.lfe-rel h4{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);text-align:center;margin:0 0 24px;}
+.lfe-relgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.lfe-relcard{cursor:pointer;}
+.lfe-relcard .ri{aspect-ratio:4/5;overflow:hidden;background:linear-gradient(135deg,#f3ede1,#e9e1d2);margin-bottom:10px;}
+.lfe-relcard .ri img{width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.2,.7,.2,1);}
+.lfe-relcard:hover .ri img{transform:scale(1.05);}
+.lfe-relcard .ri .ph{height:100%;display:flex;align-items:center;justify-content:center;color:#cbbfa6;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;}
+.lfe-relcard .rt-tag{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11.5px;color:var(--gold);}
+.lfe-relcard .rt{font-family:'Cormorant Garamond',serif;font-size:17px;line-height:1.2;color:var(--ink);margin-top:2px;}
+@media(max-width:620px){
+  .lfe-artwrap,.lfe-rel{padding:0 20px;}
+  .lfe-head{padding-top:28px;}
+  .lfe-title{font-size:clamp(34px,10vw,44px);}
+  .lfe-stand{font-size:17px;}
+  .lfe-body p{font-size:16.5px;line-height:1.9;}
+  .lfe-body blockquote{font-size:23px;margin:36px 0;}
+  .lfe-body h3{margin:44px 0 14px;}
+  .lfe-body h3 .pn{font-size:22px;}
+  .lfe-body h3 .pt{font-size:12.5px;}
+  .lfe-body .lfe-duo{grid-template-columns:1fr;}
+  .lfe-body .lfe-trio{grid-template-columns:1fr;}
+  .lfe-body .lfe-trio .lfe-ph,.lfe-body .lfe-trio img{aspect-ratio:4/3;}
+  .lfe-shop{grid-template-columns:1fr;text-align:center;}
+  .lfe-shop .si{margin:0 auto;}
+  .lfe-relgrid{grid-template-columns:1fr;}
+}
+{% endstylesheet %}
+
+{% javascript %}
+(function(){
+  var root = document.querySelector('.lfe-art');
+  if(!root) return;
+  var body = root.querySelector('.lfe-body');
+  if(!body) return;
+
+  /* h3 "Name @ Place" → place heading spans */
+  body.querySelectorAll('h3').forEach(function(h){
+    var t = h.textContent || '';
+    var i = t.indexOf('@');
+    var pn = t.trim(), pt = '';
+    if(i > -1){ pn = t.slice(0, i).trim(); pt = t.slice(i + 1).trim(); }
+    h.textContent = '';
+    var s1 = document.createElement('span'); s1.className = 'pn'; s1.textContent = pn; h.appendChild(s1);
+    if(pt){ var s2 = document.createElement('span'); s2.className = 'pt'; s2.textContent = pt; h.appendChild(s2); }
+  });
+
+  /* unwrap <p><img></p> so images sit as direct children */
+  body.querySelectorAll('p').forEach(function(p){
+    if(p.childElementCount === 1 && p.firstElementChild.tagName === 'IMG' && p.textContent.trim() === ''){
+      p.replaceWith(p.firstElementChild);
+    }
+  });
+
+  /* auto-group 2–3 back-to-back images into duo / trio rows */
+  var run = [];
+  function flush(){
+    if(run.length >= 2){
+      var wrap = document.createElement('div');
+      wrap.className = run.length === 2 ? 'lfe-duo' : 'lfe-trio';
+      run[0].before(wrap);
+      run.forEach(function(im){ wrap.appendChild(im); });
+    }
+    run = [];
+  }
+  Array.prototype.slice.call(body.children).forEach(function(el){
+    if(el.tagName === 'IMG'){
+      run.push(el);
+      if(run.length === 3) flush();
+    } else {
+      flush();
+    }
+  });
+  flush();
+
+  /* italic-only paragraph right after an image/group → caption */
+  body.querySelectorAll('p').forEach(function(p){
+    if(p.childElementCount === 1 && p.firstElementChild.tagName === 'EM' && p.textContent.trim() === p.firstElementChild.textContent.trim()){
+      var prev = p.previousElementSibling;
+      if(prev && (prev.tagName === 'IMG' || prev.classList.contains('lfe-duo') || prev.classList.contains('lfe-trio') || prev.classList.contains('lfe-ph'))){
+        p.classList.add('lfe-cap');
+      }
+    }
+  });
+})();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "LF FIGUE Edit article",
+  "settings": [
+    { "type": "text", "id": "board_url", "label": "Back link (the board page)", "default": "/pages/the-figue-edit" },
+    { "type": "text", "id": "meta_prefix", "label": "Meta line prefix", "default": "LE FIGUE · The Edit" },
+    { "type": "text", "id": "cat_names", "label": "Category tag names (comma-separated)", "default": "New York,Jewelry,Travel,LE FIGUE" }
+  ]
+}
+{% endschema %}
