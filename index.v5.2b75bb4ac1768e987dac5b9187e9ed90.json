@@ -1,0 +1,742 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "image_with_text_p9BdiV": {
+      "type": "image-with-text",
+      "blocks": {
+        "subheading_bXkwCm": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "Global curation, local conversation",
+            "subheading_tag": "h2",
+            "subheading_font_class": "fs-heading-6-base"
+          }
+        },
+        "heading_it3KGc": {
+          "type": "heading",
+          "settings": {
+            "title": "Discover jewelry from Paris, Seoul, Milan       & beyond",
+            "heading_tag": "h2",
+            "heading_font_class": "fs-heading-display-3"
+          }
+        },
+        "subheading_dU7nBX": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "A styling-first jewelry studio editing the world's most unique pieces chosen in person, brought home to New York.",
+            "subheading_tag": "h3",
+            "subheading_font_class": "fs-heading-6-base"
+          }
+        },
+        "button_MaKmkT": {
+          "type": "button",
+          "settings": {
+            "link": "/collections/all",
+            "link_text": "Shop the Edit",
+            "button_style": "btn--primary"
+          }
+        },
+        "button_kw9A3k": {
+          "type": "button",
+          "settings": {
+            "link": "/pages/locations",
+            "link_text": "Plan Your Visit",
+            "button_style": "btn--secondary"
+          }
+        }
+      },
+      "block_order": [
+        "subheading_bXkwCm",
+        "heading_it3KGc",
+        "subheading_dU7nBX",
+        "button_MaKmkT",
+        "button_kw9A3k"
+      ],
+      "name": "t:sections.image_with_text.presets.name",
+      "settings": {
+        "image_position": "right",
+        "aspect_ratio": "square",
+        "focal_point": "image_presentation",
+        "image_caption": "",
+        "text_alignment": "left",
+        "show_small_image": true,
+        "image_small_aspect": "square",
+        "image_small_focal_point": "image_presentation",
+        "background_color": "#f4f2f1",
+        "text_color": "#000000",
+        "button_background_color": "#6a7061",
+        "button_text_color": "#ffffff",
+        "enable_animation": true,
+        "divider_style": "none",
+        "section_padding": "section--vertical-padding-top-bottom"
+      }
+    },
+    "rich-text-1": {
+      "type": "rich-text",
+      "blocks": {
+        "subheading_EBgghe": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "Most loved this season",
+            "subheading_tag": "h3",
+            "subheading_font_class": "fs-heading-6-base"
+          }
+        },
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "title": "Best Sellers",
+            "heading_tag": "h2",
+            "heading_font_class": "fs-heading-2-base"
+          }
+        },
+        "spacer": {
+          "type": "spacer",
+          "disabled": true,
+          "settings": {
+            "space": 12
+          }
+        }
+      },
+      "block_order": [
+        "subheading_EBgghe",
+        "heading",
+        "spacer"
+      ],
+      "settings": {
+        "alignment": "center_center",
+        "enable_animation": true,
+        "divider_style": "none",
+        "section_padding": "section--vertical-padding-top-bottom",
+        "content_width": "full",
+        "custom_content_width": 1000
+      }
+    },
+    "featured-collection-grid-2": {
+      "type": "featured-collection-grid",
+      "blocks": {
+        "collection": {
+          "type": "collection",
+          "settings": {
+            "collection": "best-sellers"
+          }
+        }
+      },
+      "block_order": [
+        "collection"
+      ],
+      "settings": {
+        "heading": "",
+        "heading_tag": "h2",
+        "subheading": "",
+        "link": "/collections/best-sellers",
+        "link_text": "Shop collection",
+        "button_style": "btn--callout",
+        "maximum_products": 4,
+        "columns": "4",
+        "mobile_columns": "2",
+        "enable_animation": true,
+        "divider_style": "none",
+        "section_padding": "section--vertical-padding-top-bottom"
+      }
+    },
+    "rich_text_pP3KYL": {
+      "type": "rich-text",
+      "blocks": {
+        "subheading_UheXCE": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "The Art of Pairing",
+            "subheading_tag": "h3",
+            "subheading_font_class": "fs-heading-6-base"
+          }
+        },
+        "heading_jrpjzR": {
+          "type": "heading",
+          "settings": {
+            "title": "This Week's Pairing",
+            "heading_tag": "h2",
+            "heading_font_class": "fs-heading-2-base"
+          }
+        },
+        "spacer_kXA9cN": {
+          "type": "spacer",
+          "disabled": true,
+          "settings": {
+            "space": 12
+          }
+        }
+      },
+      "block_order": [
+        "subheading_UheXCE",
+        "heading_jrpjzR",
+        "spacer_kXA9cN"
+      ],
+      "settings": {
+        "alignment": "center_center",
+        "enable_animation": true,
+        "divider_style": "none",
+        "section_padding": "section--vertical-padding-top-bottom",
+        "content_width": "full",
+        "custom_content_width": 1000
+      }
+    },
+    "grid": {
+      "type": "grid",
+      "blocks": {
+        "item-1": {
+          "type": "item",
+          "settings": {
+            "width": "33",
+            "height": 500,
+            "mobile_height": 360,
+            "media_type": "image",
+            "focal_point": "center",
+            "mobile_focal_point": "center",
+            "video_focal_point": "center",
+            "mobile_video_focal_point": "center",
+            "media_fit": "cover",
+            "text_position": "flex-start_flex-end",
+            "accent": "",
+            "title": "Daily Essentials",
+            "heading_tag": "h3",
+            "heading_font_class": "fs-heading-2-base",
+            "subheading": "",
+            "subheading_tag": "h4",
+            "subheading_font_class": "fs-heading-6-base",
+            "text": "",
+            "text_font_class": "fs-body-100",
+            "link": "/pages/pairing",
+            "link_text": "Plates & Bowls",
+            "button_style": "btn--callout",
+            "background_color": "",
+            "text_color": "#ffffff",
+            "button_background_color": "#ffffff",
+            "button_text_color": "#000000",
+            "color_overlay": "#000000",
+            "color_overlay_gradient": "linear-gradient(180deg, rgba(0, 0, 0, 0.1) 52%, rgba(0, 0, 0, 1) 100%)",
+            "overlay_opacity": 50,
+            "image": "shopify://shop_images/lf-weekly-pairing-1.jpg"
+          }
+        },
+        "item-2": {
+          "type": "item",
+          "settings": {
+            "width": "33",
+            "height": 500,
+            "mobile_height": 360,
+            "media_type": "image",
+            "focal_point": "center",
+            "mobile_focal_point": "center",
+            "video_focal_point": "center",
+            "mobile_video_focal_point": "center",
+            "media_fit": "cover",
+            "text_position": "flex-start_flex-end",
+            "accent": "",
+            "title": "One-of-a-kind",
+            "heading_tag": "h3",
+            "heading_font_class": "fs-heading-2-base",
+            "subheading": "",
+            "subheading_tag": "h4",
+            "subheading_font_class": "fs-heading-6-base",
+            "text": "",
+            "text_font_class": "fs-body-100",
+            "link": "/pages/pairing",
+            "link_text": "Stoneware Vases",
+            "button_style": "btn--callout",
+            "background_color": "",
+            "text_color": "#ffffff",
+            "button_background_color": "#ffffff",
+            "button_text_color": "#000000",
+            "color_overlay": "#000000",
+            "color_overlay_gradient": "linear-gradient(180deg, rgba(0, 0, 0, 0.1) 52%, rgba(0, 0, 0, 1) 100%)",
+            "overlay_opacity": 50,
+            "image": "shopify://shop_images/lf-weekly-pairing-2.jpg"
+          }
+        },
+        "item-3": {
+          "type": "item",
+          "settings": {
+            "width": "33",
+            "height": 600,
+            "mobile_height": 360,
+            "media_type": "image",
+            "focal_point": "center",
+            "mobile_focal_point": "center",
+            "video_focal_point": "center",
+            "mobile_video_focal_point": "center",
+            "media_fit": "cover",
+            "text_position": "flex-start_flex-end",
+            "accent": "",
+            "title": "Beauty & Function",
+            "heading_tag": "h3",
+            "heading_font_class": "fs-heading-2-base",
+            "subheading": "<p></p>",
+            "subheading_tag": "h4",
+            "subheading_font_class": "fs-heading-4-base",
+            "text": "<p></p>",
+            "text_font_class": "fs-body-100",
+            "link": "/pages/pairing",
+            "link_text": "Tabletop & Kitchen",
+            "button_style": "btn--callout",
+            "background_color": "",
+            "text_color": "#ffffff",
+            "button_background_color": "#ffffff",
+            "button_text_color": "#000000",
+            "color_overlay": "#000000",
+            "color_overlay_gradient": "linear-gradient(180deg, rgba(0, 0, 0, 0.1) 43%, rgba(0, 0, 0, 1) 100%)",
+            "overlay_opacity": 50,
+            "image": "shopify://shop_images/lf-weekly-pairing-3.jpg"
+          }
+        }
+      },
+      "block_order": [
+        "item-1",
+        "item-2",
+        "item-3"
+      ],
+      "settings": {
+        "heading": "",
+        "heading_tag": "h2",
+        "subheading": "",
+        "content_alignment": "left",
+        "enable_animation": true,
+        "full_width": false,
+        "spacing": 24,
+        "divider_style": "none",
+        "section_padding": "section--vertical-padding-bottom-only"
+      }
+    },
+    "rich_text_gbXCiH": {
+      "type": "rich-text",
+      "blocks": {
+        "subheading_mXmkMD": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "Why LE FIGUE",
+            "subheading_tag": "h3",
+            "subheading_font_class": "fs-heading-6-base"
+          }
+        },
+        "heading_CeKCGg": {
+          "type": "heading",
+          "settings": {
+            "title": "Not a brand. A point of view.",
+            "heading_tag": "h2",
+            "heading_font_class": "fs-heading-2-base"
+          }
+        },
+        "text_AKFHpf": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Independent designers from around the world.<br/>Found on global buying trips, curated through years of New York retail.<br/>Styled to be worn together.</p>",
+            "text_font_class": "fs-body-75"
+          }
+        },
+        "button_L3KVUf": {
+          "type": "button",
+          "settings": {
+            "link": "/pages/the-house",
+            "link_text": "About LE FIGUE",
+            "button_style": "btn--primary"
+          }
+        }
+      },
+      "block_order": [
+        "subheading_mXmkMD",
+        "heading_CeKCGg",
+        "text_AKFHpf",
+        "button_L3KVUf"
+      ],
+      "name": "t:sections.rich_text.presets.name",
+      "settings": {
+        "alignment": "center_center",
+        "enable_animation": true,
+        "divider_style": "solid",
+        "section_padding": "section--vertical-padding-top-bottom",
+        "content_width": "custom",
+        "custom_content_width": 700
+      }
+    },
+    "countdown-banner": {
+      "type": "countdown-banner",
+      "settings": {
+        "min_height": 540,
+        "min_height_mobile": 500,
+        "year": 2026,
+        "month": "september",
+        "day": "5",
+        "hour": "11",
+        "minute": "0",
+        "time_zone_selection": "shop",
+        "hide_timer_on_complete": false,
+        "timer_complete_message": "",
+        "heading": "A New Chapter on Bleecker",
+        "heading_tag": "h4",
+        "heading_font_class": "fs-heading-1-base",
+        "subheading": "",
+        "subheading_tag": "h5",
+        "text": "<p><strong>Our New Home Is Almost Ready</strong></p><p>Be among the first to discover the next chapter of LE FIGUE. </p><p>Join us this Friday for an intimate opening preview with jewelry, champagne, and celebration.</p><p><br/></p>",
+        "link": "#footer-subscribe-email",
+        "link_text": "RSVP FOR THE OPENING PREVIEW",
+        "button_style": "btn--primary",
+        "link_2": "",
+        "link_text_2": "",
+        "button_style_2": "btn--primary",
+        "focal_point": "top",
+        "mobile_focal_point": "center",
+        "background_color": "#8c6960",
+        "text_color": "#f5f0da",
+        "button_background_color": "#dac6ac",
+        "button_text_color": "#695444",
+        "color_overlay": "#000000",
+        "color_overlay_gradient": "radial-gradient(rgba(37, 32, 32, 0.44), rgba(0, 0, 0, 0.08) 100%)",
+        "overlay_opacity": 3,
+        "enable_animation": true,
+        "show_frame": false,
+        "full_width": false,
+        "section_padding": "section--vertical-padding-bottom-only"
+      }
+    },
+    "image-with-text-1": {
+      "type": "image-with-text",
+      "blocks": {
+        "accent": {
+          "type": "accent",
+          "settings": {
+            "accent": "Meet the Makers Behind the Edit"
+          }
+        },
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "title": "THE DESIGNERS WE LOVE",
+            "heading_tag": "h2",
+            "heading_font_class": "fs-heading-1-base"
+          }
+        },
+        "subheading": {
+          "type": "subheading",
+          "disabled": true,
+          "settings": {
+            "subheading": "Pairing",
+            "subheading_tag": "h3",
+            "subheading_font_class": "fs-heading-5-base"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>From Paris to New York and beyond, discover the designers, stories, and creative visions behind the jewelry we choose for LE FIGUE.</p>",
+            "text_font_class": "fs-body-100"
+          }
+        },
+        "button": {
+          "type": "button",
+          "settings": {
+            "link": "/pages/all-designers",
+            "link_text": "MEET THE DESIGNERS",
+            "button_style": "btn--primary"
+          }
+        }
+      },
+      "block_order": [
+        "accent",
+        "heading",
+        "subheading",
+        "text",
+        "button"
+      ],
+      "settings": {
+        "image_position": "left",
+        "aspect_ratio": "square",
+        "focal_point": "center",
+        "image_caption": "",
+        "text_alignment": "left",
+        "show_small_image": true,
+        "image_small_aspect": "square",
+        "image_small_focal_point": "center",
+        "background_color": "#6a7061",
+        "text_color": "#ffffff",
+        "button_background_color": "#ffffff",
+        "button_text_color": "#535353",
+        "enable_animation": true,
+        "divider_style": "none",
+        "section_padding": "section--vertical-padding-top-bottom"
+      }
+    },
+    "shoppable-feature": {
+      "type": "shoppable-feature",
+      "blocks": {
+        "hotspot_NNRBWV": {
+          "type": "hotspot",
+          "settings": {
+            "product_item": "",
+            "horizontal_position": 50,
+            "vertical_position": 50
+          }
+        },
+        "hotspot_i9XpzW": {
+          "type": "hotspot",
+          "settings": {
+            "product_item": "",
+            "horizontal_position": 50,
+            "vertical_position": 50
+          }
+        },
+        "hotspot_UAJJVg": {
+          "type": "hotspot",
+          "settings": {
+            "product_item": "",
+            "horizontal_position": 50,
+            "vertical_position": 50
+          }
+        }
+      },
+      "block_order": [
+        "hotspot_NNRBWV",
+        "hotspot_i9XpzW",
+        "hotspot_UAJJVg"
+      ],
+      "settings": {
+        "image_position": "right",
+        "image_size": 50,
+        "aspect_ratio": "square",
+        "heading": "Jewelry, edited in New York",
+        "heading_tag": "h2",
+        "subheading": "<p>Pairings, profiles, city guides and the pieces our curators are wearing this week. The story behind the stack, and how to make it yours.</p>",
+        "link": "",
+        "link_text": "Jewelry, edited in New York",
+        "button_style": "btn--callout",
+        "enable_animation": true,
+        "divider_style": "solid",
+        "section_padding": "section--vertical-padding-top-bottom",
+        "content_position_desktop": "inside"
+      }
+    },
+    "rich-text-2": {
+      "type": "rich-text",
+      "blocks": {
+        "spacer-1": {
+          "type": "spacer",
+          "settings": {
+            "space": 12
+          }
+        },
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "title": "Made by hand, made to last.",
+            "heading_tag": "h2",
+            "heading_font_class": "fs-heading-3-base"
+          }
+        },
+        "text": {
+          "type": "text",
+          "disabled": true,
+          "settings": {
+            "text": "<p>Use this text area to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>",
+            "text_font_class": "fs-body-100"
+          }
+        },
+        "spacer-2": {
+          "type": "spacer",
+          "settings": {
+            "space": 16
+          }
+        }
+      },
+      "block_order": [
+        "spacer-1",
+        "heading",
+        "text",
+        "spacer-2"
+      ],
+      "settings": {
+        "alignment": "center_center",
+        "enable_animation": true,
+        "divider_style": "solid",
+        "section_padding": "section--vertical-padding-top-bottom",
+        "content_width": "full",
+        "custom_content_width": 950
+      }
+    },
+    "image_with_text_split_V8Kxhb": {
+      "type": "image-with-text-split",
+      "blocks": {
+        "accent_zGebi7": {
+          "type": "accent",
+          "settings": {
+            "accent": "By Appointment"
+          }
+        },
+        "heading_FFM6Ca": {
+          "type": "heading",
+          "settings": {
+            "title": "The Private Room",
+            "heading_tag": "h2",
+            "heading_font_class": "fs-heading-display-3"
+          }
+        },
+        "subheading_jLndJi": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "A private appointment space at our Bleecker store. Sit with a curator for gifting, personal styling or a closer look at our fine jewelry edit.",
+            "subheading_tag": "h3",
+            "subheading_font_class": "fs-heading-5-base"
+          }
+        },
+        "button_DK9AHt": {
+          "type": "button",
+          "settings": {
+            "link": "/pages/book-appointment",
+            "link_text": "Private Shopping",
+            "button_style": "btn--secondary"
+          }
+        },
+        "button_htcaMN": {
+          "type": "button",
+          "settings": {
+            "link": "/pages/book-appointment",
+            "link_text": "Gift Consultation",
+            "button_style": "btn--secondary"
+          }
+        },
+        "text_JWDTBG": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Complimentary · One-on-one · NoHo private room</p>",
+            "text_font_class": "fs-body-75"
+          }
+        }
+      },
+      "block_order": [
+        "accent_zGebi7",
+        "heading_FFM6Ca",
+        "subheading_jLndJi",
+        "button_DK9AHt",
+        "button_htcaMN",
+        "text_JWDTBG"
+      ],
+      "name": "t:sections.image_with_text_split.presets.name",
+      "settings": {
+        "image_position": "right",
+        "image_mobile_position": "above-content",
+        "image_padding": "none",
+        "aspect_ratio": "square",
+        "focal_point": "image_presentation",
+        "content_alignment": "left",
+        "background_color": "#6a7061",
+        "text_color": "#f4f2f1",
+        "button_background_color": "#f4f2f1",
+        "button_text_color": "#ffffff",
+        "enable_animation": true,
+        "section_padding": "section--vertical-padding-none"
+      }
+    },
+    "multi_column_iFGhGD": {
+      "type": "multi-column",
+      "blocks": {
+        "image_column_qxTnX9": {
+          "type": "image_column",
+          "settings": {
+            "image": "shopify://shop_images/L_west_village.png",
+            "image_width": 100,
+            "aspect_ratio": "square",
+            "enable_image_crop_circle": false,
+            "focal_point": "image_presentation",
+            "image_position": "above_text",
+            "image_link": "",
+            "small_caption": "",
+            "accent": "",
+            "heading": "West Village",
+            "heading_tag": "h3",
+            "heading_font_class": "fs-heading-4-base",
+            "text": "<p></p><p>18 Christopher Street, New York</p><p>Open daily · 11am – 7pm</p><p>Our widest selection of best sellers and everyday favorites.</p>",
+            "text_font_class": "fs-body-75",
+            "text_max_width": 100,
+            "link": "/pages/west-village",
+            "link_text": "Store Details →",
+            "button_style": "btn--secondary"
+          }
+        },
+        "image_column_yG34e6": {
+          "type": "image_column",
+          "settings": {
+            "image": "shopify://shop_images/Untitled-2.png",
+            "image_width": 100,
+            "aspect_ratio": "square",
+            "enable_image_crop_circle": false,
+            "focal_point": "image_presentation",
+            "image_position": "above_text",
+            "image_link": "",
+            "small_caption": "",
+            "accent": "",
+            "heading": "Bleecker · NoHo",
+            "heading_tag": "h3",
+            "heading_font_class": "fs-heading-4-base",
+            "text": "<p></p><p>19 Bleecker Street, New York</p><p>Open daily · 11am – 7pm</p><p>Fine jewelry, sought-after designers and private styling by appointment.</p>",
+            "text_font_class": "fs-body-75",
+            "text_max_width": 100,
+            "link": "/pages/book-appointment",
+            "link_text": "Book a Private Appointment →",
+            "button_style": "btn--primary"
+          }
+        }
+      },
+      "block_order": [
+        "image_column_qxTnX9",
+        "image_column_yG34e6"
+      ],
+      "name": "t:sections.multi_column.presets.name",
+      "settings": {
+        "title": "Visit NYC",
+        "heading_tag": "h2",
+        "heading_font_class": "fs-heading-1-base",
+        "subheading": "<p><em>Two doors in downtown New York</em></p>",
+        "heading_alignment": "center",
+        "content_vertical_alignment": "center",
+        "content_background_padding": "medium",
+        "columns": "2",
+        "column_spacing": 28,
+        "row_spacing": 28,
+        "column_alignment": "center",
+        "enable_slider_mobile": false,
+        "columns_mobile": "2",
+        "column_spacing_mobile": 20,
+        "row_spacing_mobile": 20,
+        "column_alignment_mobile": "left",
+        "background_behind_columns": false,
+        "background_color": "",
+        "text_color": "#000000",
+        "button_background_color": "#8c6960",
+        "button_text_color": "#ffffff",
+        "enable_animation": true,
+        "divider_style": "none",
+        "section_padding": "section--vertical-padding-top-bottom"
+      }
+    }
+  },
+  "order": [
+    "image_with_text_p9BdiV",
+    "rich-text-1",
+    "featured-collection-grid-2",
+    "rich_text_pP3KYL",
+    "grid",
+    "rich_text_gbXCiH",
+    "countdown-banner",
+    "image-with-text-1",
+    "shoppable-feature",
+    "rich-text-2",
+    "image_with_text_split_V8Kxhb",
+    "multi_column_iFGhGD"
+  ]
+}
