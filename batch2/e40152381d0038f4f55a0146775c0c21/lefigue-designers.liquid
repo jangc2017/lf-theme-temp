@@ -1,0 +1,462 @@
+{%- comment -%}
+  LE FIGUE — Designers (Discover → "All Designers A-Z").
+  Ported from the provided design; theme header/footer wrap it. CSS + behavior
+  namespaced under .lf-designers.
+  DATA-DRIVEN (2026-07-02): designers = every collection whose metafield
+  custom.designer_page is true. Name = collection title, bio = collection
+  description (falls back to house copy), portrait/featured art = collection
+  image, "Selected pieces" = the collection's first 6 products (real titles,
+  prices, images) each linking to its product page, plus a "View all" link to
+  the collection. Moderator workflow: Admin > Products > Collections — tick
+  "Show on Designers page", write the description, set the image, curate the
+  products. No code needed to add/remove designers.
+  NB: paginate below covers up to 250 collections per page (store has ~131).
+{%- endcomment -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+
+<script type="application/json" data-lf-designers>
+  [
+    {%- liquid
+      assign lf_first = true
+    -%}
+    {%- paginate collections by 250 -%}
+      {%- for c in collections -%}
+        {%- if c.metafields.custom.designer_page.value -%}
+          {%- unless lf_first -%},{%- endunless -%}
+          {%- assign lf_first = false -%}
+          {
+            "name": {{ c.title | json }},
+            "handle": {{ c.handle | json }},
+            "url": {{ c.url | json }},
+            "bio": {{ c.description | strip_html | strip | truncate: 600 | json }},
+            "image": {% if c.image %}{{ c.image | image_url: width: 900 | json }}{% else %}null{% endif %},
+            "count": {{ c.products_count | default: 0 }},
+            "products": [
+              {%- for p in c.products limit: 6 -%}
+                {%- unless forloop.first -%},{%- endunless -%}
+                {
+                  "title": {{ p.title | json }},
+                  "url": {{ p.url | json }},
+                  "price": {{ p.price | money_without_trailing_zeros | json }},
+                  "image": {% if p.featured_image %}{{ p.featured_image | image_url: width: 600 | json }}{% else %}null{% endif %},
+                  "available": {{ p.available | json }}
+                }
+              {%- endfor -%}
+            ]
+          }
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endpaginate -%}
+  ]
+</script>
+
+<div class="lf-designers">
+  <!-- ===================== INDEX VIEW ===================== -->
+  <main class="view active" id="indexView">
+    <section class="dz-hero">
+      <div class="eyebrow">{{ section.settings.hero_eyebrow | default: "The House of Makers" }}</div>
+      <h1 class="display">{% if section.settings.hero_title == blank %}Design<span class="amp">e</span>rs{% else %}{{ section.settings.hero_title }}{% endif %}</h1>
+    </section>
+
+    <div class="dz-intro">
+      <p><span class="lead">{{ section.settings.intro_lead | default: "We don't carry brands. We keep makers." }}</span>{{ section.settings.intro_body | default: "Most we found in person: a quiet atelier in Seoul, a market table in Lisbon, a studio above a shop in Paris. We look for work that is genuinely well made and hard to find anywhere else, finished by hand and meant to be lived in. Because we choose this way, the curation never sits still; makers and pieces change with the season. Some names you'll know. Most you won't yet." }}</p>
+    </div>
+
+    <!-- featured -->
+    <div class="dz-featured" id="featured"></div>
+
+    <!-- A-Z + search -->
+    <div class="az-bar"><div class="az-inner">
+      <div class="az-letters" id="azLetters"></div>
+      <label class="az-search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+        <input type="text" id="filterInput" placeholder="Find a maker">
+      </label>
+    </div></div>
+
+    <!-- index list -->
+    <div class="dz-index" id="dzIndex"></div>
+    <div class="dz-empty" id="dzEmpty">No maker by that name — yet. Tell us who we're missing.</div>
+
+    <div class="dz-foot"><div class="dz-foot-in">
+      <p>A local maker, in a city we haven't reached yet?<br>We welcome introductions from independent ateliers, wherever you are. If you'd like to be considered for the LE FIGUE curation, tell us about your work.</p>
+      <a href="/pages/partnerships" id="partnerLink">Apply for partnership →</a>
+    </div></div>
+  </main>
+
+  <!-- ===================== DETAIL VIEW ===================== -->
+  <main class="view" id="detailView">
+    <div class="det-top">
+      <div class="crumb"><a id="crumbHome">Designers</a><span class="sep">/</span><span id="crumbName">—</span></div>
+      <div class="det-nav">
+        <button id="prevBtn">← <span id="prevName">Previous</span></button>
+        <button id="nextBtn"><span id="nextName">Next</span> →</button>
+      </div>
+    </div>
+
+    <div class="det-wrap">
+      <aside class="det-rail">
+        <div class="det-eye">In the curation</div>
+        <h1 class="det-name" id="dName">—</h1>
+        <div class="det-tagline" id="dTagline">—</div>
+        <div class="det-bio" id="dBio"></div>
+        <span class="readmore" id="readMore">Read more →</span>
+
+        <div class="spec" id="dSpec"></div>
+
+        <div class="det-portrait"><div class="viz" id="dPortrait"><span class="cap">In the studio</span></div></div>
+      </aside>
+
+      <section class="det-main">
+        <div class="det-prodhead">
+          <h2 class="display" id="dPiecesTitle">Selected pieces</h2>
+          <a class="viewall" id="dViewAll" href="#">View all →</a>
+        </div>
+        <div class="det-products" id="dProducts"></div>
+      </section>
+    </div>
+
+    <div class="det-allnote"><div class="in">
+      <p id="dCloser">A small, rotating selection. Pieces arrive in ones and twos, and rarely return the same.</p>
+      <span class="bk" id="backToAll">← Back to all designers</span>
+    </div></div>
+  </main>
+</div>
+
+{% stylesheet %}
+  .lf-designers{ --ink:#2a2622; --ink-soft:#6b635a; --line:#e3dccf; --line-soft:#efe9dd; --cream:#faf7f1; --cream-deep:#f3ede1; --accent:#8a7250; --gold:#b8975f; --paper:#fdfbf6;
+    background:var(--cream); color:var(--ink); font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:400; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .lf-designers *{ box-sizing:border-box; }
+  .lf-designers a{ color:inherit; text-decoration:none; }
+  .lf-designers img{ display:block; max-width:100%; }
+  .lf-designers .display{ font-family:'Cormorant Garamond',serif; }
+  .lf-designers .view{ display:none; }
+  .lf-designers .view.active{ display:block; }
+
+  /* INDEX */
+  .lf-designers .dz-hero{ max-width:1280px; margin:0 auto; padding:70px 30px 30px; }
+  .lf-designers .dz-hero .eyebrow{ font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--accent); font-size:17px; }
+  .lf-designers .dz-hero h1{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(54px,11vw,150px); line-height:.92; letter-spacing:-.015em; margin:10px 0 0; }
+  .lf-designers .dz-hero h1 .amp{ font-style:italic; color:var(--gold); }
+  .lf-designers .dz-intro{ max-width:1280px; margin:0 auto; padding:0 30px; display:grid; grid-template-columns:1fr 1fr; gap:54px; align-items:start; }
+  .lf-designers .dz-intro p{ font-size:15.5px; color:var(--ink-soft); max-width:540px; }
+  .lf-designers .dz-intro p .lead{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:20px; color:var(--ink); display:block; margin-bottom:12px; line-height:1.4; }
+
+  .lf-designers .dz-featured{ max-width:1280px; margin:46px auto 0; padding:0 30px; display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+  .lf-designers .feat{ position:relative; cursor:pointer; }
+  .lf-designers .feat .viz{ position:relative; width:100%; min-height:330px; border:1px solid var(--line); display:flex; align-items:flex-end; padding:20px; overflow:hidden; transition:.3s; }
+  .lf-designers .feat:hover .viz{ border-color:var(--accent); }
+  .lf-designers .feat .viz::before{ content:""; position:absolute; inset:0; background:repeating-linear-gradient(135deg,rgba(255,255,255,.16) 0 1px,transparent 1px 10px); opacity:.5; }
+  .lf-designers .feat .viz::after{ content:""; position:absolute; left:0; right:0; bottom:0; height:46%; background:linear-gradient(to top,rgba(40,35,30,.42),transparent); }
+  .lf-designers .feat .mono{ position:absolute; top:50%; left:50%; transform:translate(-50%,-58%); font-family:'Cormorant Garamond',serif; font-size:120px; color:rgba(255,255,255,.34); line-height:1; pointer-events:none; }
+  .lf-designers .feat .fname{ position:relative; color:#fff; font-size:13px; letter-spacing:.22em; text-transform:uppercase; z-index:2; }
+  .lf-designers .feat .feye{ position:relative; z-index:2; color:#f0e7d6; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:13px; text-transform:none; letter-spacing:0; display:block; margin-bottom:3px; }
+
+  /* real imagery */
+  .lf-designers .viz.has-img{ background-size:cover; background-position:center; }
+  .lf-designers .viz.has-img::before{ display:none; }
+  .lf-designers .prod .viz img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+
+  .lf-designers .az-bar{ position:sticky; top:0; z-index:40; background:rgba(250,247,241,.96); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin-top:56px; }
+  .lf-designers .az-inner{ max-width:1280px; margin:0 auto; padding:0 30px; display:flex; align-items:center; gap:20px; height:58px; }
+  .lf-designers .az-letters{ display:flex; flex-wrap:wrap; gap:2px; flex:1; }
+  .lf-designers .az-letters a{ font-family:'Cormorant Garamond',serif; font-size:15px; color:var(--ink-soft); width:25px; height:25px; display:flex; align-items:center; justify-content:center; border-radius:50%; transition:.16s; }
+  .lf-designers .az-letters a:hover{ color:var(--accent); }
+  .lf-designers .az-letters a.disabled{ color:#d4c9b4; pointer-events:none; }
+  .lf-designers .az-search{ display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--line); min-width:190px; }
+  .lf-designers .az-search svg{ width:15px; height:15px; stroke:var(--ink-soft); stroke-width:1.4; fill:none; }
+  .lf-designers .az-search input{ border:none; background:none; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:var(--ink); padding:8px 0; outline:none; width:100%; }
+  .lf-designers .az-search input::placeholder{ color:#c2b69e; }
+
+  .lf-designers .dz-index{ max-width:1280px; margin:0 auto; padding:24px 30px 70px; }
+  .lf-designers .dz-group{ padding:26px 0; border-top:1px solid var(--line-soft); display:grid; grid-template-columns:90px 1fr; gap:20px; }
+  .lf-designers .dz-group:first-child{ border-top:none; }
+  .lf-designers .dz-group .gl{ font-family:'Cormorant Garamond',serif; font-size:40px; color:var(--gold); line-height:1; position:sticky; top:72px; align-self:start; }
+  .lf-designers .dz-names{ display:grid; grid-template-columns:repeat(4,1fr); gap:11px 26px; }
+  .lf-designers .dz-names a{ font-size:15px; color:var(--ink-soft); transition:.16s; display:inline-block; padding:3px 0; border-bottom:1px solid transparent; width:fit-content; cursor:pointer; }
+  .lf-designers .dz-names a:hover{ color:var(--ink); border-bottom-color:var(--accent); }
+  .lf-designers .dz-empty{ display:none; text-align:center; color:var(--ink-soft); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; padding:60px 0; }
+  .lf-designers .dz-foot{ max-width:1280px; margin:0 auto; padding:0 30px 70px; border-top:1px solid var(--line); }
+  .lf-designers .dz-foot-in{ padding-top:36px; display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap; }
+  .lf-designers .dz-foot-in p{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:19px; color:var(--ink); max-width:520px; }
+  .lf-designers .dz-foot-in a{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:var(--accent); border-bottom:1px solid var(--accent); padding-bottom:3px; white-space:nowrap; }
+
+  /* DETAIL */
+  .lf-designers .det-top{ max-width:1280px; margin:0 auto; padding:26px 30px 0; display:flex; justify-content:space-between; align-items:center; gap:16px; }
+  .lf-designers .crumb{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); }
+  .lf-designers .crumb a{ cursor:pointer; }
+  .lf-designers .crumb a:hover{ color:var(--accent); }
+  .lf-designers .crumb .sep{ color:var(--gold); margin:0 8px; }
+  .lf-designers .det-nav{ display:flex; gap:18px; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:var(--ink-soft); }
+  .lf-designers .det-nav button{ background:none; border:none; cursor:pointer; font:inherit; color:inherit; transition:.16s; }
+  .lf-designers .det-nav button:hover{ color:var(--accent); }
+
+  .lf-designers .det-wrap{ max-width:1280px; margin:0 auto; padding:22px 30px 70px; display:grid; grid-template-columns:384px 1fr; gap:56px; align-items:start; }
+  .lf-designers .det-rail{ position:sticky; top:24px; }
+  .lf-designers .det-eye{ font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--gold); font-size:15px; }
+  .lf-designers .det-name{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(38px,4.4vw,54px); line-height:1.02; margin:4px 0 8px; }
+  .lf-designers .det-tagline{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:var(--ink-soft); margin-bottom:22px; }
+  .lf-designers .det-bio{ font-size:14.5px; color:var(--ink-soft); }
+  .lf-designers .det-bio .more{ display:none; }
+  .lf-designers .det-bio.open .more{ display:inline; }
+  .lf-designers .readmore{ margin-top:8px; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:var(--accent); border-bottom:1px solid var(--accent); padding-bottom:2px; cursor:pointer; display:inline-block; }
+
+  .lf-designers .spec{ margin-top:28px; border-top:1px solid var(--line); }
+  .lf-designers .spec .row{ display:flex; justify-content:space-between; gap:16px; padding:11px 0; border-bottom:1px solid var(--line-soft); font-size:12.5px; }
+  .lf-designers .spec .k{ letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft); }
+  .lf-designers .spec .v{ text-align:right; color:var(--ink); font-family:'Cormorant Garamond',serif; font-size:15px; font-style:italic; }
+  .lf-designers .det-portrait{ margin-top:26px; }
+  .lf-designers .det-portrait .viz{ position:relative; width:100%; min-height:300px; border:1px solid var(--line); overflow:hidden; display:flex; align-items:flex-end; padding:18px; }
+  .lf-designers .det-portrait .viz::before{ content:""; position:absolute; inset:0; background:repeating-linear-gradient(135deg,rgba(255,255,255,.16) 0 1px,transparent 1px 10px); opacity:.5; }
+  .lf-designers .det-portrait .cap{ position:relative; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:13px; color:var(--ink-soft); }
+  .lf-designers .det-portrait .viz.has-img .cap{ color:#f0e7d6; text-shadow:0 1px 8px rgba(40,35,30,.5); }
+
+  .lf-designers .det-prodhead{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:20px; }
+  .lf-designers .det-prodhead h2{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:26px; }
+  .lf-designers .det-prodhead .viewall{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:var(--accent); border-bottom:1px solid var(--accent); padding-bottom:2px; white-space:nowrap; }
+  .lf-designers .det-products{ display:grid; grid-template-columns:repeat(2,1fr); gap:26px 24px; }
+  .lf-designers .prod{ cursor:pointer; display:block; }
+  .lf-designers .prod .viz{ position:relative; width:100%; min-height:300px; border:1px solid var(--line); overflow:hidden; transition:.3s; display:flex; align-items:center; justify-content:center; }
+  .lf-designers .prod:hover .viz{ border-color:var(--accent); }
+  .lf-designers .prod .viz::before{ content:""; position:absolute; inset:0; background:repeating-linear-gradient(135deg,rgba(255,255,255,.14) 0 1px,transparent 1px 11px); opacity:.5; }
+  .lf-designers .prod .viz.has-img::before{ display:none; }
+  .lf-designers .prod .mono{ font-family:'Cormorant Garamond',serif; font-size:88px; color:rgba(138,114,80,.16); line-height:1; }
+  .lf-designers .prod .tag{ position:absolute; top:12px; left:12px; z-index:2; background:rgba(253,251,246,.92); border:1px solid var(--line); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:12px; color:var(--accent); padding:3px 11px; border-radius:20px; }
+  .lf-designers .prod .meta{ margin-top:13px; }
+  .lf-designers .prod .pb{ font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); }
+  .lf-designers .prod .pn{ font-family:'Cormorant Garamond',serif; font-size:19px; line-height:1.2; margin-top:3px; }
+  .lf-designers .prod .pp{ font-size:13.5px; color:var(--ink); margin-top:6px; }
+  .lf-designers .dz-noprods{ grid-column:1/-1; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:var(--ink-soft); padding:40px 0; }
+  .lf-designers .det-allnote{ max-width:1280px; margin:0 auto; padding:0 30px 64px; }
+  .lf-designers .det-allnote .in{ border-top:1px solid var(--line); padding-top:30px; text-align:center; }
+  .lf-designers .det-allnote p{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:var(--ink); }
+  .lf-designers .det-allnote .bk{ margin-top:14px; display:inline-block; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:var(--accent); border-bottom:1px solid var(--accent); padding-bottom:3px; cursor:pointer; }
+
+  @media(max-width:980px){
+    .lf-designers .dz-intro{ grid-template-columns:1fr; gap:20px; }
+    .lf-designers .dz-featured{ grid-template-columns:1fr 1fr; }
+    .lf-designers .dz-names{ grid-template-columns:repeat(2,1fr); }
+    .lf-designers .dz-group{ grid-template-columns:54px 1fr; gap:12px; }
+    .lf-designers .dz-group .gl{ font-size:30px; }
+    .lf-designers .det-wrap{ grid-template-columns:1fr; gap:30px; }
+    .lf-designers .det-rail{ position:static; }
+    .lf-designers .det-products{ gap:22px 18px; }
+  }
+  @media(max-width:560px){
+    .lf-designers .dz-featured{ grid-template-columns:1fr; }
+    .lf-designers .dz-names{ grid-template-columns:1fr; }
+    .lf-designers .det-products{ grid-template-columns:1fr; }
+    .lf-designers .az-letters{ display:none; }
+    .lf-designers .az-search{ flex:1; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function(){
+    var root = document.querySelector('.lf-designers');
+    if (!root) return;
+    function $(id){ return root.querySelector('#' + id); }
+
+    /* ---------- data (server-rendered from Shopify collections) ---------- */
+    var DATA = [];
+    try {
+      var dataEl = document.querySelector('script[data-lf-designers]');
+      DATA = JSON.parse(dataEl.textContent) || [];
+    } catch (e) { DATA = []; }
+    DATA.sort(function(a,b){ return a.name.localeCompare(b.name); });
+    var BY_HANDLE = {};
+    DATA.forEach(function(d){ BY_HANDLE[d.handle] = d; });
+
+    var TAGLINES = {
+      "Alex Monroe":"Nature, cast in gold · England",
+      "Romilt":"Quiet metalwork · the everyday object",
+      "Miliemoon":"The house hand · made close to home",
+      "Atelier Stone":"Stones first · one of a kind",
+      "Mon Reve":"Soft romance, in gold vermeil",
+      "Muja Juma":"Colour & stone · Amsterdam",
+      "Au Fil De Lo":"Thread of gold · Paris",
+      "Sing a Song":"Playful, daily, collectible"
+    };
+    var DEFAULT_TAGLINE = "Independent atelier · in the LE FIGUE curation";
+
+    function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+    function seed(str){var h=2166136261;for(var i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0);}
+    function grad(n){
+      var s=seed(n); var a=20+(s%40); var x=60+(s%30);
+      var c1=["#efe8db","#f0e7d6","#f1e9dc","#ece4d4","#efe6d6"][s%5];
+      var c2=["#e6dac6","#e4d8c2","#e7dcc8","#e3d6bf","#e8ddc9"][(s>>>3)%5];
+      var c3=["#dccdb4","#d6c7ac","#ddd0b8","#d8c9ae","#dccdb2"][(s>>>6)%5];
+      return "radial-gradient("+(100+a)+"% "+(100+a)+"% at "+x+"% 12%, "+c1+" 0%, "+c2+" 50%, "+c3+" 100%)";
+    }
+    function mono(n){
+      var c=String(n).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z]/g,'');
+      return (c[0]||'L').toUpperCase();
+    }
+
+    function fallbackBioShort(name){
+      return "Some makers we find. Some find us. "+name+" sits in the curation for the way the work holds the hand — considered, quiet, made to be worn every day rather than kept for occasions.";
+    }
+    var FALLBACK_BIO_MORE = " We keep a small, rotating selection and let the pieces lead. They pair easily, layer without competing, and tend to become the thing you reach for first. New arrivals come in ones and twos; when something is gone, it's often gone.";
+
+    /* ---------- build index ---------- */
+    var GROUPS={};
+    DATA.forEach(function(d){ var L=mono(d.name); (GROUPS[L]=GROUPS[L]||[]).push(d); });
+    var ALPHA="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+    var FEAT_TITLES=["Alex Monroe","Romilt","Atelier Stone","Miliemoon"];
+    var featRecs=FEAT_TITLES.map(function(t){
+      return DATA.filter(function(d){return d.name===t;})[0];
+    }).filter(Boolean);
+    var featEl=$('featured');
+    featRecs.forEach(function(d){
+      var el=document.createElement('div'); el.className='feat'; el.dataset.handle=d.handle;
+      var vizStyle = d.image ? 'background-image:url('+esc(d.image)+')' : 'background:'+grad(d.name);
+      var vizClass = d.image ? 'viz has-img' : 'viz';
+      var monoHtml = d.image ? '' : '<span class="mono">'+esc(mono(d.name))+'</span>';
+      el.innerHTML='<div class="'+vizClass+'" style="'+vizStyle+'">'+monoHtml+
+        '<div><span class="feye">'+esc(TAGLINES[d.name]? TAGLINES[d.name].split(' · ')[0] : 'In the curation')+'</span>'+
+        '<span class="fname">'+esc(d.name)+'</span></div></div>';
+      el.addEventListener('click',function(){openDetail(d);});
+      featEl.appendChild(el);
+    });
+    if(!featRecs.length){ featEl.style.display='none'; }
+
+    var azEl=$('azLetters');
+    ALPHA.forEach(function(L){
+      var a=document.createElement('a'); a.textContent=L;
+      if(GROUPS[L]){ a.href='#grp-'+L; } else { a.className='disabled'; }
+      azEl.appendChild(a);
+    });
+
+    var idxEl=$('dzIndex');
+    Object.keys(GROUPS).sort().forEach(function(L){
+      var g=document.createElement('div'); g.className='dz-group'; g.id='grp-'+L; g.dataset.letter=L;
+      var recs=GROUPS[L].sort(function(a,b){return a.name.localeCompare(b.name);});
+      var namesHtml=recs.map(function(d){return '<a data-handle="'+esc(d.handle)+'" data-name="'+esc(d.name)+'">'+esc(d.name)+'</a>';}).join('');
+      g.innerHTML='<div class="gl display">'+L+'</div><div class="dz-names">'+namesHtml+'</div>';
+      idxEl.appendChild(g);
+    });
+
+    idxEl.addEventListener('click',function(e){
+      var a=e.target.closest('a[data-handle]'); if(!a) return;
+      e.preventDefault();
+      var d=BY_HANDLE[a.dataset.handle]; if(d) openDetail(d);
+    });
+
+    /* ---------- filter ---------- */
+    var fInput=$('filterInput'), emptyEl=$('dzEmpty');
+    fInput.addEventListener('input',function(){
+      var q=this.value.trim().toLowerCase(); var anyShown=false;
+      root.querySelectorAll('.dz-group').forEach(function(g){
+        var shown=0;
+        g.querySelectorAll('a[data-name]').forEach(function(a){
+          var hit=a.dataset.name.toLowerCase().indexOf(q)>=0;
+          a.style.display=hit?'':'none'; if(hit)shown++;
+        });
+        g.style.display=shown?'':'none'; if(shown)anyShown=true;
+      });
+      emptyEl.style.display=anyShown?'none':'block';
+    });
+
+    /* ---------- detail ---------- */
+    var indexView=$('indexView'), detailView=$('detailView');
+    function openDetail(d){
+      $('crumbName').textContent=d.name;
+      $('dName').textContent=d.name;
+      $('dTagline').textContent=TAGLINES[d.name] || DEFAULT_TAGLINE;
+
+      var bioText = (d.bio && d.bio.length) ? d.bio : null;
+      var bioShort, bioMore;
+      if (bioText) {
+        if (bioText.length > 260) {
+          var cut = bioText.lastIndexOf(' ', 260); if (cut < 120) cut = 260;
+          bioShort = bioText.slice(0, cut); bioMore = bioText.slice(cut);
+        } else { bioShort = bioText; bioMore = ''; }
+      } else {
+        bioShort = fallbackBioShort(d.name); bioMore = FALLBACK_BIO_MORE;
+      }
+      var bio=$('dBio');
+      bio.classList.remove('open');
+      bio.innerHTML=esc(bioShort)+(bioMore?'<span class="more">'+esc(bioMore)+'</span>':'');
+      var rm=$('readMore');
+      rm.textContent='Read more →';
+      rm.style.display=bioMore?'inline-block':'none';
+
+      $('dSpec').innerHTML='<div class="row"><span class="k">Pieces in the curation</span><span class="v">'+d.count+'</span></div>';
+
+      var portrait=$('dPortrait');
+      if(d.image){
+        portrait.className='viz has-img';
+        portrait.style.background='';
+        portrait.style.backgroundImage='url('+d.image+')';
+      } else {
+        portrait.className='viz';
+        portrait.style.backgroundImage='';
+        portrait.style.background=grad(d.name);
+      }
+
+      var viewAll=$('dViewAll');
+      viewAll.href=d.url;
+      viewAll.textContent='View all '+d.count+' →';
+
+      if(d.products && d.products.length){
+        $('dProducts').innerHTML=d.products.map(function(p){
+          var tag=p.available?'':'<span class="tag">Sold out</span>';
+          var vizClass=p.image?'viz has-img':'viz';
+          var vizStyle=p.image?'':' style="background:'+grad(d.name+p.title)+'"';
+          var inner=p.image?'<img loading="lazy" src="'+esc(p.image)+'" alt="'+esc(p.title)+'">':'<span class="mono">'+esc(mono(d.name))+'</span>';
+          return '<a class="prod" href="'+esc(p.url)+'"><div class="'+vizClass+'"'+vizStyle+'>'+tag+inner+'</div>'+
+            '<div class="meta"><div class="pb">'+esc(d.name)+'</div><div class="pn">'+esc(p.title)+'</div>'+
+            '<div class="pp">'+esc(p.price)+'</div></div></a>';
+        }).join('');
+      } else {
+        $('dProducts').innerHTML='<div class="dz-noprods">New pieces from '+esc(d.name)+' are arriving soon.</div>';
+      }
+
+      var i=DATA.indexOf(d);
+      var prev=DATA[(i-1+DATA.length)%DATA.length];
+      var next=DATA[(i+1)%DATA.length];
+      $('prevName').textContent=prev.name;
+      $('nextName').textContent=next.name;
+      $('prevBtn').onclick=function(){openDetail(prev);};
+      $('nextBtn').onclick=function(){openDetail(next);};
+
+      indexView.classList.remove('active'); detailView.classList.add('active');
+      if(history.replaceState){ history.replaceState(null,'','#'+d.handle); }
+      window.scrollTo({top:0,behavior:'auto'});
+    }
+    function showIndex(){
+      detailView.classList.remove('active'); indexView.classList.add('active');
+      if(history.replaceState){ history.replaceState(null,'',location.pathname+location.search); }
+    }
+
+    $('readMore').addEventListener('click',function(){
+      var bio=$('dBio'); var open=bio.classList.toggle('open');
+      this.textContent=open?'Read less ←':'Read more →';
+    });
+    $('crumbHome').addEventListener('click',showIndex);
+    $('backToAll').addEventListener('click',showIndex);
+
+    /* deep link: /pages/all-designers#<collection-handle> opens that designer */
+    var initial=decodeURIComponent((location.hash||'').replace(/^#/,''));
+    if(initial && BY_HANDLE[initial]){ openDetail(BY_HANDLE[initial]); }
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "LE FIGUE Designers",
+  "settings": [
+    { "type": "header", "content": "Hero" },
+    { "type": "text", "id": "hero_eyebrow", "label": "Eyebrow", "default": "The House of Makers" },
+    { "type": "text", "id": "hero_title", "label": "Title (blank = styled 'Designers')" },
+    { "type": "text", "id": "intro_lead", "label": "Intro lead sentence", "default": "We don't carry brands. We keep makers." },
+    { "type": "textarea", "id": "intro_body", "label": "Intro paragraph", "default": "Most we found in person: a quiet atelier in Seoul, a market table in Lisbon, a studio above a shop in Paris. We look for work that is genuinely well made and hard to find anywhere else, finished by hand and meant to be lived in. Because we choose this way, the curation never sits still; makers and pieces change with the season. Some names you'll know. Most you won't yet." }
+  ],
+  "presets": [{ "name": "LE FIGUE Designers" }]
+}
+{% endschema %}
