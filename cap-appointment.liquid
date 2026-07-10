@@ -1,0 +1,395 @@
+{%- comment -%}
+  LE FIGUE — "By Appointment" page.
+  Step 1 of the booking flow. SINCE 2026-07-05 the booking engine is SESAMI
+  with INSTANT BOOKING ("Just Book" — NO cart, NO checkout, NO Shopify order;
+  toggle lives in Sesami > Services > Manage > Instant Booking, per user/CEO
+  decision). The Sesami calendar opens ON THIS PAGE via the manual embed div
+  (#sesami__buttonWrapper + data-sesami-product-id/variant-id — rendered by
+  the Sesami app embed enabled on this theme). Availability = live (NoHo
+  Atelier / Virtual resources, capacity 1/slot). When Sesami fires its
+  documented `sesami:booking:success` event, we REDIRECT to the survey
+  (/pages/appointment-survey → Basin → concierge@) carrying ?type=<selected>
+  (+ slot details when the event exposes them) so it can prefill.
+  The old demo day/time picker (client-side mock) stays retired.
+  Custom & Bespoke has its own page (/pages/custom-bespoke) + its own Sesami
+  service (/products/custom-bespoke-consultation). CSS namespaced .lf-*.
+{%- endcomment -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+
+<div class="lf-page lf-appt">
+  <div class="lf-ap-hero">
+    <div class="lf-eyebrow lf-eyebrow--gold">By Appointment · The Suite</div>
+    <h1 class="lf-display lf-ap-h1">A room kept for you.</h1>
+    <p>LE FIGUE is a styling studio before it is a store, not a floor to sell from. We sit with you in The Suite, a private room set aside for one guest at a time. Come to choose a gift, to learn your stack, or simply to shop the way you'd want to.</p>
+    <p class="lf-fine"><span class="lf-ast">*</span> Every appointment is offered with our compliments.</p>
+  </div>
+
+  <section class="lf-band">
+    <div class="lf-concepts">
+      <div class="lf-concept">
+        <div class="lf-viz">{% if section.settings.img_gift %}<img class="lf-viz-img" src="{{ section.settings.img_gift | image_url: width: 900 }}" alt="" loading="lazy">{% endif %}<div class="lf-cap"><span class="lf-eyebrow lf-eyebrow--accent">The Gift Edit</span><span class="lf-vt">Read between<br>the lines</span></div></div>
+        <div class="lf-c-eye">The Gift Edit <span class="lf-c-dur">· 15–30 min</span></div>
+        <h3 class="lf-display">The right gift, every time.</h3>
+        <p>A partner, a mother, a friend, the thank-you you've put off for too long. Bring three things: who they are, the day it's for, and what you'd like to spend. From years of watching how people actually wear what we carry, a curator chooses with you, the piece they'd never buy themselves.</p>
+        <span class="lf-lk" data-lf-reserve="Gift Edit">Reserve the Gift Edit →</span>
+      </div>
+      <div class="lf-concept">
+        <div class="lf-viz">{% if section.settings.img_styling %}<img class="lf-viz-img" src="{{ section.settings.img_styling | image_url: width: 900 }}" alt="" loading="lazy">{% endif %}<div class="lf-cap"><span class="lf-eyebrow lf-eyebrow--accent">The Styling Session</span><span class="lf-vt">Bring the<br>question</span></div></div>
+        <div class="lf-c-eye">The Styling Session <span class="lf-c-dur">· 30–45 min</span></div>
+        <h3 class="lf-display">Stacks, layers, daily.</h3>
+        <p>Bring the question, any question. Ten fingers you'd like to read as one. Necklaces meant to fall in layers. Earrings chosen for where you're actually pierced, lobe to helix. We pair what you own with what's new, and find the one piece you'll never take off.</p>
+        <span class="lf-lk" data-lf-reserve="Styling Session">Reserve the Styling Session →</span>
+      </div>
+      <div class="lf-concept">
+        <div class="lf-viz">{% if section.settings.img_personal %}<img class="lf-viz-img" src="{{ section.settings.img_personal | image_url: width: 900 }}" alt="" loading="lazy">{% endif %}<div class="lf-cap"><span class="lf-eyebrow lf-eyebrow--accent">Personal Shopping</span><span class="lf-vt">Already<br>chosen</span></div></div>
+        <div class="lf-c-eye">Personal Shopping <span class="lf-c-dur">· about 60 min</span></div>
+        <h3 class="lf-display">For the regulars.</h3>
+        <p>For the ones who already know the names. The new arrivals first, then what pairs with the pieces already in your collection. An hour in a private room, no rush, no crowd. New to the house? Just as welcome, we'll start at the beginning.</p>
+        <span class="lf-lk" data-lf-reserve="Personal Shopping">Reserve Personal Shopping →</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="lf-band lf-line-top" id="lf-book">
+    <div class="lf-appt-grid">
+      <div class="lf-appt-copy">
+        <div class="lf-eyebrow lf-eyebrow--gold">Reserve · The Suite</div>
+        <h2 class="lf-display">Keep a time.</h2>
+        <p>Select the kind of appointment, then choose your room and hour on the next page — the calendar shows live availability for the NoHo atelier and for virtual sittings. The Concierge will confirm your sitting within 24 hours.</p>
+        <div class="lf-appt-types" data-lf-group="type">
+          <button type="button" class="lf-chip lf-on" data-value="Gift Edit">Gift Edit</button>
+          <button type="button" class="lf-chip" data-value="Styling Session">Styling Session</button>
+          <button type="button" class="lf-chip" data-value="Personal Shopping">Personal Shopping</button>
+        </div>
+        <div class="lf-appt-note">Complimentary · One on one · The Suite</div>
+      </div>
+
+      <div class="lf-appt-card">
+        <div class="lf-booking" id="lf-booking-form">
+          <div class="lf-bk-head"><span>Reserve a time</span><span class="lf-bk-mon">Live availability</span></div>
+
+          <div class="lf-bk-steps">
+            <div class="lf-step"><span class="lf-step-n">1</span><span>Choose the <b>NoHo Atelier</b> or a <b>Virtual</b> sitting below — each opens its live calendar.</span></div>
+            <div class="lf-step"><span class="lf-step-n">2</span><span>Your hour is reserved instantly — no payment, no checkout. Every appointment is complimentary.</span></div>
+            <div class="lf-step"><span class="lf-step-n">3</span><span>We'll take you straight to a short note, so your curator can prepare your edit before you arrive.</span></div>
+          </div>
+
+          <!-- Sesami Experience components, one per Sesami LOCATION — the
+               location choice is these two side-by-side buttons; each opens
+               the calendar pre-pinned to its location. service-id = the
+               Shopify product id of the Sesami service. data-lf-loc feeds the
+               survey's location prefill on redirect. -->
+          <div class="lf-bk-locs">
+            <div data-lf-loc="Bleecker · NoHo">
+              <div class="lf-loc-cap">NoHo Atelier · 19 Bleecker</div>
+              <sesami-experience
+                shop-id="80927293738"
+                service-id="10207116362026"
+                location-id="6a384f8b04de46ac3cbc3b40"
+                button-style="%7B%22width%22%3A%22100%25%22%2C%22height%22%3A%2252px%22%2C%22font_size%22%3A16%2C%22color%22%3A%22%23f4eee2%22%2C%22color_background%22%3A%22%232a2622%22%2C%22border_width%22%3A0%2C%22border_color%22%3A%22%232a2622%22%2C%22border_radius%22%3A0%2C%22alignment%22%3A%22center%22%7D"></sesami-experience>
+            </div>
+            <div data-lf-loc="Virtual">
+              <div class="lf-loc-cap">Virtual · Video call</div>
+              <sesami-experience
+                shop-id="80927293738"
+                service-id="10207116362026"
+                location-id="6a4ac860739df0f5502a0319"
+                button-style="%7B%22width%22%3A%22100%25%22%2C%22height%22%3A%2252px%22%2C%22font_size%22%3A16%2C%22color%22%3A%22%23f4eee2%22%2C%22color_background%22%3A%22%232a2622%22%2C%22border_width%22%3A0%2C%22border_color%22%3A%22%232a2622%22%2C%22border_radius%22%3A0%2C%22alignment%22%3A%22center%22%7D"></sesami-experience>
+            </div>
+          </div>
+
+          <div class="lf-bk-foot">Choosing a time reserves it on the spot · we confirm within 24 hours.</div>
+          <div class="lf-bk-alt">Beginning a custom piece? <a href="/pages/custom-bespoke">For Custom &amp; Bespoke →</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lf-band lf-line-top lf-who">
+    <div class="lf-band-head"><div class="lf-eyebrow lf-eyebrow--gold">Who You'll Sit With</div><h2 class="lf-display">A quiet sitting, guided with care.</h2></div>
+    <p>Your appointment is guided by people who live closely with jewelry — designers, buyers, and curators who understand proportion, material, craftsmanship, and the quiet details that make a piece feel right. We look at how you dress, how you move, what you already love, and what you may not have found yet. We are not here to persuade. We are here to sit beside you, with care.</p>
+    <div class="lf-q lf-display">Come in. We've been keeping something for you.</div>
+    <div class="lf-attr">Curator, LE FIGUE</div>
+    <p class="lf-fine"><span class="lf-ast">*</span> Every appointment is offered with our compliments.</p>
+  </section>
+</div>
+
+{% stylesheet %}
+  .lf-page {
+    --lf-ink:#2a2622; --lf-ink-soft:#6b635a; --lf-line:#e3dccf; --lf-line-soft:#efe9dd;
+    --lf-cream:#faf7f1; --lf-cream-deep:#f3ede1; --lf-accent:#8a7250; --lf-gold:#b8975f; --lf-paper:#fdfbf6;
+    background:var(--lf-cream); color:var(--lf-ink);
+    font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-weight:400; line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  .lf-page *{ box-sizing:border-box; }
+  .lf-display{ font-family:'Cormorant Garamond',serif; }
+  .lf-eyebrow{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; }
+  .lf-eyebrow--gold{ color:var(--lf-gold); }
+  .lf-eyebrow--accent{ color:var(--lf-accent); }
+
+  .lf-band{ max-width:1280px; margin:0 auto; padding:60px 30px; }
+  .lf-line-top{ border-top:1px solid var(--lf-line); }
+  .lf-band-head{ text-align:center; margin-bottom:40px; }
+  .lf-band-head h2{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(28px,3.6vw,40px); margin-top:6px; }
+
+  .lf-ap-hero{ max-width:1280px; margin:0 auto; padding:88px 30px 18px; }
+  .lf-ap-hero .lf-eyebrow{ font-size:16px; }
+  .lf-ap-h1{ font-weight:500; font-size:clamp(36px,6vw,64px); line-height:1.04; letter-spacing:-.01em; margin:14px 0 16px; }
+  .lf-ap-hero p{ font-size:15.5px; color:var(--lf-ink-soft); max-width:540px; }
+  .lf-fine{ margin-top:18px; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:13px; color:var(--lf-ink-soft); }
+  .lf-ast{ color:var(--lf-gold); }
+
+  .lf-viz{ position:relative; width:100%; border:1px solid var(--lf-line);
+    background:radial-gradient(120% 120% at 75% 12%, #efe8db 0%, #e6dac6 55%, #dccdb4 100%);
+    display:flex; flex-direction:column; justify-content:flex-end; padding:20px; overflow:hidden; }
+  .lf-viz::before{ content:""; position:absolute; inset:0;
+    background:repeating-linear-gradient(135deg, rgba(255,255,255,.18) 0 1px, transparent 1px 9px); opacity:.5; }
+  .lf-viz-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .lf-viz .lf-eyebrow{ position:relative; font-size:13px; }
+  .lf-vt{ position:relative; font-family:'Cormorant Garamond',serif; font-size:22px; line-height:1.15; color:var(--lf-ink); margin-top:4px; }
+  /* One rectangle per card, sized to its own text (2026-07-10): the caption
+     spans are wrapped in .lf-cap, which shrink-wraps (align-self beats the
+     flex column's stretch) and carries the #f8f2e5 @ 75% plaque. */
+  .lf-viz .lf-cap{ position:relative; align-self:flex-start; display:flex; flex-direction:column;
+    background:rgba(248,242,229,.75); padding:10px 16px 12px; }
+
+  .lf-lk{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:var(--lf-ink);
+    border-bottom:1px solid var(--lf-accent); padding-bottom:3px; cursor:pointer; transition:color .18s; }
+  .lf-lk:hover{ color:var(--lf-accent); }
+
+  .lf-concepts{ display:grid; grid-template-columns:repeat(3,1fr); gap:30px; }
+  .lf-concept{ display:flex; flex-direction:column; }
+  .lf-concept .lf-lk{ margin-top:auto; align-self:flex-start; }
+  .lf-concept .lf-viz{ min-height:280px; }
+  .lf-c-eye{ font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--lf-gold); font-size:14px; margin:16px 0 4px; }
+  .lf-c-dur{ color:var(--lf-ink-soft); }
+  .lf-concept h3{ font-weight:500; font-size:25px; line-height:1.12; margin-bottom:10px; }
+  .lf-concept p{ font-size:14px; color:var(--lf-ink-soft); line-height:1.7; margin-bottom:16px; }
+
+  .lf-appt-grid{ display:grid; grid-template-columns:1fr 420px; gap:54px; align-items:center; }
+  .lf-appt-copy .lf-eyebrow{ font-size:15px; }
+  .lf-appt-copy h2{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(30px,4vw,46px); margin:6px 0 14px; }
+  .lf-appt-copy p{ font-size:15px; color:var(--lf-ink-soft); max-width:440px; }
+  .lf-appt-types{ display:flex; gap:10px; flex-wrap:wrap; margin-top:24px; }
+  .lf-chip{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; padding:9px 18px;
+    border:1px solid var(--lf-line); background:none; color:var(--lf-ink-soft); cursor:pointer; border-radius:30px; transition:.18s; }
+  .lf-chip:hover{ border-color:var(--lf-accent); color:var(--lf-ink); }
+  .lf-chip.lf-on{ background:var(--lf-accent); color:#f7f1e6; border-color:var(--lf-accent); }
+  .lf-appt-note{ margin-top:20px; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--lf-gold); }
+
+  .lf-appt-card{ background:var(--lf-paper); border:1px solid var(--lf-line); padding:26px 26px 24px;
+    box-shadow:0 26px 50px -34px rgba(42,38,34,.4); }
+  .lf-bk-head{ display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'Cormorant Garamond',serif; font-size:18px; padding-bottom:16px; border-bottom:1px solid var(--lf-line-soft); }
+  .lf-bk-mon{ font-style:italic; color:var(--lf-ink-soft); font-size:14px; }
+
+  .lf-bk-steps{ display:flex; flex-direction:column; gap:14px; padding:20px 0 4px; }
+  .lf-step{ display:flex; gap:12px; align-items:flex-start; font-size:13px; color:var(--lf-ink-soft); line-height:1.65; }
+  .lf-step b{ color:var(--lf-ink); font-weight:500; }
+  .lf-step-n{ flex-shrink:0; width:22px; height:22px; border:1px solid var(--lf-accent); border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif;
+    font-style:italic; font-size:12px; color:var(--lf-accent); margin-top:2px; }
+
+  /* Two side-by-side location buttons (Sesami Experience components).
+     Button colors/size come from the component's button-style JSON; the
+     rules below are best-effort light-DOM font overrides. */
+  .lf-appt .lf-bk-locs{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:18px; align-items:stretch; }
+  .lf-appt .lf-bk-locs > div{ display:flex; flex-direction:column; }
+  .lf-appt .lf-bk-locs > div sesami-experience{ margin-top:auto; }
+  .lf-appt .lf-loc-cap{ font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--lf-ink-soft); margin-bottom:7px; text-align:center; }
+  @media(max-width:560px){ .lf-appt .lf-bk-locs{ grid-template-columns:1fr; } }
+  .lf-appt sesami-experience{ display:block; }
+  .lf-appt sesami-experience button{
+    font-family:'Cormorant Garamond',serif !important; font-style:italic;
+    cursor:pointer; transition:.2s; }
+  .lf-appt sesami-experience button:hover{ background:var(--lf-accent) !important; }
+  .lf-bk-foot{ margin-top:14px; text-align:center; font-size:11.5px; color:var(--lf-ink-soft);
+    font-style:italic; font-family:'Cormorant Garamond',serif; }
+  .lf-bk-alt{ margin-top:16px; padding-top:14px; border-top:1px solid var(--lf-line-soft); text-align:center;
+    font-size:12.5px; color:var(--lf-ink-soft); }
+  .lf-bk-alt a{ font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--lf-accent);
+    text-decoration:none; border-bottom:1px solid var(--lf-accent); padding-bottom:1px; }
+  .lf-bk-alt a:hover{ color:var(--lf-ink); border-color:var(--lf-ink); }
+
+  .lf-who{ text-align:center; }
+  .lf-who p{ max-width:640px; margin:0 auto; color:var(--lf-ink-soft); font-size:15.5px; line-height:2; }
+  .lf-q{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:24px; color:var(--lf-ink); margin-top:30px; }
+  .lf-attr{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:var(--lf-gold); margin-top:8px; letter-spacing:.06em; }
+  .lf-who .lf-fine{ margin-top:24px; }
+
+  @media(max-width:900px){
+    .lf-concepts{ grid-template-columns:1fr; gap:40px; }
+    .lf-appt-grid{ grid-template-columns:1fr; gap:30px; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    var root = document.querySelector('.lf-appt');
+    if (!root) return;
+
+    var SURVEY_URL = '/pages/appointment-survey';
+
+    function currentType() {
+      var on = root.querySelector('.lf-appt-types .lf-chip.lf-on');
+      return on ? on.getAttribute('data-value') : '';
+    }
+
+    var typeGroup = root.querySelector('[data-lf-group="type"]');
+    if (typeGroup) {
+      typeGroup.addEventListener('click', function (e) {
+        var btn = e.target.closest('button');
+        if (!btn || !typeGroup.contains(btn)) return;
+        typeGroup.querySelectorAll('button').forEach(function (b) { b.classList.remove('lf-on'); });
+        btn.classList.add('lf-on');
+      });
+    }
+
+    // concept-card links select their type and scroll to the reserve band
+    root.querySelectorAll('[data-lf-reserve]').forEach(function (lk) {
+      lk.addEventListener('click', function () {
+        var type = lk.getAttribute('data-lf-reserve');
+        root.querySelectorAll('.lf-appt-types .lf-chip').forEach(function (c) {
+          c.classList.toggle('lf-on', c.getAttribute('data-value') === type);
+        });
+        var book = document.getElementById('lf-book');
+        if (book) book.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    });
+
+    // remember which location button the guest used (feeds the survey prefill)
+    var lastLoc = '';
+    root.querySelectorAll('[data-lf-loc]').forEach(function (wrap) {
+      wrap.addEventListener('click', function () { lastLoc = wrap.getAttribute('data-lf-loc') || ''; });
+    });
+
+    // ---- capture the booking payload the widget POSTs to Sesami ----
+    // The success event only carries { appointmentId } (verified), so the
+    // guest's name/email and the chosen slot are read from the widget's own
+    // booking request body, best-effort and fully guarded.
+    var sesamiPayload = null;
+    (function () {
+      var origFetch = window.fetch;
+      if (!origFetch) return;
+      window.fetch = function (input, opts) {
+        try {
+          var u = (typeof input === 'string') ? input : ((input && input.url) || '');
+          if (u.indexOf('sesami') > -1 && opts && typeof opts.body === 'string') {
+            try { sesamiPayload = JSON.parse(opts.body); } catch (e) { /* not JSON */ }
+          }
+        } catch (e) { /* never break the widget */ }
+        return origFetch.apply(this, arguments);
+      };
+    })();
+
+    // recursively find the first string value whose key matches
+    function deepFind(obj, keys, depth) {
+      if (!obj || typeof obj !== 'object' || (depth || 0) > 6) return '';
+      for (var k in obj) {
+        if (!Object.prototype.hasOwnProperty.call(obj, k)) continue;
+        var lk = k.toLowerCase().replace(/[_-]/g, '');
+        for (var i = 0; i < keys.length; i++) {
+          if (lk === keys[i] && typeof obj[k] === 'string' && obj[k]) return obj[k];
+        }
+      }
+      for (var k2 in obj) {
+        if (!Object.prototype.hasOwnProperty.call(obj, k2)) continue;
+        var found = deepFind(obj[k2], keys, (depth || 0) + 1);
+        if (found) return found;
+      }
+      return '';
+    }
+
+    // ---- Sesami INSTANT BOOKING success -> hand off to the survey ----
+    window.addEventListener('sesami:booking:success', function (e) {
+      var p = new URLSearchParams();
+      var t = currentType(); if (t) p.set('type', t);
+      if (lastLoc) p.set('loc', lastLoc);
+      try {
+        var d = (e && e.detail) || {};
+        if (d.appointmentId) p.set('ref', d.appointmentId);
+
+        var name = deepFind(sesamiPayload, ['name', 'fullname', 'customername']);
+        if (!name) {
+          var fn = deepFind(sesamiPayload, ['firstname']);
+          var ln = deepFind(sesamiPayload, ['lastname']);
+          name = (fn + ' ' + ln).trim();
+        }
+        if (name) p.set('name', name);
+        var email = deepFind(sesamiPayload, ['email', 'customeremail']);
+        if (email) p.set('email', email);
+        var phone = deepFind(sesamiPayload, ['phone', 'tel', 'mobile']);
+        if (phone) p.set('phone', phone);
+
+        // Slots live in the shop timezone (America/New_York). The payload's
+        // datetime is usually UTC — always DISPLAY in ET, never the browser TZ.
+        var ET = 'America/New_York';
+        function setWhen(dt, tz) {
+          var o1 = { weekday: 'short', month: 'short', day: 'numeric' };
+          var o2 = { hour: 'numeric', minute: '2-digit' };
+          if (tz) { o1.timeZone = tz; o2.timeZone = tz; }
+          p.set('day', dt.toLocaleDateString('en-US', o1));
+          p.set('time', dt.toLocaleTimeString('en-US', o2));
+        }
+        // Sesami sends the DATE and TIME as separate fields (a date-only
+        // string parsed as new Date() becomes UTC midnight -> wrong day in
+        // ET), so handle date-only + clock-time explicitly.
+        function fmtDateOnly(str) {
+          var dm = String(str).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+          if (!dm) return false;
+          p.set('day', new Date(+dm[1], +dm[2] - 1, +dm[3]).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }));
+          return true;
+        }
+        function fmtClock(t) {
+          var m = String(t).match(/^(\d{1,2}):(\d{2})/);
+          if (!m) return String(t);
+          var h = +m[1], mm = m[2], ap = h >= 12 ? 'PM' : 'AM';
+          h = h % 12; if (h === 0) h = 12;
+          return h + ':' + mm + ' ' + ap;
+        }
+        var when = deepFind(sesamiPayload, ['datetime', 'start', 'starttime', 'startat', 'startsat', 'slot']);
+        var dateOnly = deepFind(sesamiPayload, ['date', 'day']);
+        var timeOnly = deepFind(sesamiPayload, ['time', 'timeofday']);
+        if (when && !fmtDateOnly(when)) {
+          var str = String(when);
+          var naive = str.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
+          if (/[zZ]$|[+\-]\d{2}:?\d{2}$/.test(str)) {
+            var dt = new Date(str);
+            if (!isNaN(dt.getTime())) setWhen(dt, ET);
+          } else if (naive) {
+            setWhen(new Date(+naive[1], +naive[2] - 1, +naive[3], +naive[4], +naive[5]), null);
+          } else if (/^\d{10,13}$/.test(str)) {
+            setWhen(new Date(str.length > 10 ? +str : +str * 1000), ET);
+          } else {
+            var dt2 = new Date(str);
+            if (!isNaN(dt2.getTime())) setWhen(dt2, ET); else p.set('day', str);
+          }
+        } else if (!when && dateOnly) {
+          if (!fmtDateOnly(dateOnly)) p.set('day', String(dateOnly));
+        }
+        if (!p.get('time') && timeOnly) p.set('time', fmtClock(timeOnly));
+      } catch (err) { /* best effort — survey works without prefill */ }
+      var qs = p.toString();
+      window.location.href = SURVEY_URL + (qs ? ('?' + qs) : '');
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "LE FIGUE Appointment",
+  "settings": [
+    { "type": "header", "content": "Concept card photos (text overlays the photo)" },
+    { "type": "image_picker", "id": "img_gift", "label": "The Gift Edit photo" },
+    { "type": "image_picker", "id": "img_styling", "label": "The Styling Session photo" },
+    { "type": "image_picker", "id": "img_personal", "label": "Personal Shopping photo" }
+  ],
+  "presets": [{ "name": "LE FIGUE Appointment" }]
+}
+{% endschema %}
