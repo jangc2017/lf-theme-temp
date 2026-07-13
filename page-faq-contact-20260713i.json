@@ -1,0 +1,338 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "enable_animation": true,
+        "content_width": "custom",
+        "custom_content_width": 700
+      }
+    },
+    "rich-text": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "title": "FAQ",
+            "heading_tag": "h2",
+            "heading_font_class": "fs-heading-1-base"
+          }
+        },
+        "spacer-1": {
+          "type": "spacer",
+          "settings": {
+            "space": 12
+          }
+        },
+        "text-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Have questions? We've got answers!</p>",
+            "text_font_class": "fs-body-100"
+          }
+        },
+        "text-2": {
+          "type": "text",
+          "settings": {
+            "text": "",
+            "text_font_class": "fs-body-100"
+          }
+        },
+        "spacer-2": {
+          "type": "spacer",
+          "settings": {
+            "space": 12
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "spacer-1",
+        "text-1",
+        "text-2",
+        "spacer-2"
+      ],
+      "settings": {
+        "alignment": "center_center",
+        "enable_animation": true,
+        "divider_style": "none",
+        "section_padding": "section--vertical-padding-top-bottom",
+        "content_width": "custom",
+        "custom_content_width": 700
+      }
+    },
+    "collapsible-row-list-1": {
+      "type": "collapsible-row-list",
+      "blocks": {
+        "item_6eLJtk": {
+          "type": "item",
+          "settings": {
+            "expand_by_default": false,
+            "icon": "none",
+            "title": "This is an example of a question that a customer might ask",
+            "text": "<p>This is an example of a response that you might give. It's good to be as thorough as possible in responses as that has a tendency to improve trust overall.</p>"
+          }
+        },
+        "item-1": {
+          "type": "item",
+          "settings": {
+            "expand_by_default": false,
+            "icon": "none",
+            "title": "How do I make a purchase?",
+            "text": "<p>You can shop with LE FIGUE online or in person at our retail locations. We accept a variety of major credit cards and approved payment methods at checkout.</p>"
+          }
+        },
+        "item-2": {
+          "type": "item",
+          "settings": {
+            "expand_by_default": false,
+            "icon": "none",
+            "title": "How do I know if my order is confirmed?",
+            "text": "<p>Once your order has been placed, you will receive an order confirmation by email with your order details. Please review the confirmation carefully and contact us as soon as possible if anything needs to be updated.</p>"
+          }
+        },
+        "item-3": {
+          "type": "item",
+          "settings": {
+            "expand_by_default": false,
+            "icon": "none",
+            "title": "Can I change my shipping address after my order is placed?",
+            "text": "<p>If your order was placed through Shop, you may be able to update your shipping details directly after placing the order.</p><p>If your order was placed through another payment method or checkout tool, please email us at <a href=\"mailto:care@lefigue.com\" target=\"_blank\">care@lefigue.com</a> with your order number and the updated shipping address. We will do our best to assist before the order is shipped.</p>"
+          }
+        },
+        "item-4": {
+          "type": "item",
+          "settings": {
+            "expand_by_default": false,
+            "icon": "none",
+            "title": "Can I change my billing address after placing my order?",
+            "text": "<p>For security reasons, billing details may not always be editable after an order has been placed. If you notice an issue with your billing information, please email<a href=\"mailto:care@lefigue.com\" target=\"_blank\">care@lefigue.com</a>with your order number as soon as possible, and our team will help review the order.</p>"
+          }
+        },
+        "item_YVepTt": {
+          "type": "item",
+          "settings": {
+            "expand_by_default": false,
+            "icon": "none",
+            "title": "What payment methods do you accept?",
+            "text": "<p>We accept major credit cards and selected digital payment options online and in store. Available payment methods may vary depending on the checkout method used.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "item_6eLJtk",
+        "item-1",
+        "item-2",
+        "item-3",
+        "item-4",
+        "item_YVepTt"
+      ],
+      "settings": {
+        "title": "Orders",
+        "heading_tag": "h2",
+        "heading_font_class": "fs-heading-2-base",
+        "heading_alignment": "left",
+        "subheading": "",
+        "subheading_tag": "h3",
+        "subheading_font_class": "fs-heading-4-base",
+        "item_heading_font": "heading",
+        "auto_collapse_rows": false,
+        "enable_animation": false,
+        "divider_style": "none",
+        "section_padding": "section--vertical-padding-bottom-only",
+        "content_width": "full",
+        "custom_content_width": 850
+      }
+    },
+    "collapsible-row-list-2": {
+      "type": "collapsible-row-list",
+      "blocks": {
+        "item-1": {
+          "type": "item",
+          "settings": {
+            "expand_by_default": false,
+            "icon": "none",
+            "title": "Do you ship internationally?",
+            "text": "<p>At this time, LE FIGUE ships within the United States only. International shipping is not currently available.</p>"
+          }
+        },
+        "item-2": {
+          "type": "item",
+          "settings": {
+            "expand_by_default": false,
+            "icon": "none",
+            "title": "When will my order be shipped?",
+            "text": "<p>Shipping timing may vary depending on the item.</p><p>Most ready-to-ship items are processed within 1–2 business days. Some pieces, including made-to-order, special order, or designer-dependent items, may require approximately 7–14 business days before shipment.</p><p>If there is any expected delay or special production timeline, our team will contact you by email.</p>"
+          }
+        },
+        "item-3": {
+          "type": "item",
+          "settings": {
+            "expand_by_default": false,
+            "icon": "none",
+            "title": "How long will it take until I receive my order?",
+            "text": "<p>Many domestic orders arrive within approximately 12–24 hours after shipment, depending on the destination and carrier service. Delivery timing may vary due to carrier conditions, holidays, weather, or other circumstances outside of our control.</p>"
+          }
+        },
+        "item-4": {
+          "type": "item",
+          "settings": {
+            "expand_by_default": false,
+            "icon": "none",
+            "title": "What is your return policy?",
+            "text": "<p>We are happy to accept eligible returns within the following return windows:</p><p>Earrings may be returned within 14 days of delivery.</p><p>All other eligible items may be returned within 21 days of delivery.</p><p>Returned items must be unworn, unused, in their original condition, and returned with original packaging and proof of purchase. Items that show signs of wear, damage, alteration, or missing packaging may not be accepted.</p><p>For hygiene reasons, earrings must be completely unworn and in original condition to be eligible for return.</p><p>Made-to-order, custom, special order, final sale items, and gift cards may not be eligible for return unless otherwise required by law or approved by LE FIGUE.</p><p>To request a return, please email <a href=\"mailto:care@lefigue.com\" target=\"_blank\">care@lefigue.com</a> with your order number and return request details.</p>"
+          }
+        },
+        "item_yXUNhD": {
+          "type": "item",
+          "settings": {
+            "expand_by_default": false,
+            "icon": "none",
+            "title": "What should I do if my item arrives damaged?",
+            "text": "<p>Please contact us at<a href=\"mailto:care@lefigue.com\" target=\"_blank\">care@lefigue.com</a>within 48 hours of delivery with your order number and clear photos of the item, packaging, and shipping box. Our team will review the issue and assist you as quickly as possible.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "item-1",
+        "item-2",
+        "item-3",
+        "item-4",
+        "item_yXUNhD"
+      ],
+      "settings": {
+        "title": "Shipping & Returns",
+        "heading_tag": "h2",
+        "heading_font_class": "fs-heading-3-base",
+        "heading_alignment": "left",
+        "subheading": "",
+        "subheading_tag": "h3",
+        "subheading_font_class": "fs-heading-5-base",
+        "item_heading_font": "heading",
+        "auto_collapse_rows": false,
+        "enable_animation": false,
+        "divider_style": "none",
+        "section_padding": "section--vertical-padding-bottom-only",
+        "content_width": "full",
+        "custom_content_width": 850
+      }
+    },
+    "collapsible-row-list-3": {
+      "type": "collapsible-row-list",
+      "blocks": {
+        "item-1": {
+          "type": "item",
+          "settings": {
+            "expand_by_default": false,
+            "icon": "none",
+            "title": "What size should I order?",
+            "text": "<p>If you visit us in store, our team will be happy to assist with sizing.</p><p>For online orders, please refer to the size guide provided on the product page. If you are unsure, you may contact us before placing your order and we will do our best to help you select the right size.</p>"
+          }
+        },
+        "item-2": {
+          "type": "item",
+          "settings": {
+            "expand_by_default": false,
+            "icon": "none",
+            "title": "Where can I find information on sustainability?",
+            "text": "<p>LE FIGUE works with a curated selection of designers, and sustainability practices may vary by designer and collection.</p><p>Depending on the piece, some of our partner designers may use materials such as lab-grown diamonds, recycled gold, recycled silver, or responsibly sourced materials. When available, these details will be included on the product page or shared by our team upon request.</p>"
+          }
+        },
+        "item-3": {
+          "type": "item",
+          "settings": {
+            "expand_by_default": false,
+            "icon": "none",
+            "title": "Do you offer gift cards?",
+            "text": "<p>Yes. LE FIGUE gift cards are available for purchase online and in store.</p><p>Gift cards may be used toward eligible purchases online or in person, depending on the checkout method and gift card format. Gift cards are non-refundable and cannot be exchanged for cash.</p>"
+          }
+        },
+        "item_NLmdgj": {
+          "type": "item",
+          "settings": {
+            "expand_by_default": false,
+            "icon": "none",
+            "title": "How should I care for my jewelry?",
+            "text": "<p>To preserve the quality of your jewelry, we recommend keeping each piece away from water, perfume, lotion, chemicals, and excessive humidity. Store your jewelry separately in a pouch or jewelry box when not in use.</p><p>For delicate, plated, pearl, gemstone, or handmade pieces, extra care is recommended. Please refer to any care instructions included with your piece or contact our team for guidance.</p>"
+          }
+        },
+        "item_3xjgMT": {
+          "type": "item",
+          "settings": {
+            "expand_by_default": false,
+            "icon": "none",
+            "title": "Are all pieces available online and in store?",
+            "text": "<p>Product availability may vary between online and in-store locations. Some pieces may be exclusive to a specific store, designer edit, appointment, or limited release.</p><p>If you are looking for a specific item, please contact <a href=\"mailto:care@lefigue.com\" target=\"_blank\">care@lefigue.com</a> and our team can help check availability.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "item-1",
+        "item-2",
+        "item-3",
+        "item_NLmdgj",
+        "item_3xjgMT"
+      ],
+      "settings": {
+        "title": "Our Products",
+        "heading_tag": "h2",
+        "heading_font_class": "fs-heading-3-base",
+        "heading_alignment": "left",
+        "subheading": "",
+        "subheading_tag": "h3",
+        "subheading_font_class": "fs-heading-5-base",
+        "item_heading_font": "heading",
+        "auto_collapse_rows": false,
+        "enable_animation": false,
+        "divider_style": "none",
+        "section_padding": "section--vertical-padding-bottom-only",
+        "content_width": "full",
+        "custom_content_width": 850
+      }
+    },
+    "promotion_bar": {
+      "type": "promotion-bar",
+      "settings": {
+        "min_height": 100,
+        "min_height_mobile": 60,
+        "heading": "Didn't find your answer?",
+        "heading_tag": "h2",
+        "text": "<p>Don't hesitate to reach out with any questions</p>",
+        "link": "shopify://pages/contact",
+        "link_text": "Contact us",
+        "button_style": "btn--primary",
+        "focal_point": "image_presentation",
+        "mobile_focal_point": "image_presentation",
+        "background_color": "#2b3135",
+        "text_color": "#f7f7e8",
+        "button_background_color": "#faf7c3",
+        "button_text_color": "#2b3135",
+        "color_overlay": "#000000",
+        "color_overlay_gradient": "",
+        "overlay_opacity": 0,
+        "enable_animation": true,
+        "full_width": false,
+        "section_padding": "section--vertical-padding-top-bottom"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "rich-text",
+    "collapsible-row-list-1",
+    "collapsible-row-list-2",
+    "collapsible-row-list-3",
+    "promotion_bar"
+  ]
+}
