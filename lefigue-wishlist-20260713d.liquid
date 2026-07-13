@@ -1,0 +1,318 @@
+{%- comment -%}
+  LE FIGUE — Wishlist page (/pages/wishlist, templates/page.wishlist.json).
+  Client-side wishlist: no app, no account. Hearts on product cards
+  (snippets/product-item.liquid, LF Edit #17) write {h: handle, t: saved-at}
+  entries to localStorage "lf:wishlist" via window.LFWishlist
+  (assets/lefigue-custom.js); this page reads that list and hydrates each
+  handle from /products/{handle}.js. Products that 404 (deleted/unpublished)
+  are pruned from storage; network errors leave the entry alone.
+  CSS is an inline <style> on purpose — the section {% stylesheet %} bundle
+  lags on preview themes (see custom.css Edit #13), inline never does.
+  Namespaced .lf-wishlist / #lfw-*.
+{%- endcomment -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+
+<div class="lf-wishlist" data-currency="{{ cart.currency.iso_code | default: shop.currency }}">
+  <!-- HERO -->
+  <section class="wl-hero">
+    <p class="wl-eyebrow">Your Wishlist</p>
+    <h1 class="wl-title">The pieces you keep<br>returning to.</h1>
+    <p class="wl-count" id="lfw-count" hidden></p>
+  </section>
+
+  <!-- SAVED PIECES -->
+  <section class="wl-body">
+    <div class="wl-grid" id="lfw-grid" hidden></div>
+
+    <!-- EMPTY STATE -->
+    <div class="wl-empty" id="lfw-empty" hidden>
+      <svg class="wl-empty-heart" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19.8c-4.9-3.8-8-6.7-8-9.9C4 7.6 5.8 5.8 8 5.8c1.5 0 2.9.8 4 2.2 1.1-1.4 2.5-2.2 4-2.2 2.2 0 4 1.8 4 4.1 0 3.2-3.1 6.1-8 9.9z"/></svg>
+      <h2 class="wl-empty-title">Nothing here yet.</h2>
+      <p class="wl-empty-desc">Tap the heart on any piece to keep it. Your wishlist stays on this device — no sign-in needed.</p>
+      <a class="wl-cta" href="/collections/all">Explore All Pieces</a>
+    </div>
+  </section>
+
+  <!-- DEVICE NOTE -->
+  <section class="wl-note-band" id="lfw-note" hidden>
+    <p class="wl-note">Your wishlist is saved on this device and stays here in this browser.</p>
+  </section>
+</div>
+
+<style>
+  .lf-wishlist{ --cream:#F8F5F0; --warm-white:#FDFCF9; --ink:#1C1C1A; --ink-soft:#3A3935; --gold:#B8A882; --gold-light:#D6C9A8; --divider:#D8D3C8; --muted:#8A8680;
+    --font-display:'Cormorant Garamond',Georgia,serif; --font-sc:'Cormorant SC',Georgia,serif; --font-body:'Pretendard Variable','Pretendard',-apple-system,'Helvetica Neue',Arial,sans-serif;
+    background:var(--cream); color:var(--ink); font-family:var(--font-body); font-size:15px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .lf-wishlist *, .lf-wishlist *::before, .lf-wishlist *::after{ box-sizing:border-box; }
+  .lf-wishlist a{ text-decoration:none; color:inherit; }
+
+  /* HERO */
+  .lf-wishlist .wl-hero{ background:var(--warm-white); border-bottom:1px solid var(--divider); text-align:center; padding:88px 24px 72px; }
+  .lf-wishlist .wl-eyebrow{ font-family:var(--font-sc); font-size:11px; letter-spacing:.28em; color:var(--gold); margin-bottom:28px; opacity:0; animation:lfw-fadeUp .9s .1s ease forwards; }
+  .lf-wishlist .wl-title{ font-family:var(--font-display); font-style:italic; font-weight:300; font-size:clamp(40px,6vw,72px); line-height:1.08; letter-spacing:-.01em; color:var(--ink); margin:0 0 22px; opacity:0; animation:lfw-fadeUp 1s .3s ease forwards; }
+  .lf-wishlist .wl-count{ font-family:var(--font-display); font-weight:300; font-size:clamp(15px,2vw,18px); color:var(--ink-soft); letter-spacing:.01em; margin:0; opacity:0; animation:lfw-fadeUp 1s .5s ease forwards; }
+
+  /* GRID */
+  .lf-wishlist .wl-body{ padding:80px 48px 96px; max-width:1240px; margin:0 auto; }
+  .lf-wishlist .wl-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:56px 28px; }
+  .lf-wishlist .wl-card{ text-align:center; opacity:0; transform:translateY(16px); animation:lfw-fadeUp .7s ease forwards; }
+  .lf-wishlist .wl-card-img{ display:block; position:relative; aspect-ratio:4/5; background:var(--warm-white); overflow:hidden; margin-bottom:20px; }
+  .lf-wishlist .wl-card-img img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s ease; }
+  .lf-wishlist .wl-card:hover .wl-card-img img{ transform:scale(1.03); }
+  .lf-wishlist .wl-x{ position:absolute; top:10px; right:10px; z-index:2; width:30px; height:30px; padding:0; border:0; border-radius:50%; background:rgba(253,252,249,.88); box-shadow:0 1px 4px rgba(0,0,0,.08); cursor:pointer; transition:transform .15s; -webkit-tap-highlight-color:transparent; }
+  .lf-wishlist .wl-x::before, .lf-wishlist .wl-x::after{ content:''; position:absolute; top:50%; left:50%; width:12px; height:1px; background:#2a2622; transition:background .25s; }
+  .lf-wishlist .wl-x::before{ transform:translate(-50%,-50%) rotate(45deg); }
+  .lf-wishlist .wl-x::after{ transform:translate(-50%,-50%) rotate(-45deg); }
+  .lf-wishlist .wl-x:hover::before, .lf-wishlist .wl-x:hover::after{ background:var(--gold); }
+  .lf-wishlist .wl-x:active{ transform:scale(.92); }
+  .lf-wishlist .wl-x:focus-visible{ outline:1px solid var(--gold); outline-offset:2px; }
+  .lf-wishlist .wl-maker{ font-family:var(--font-sc); font-size:10px; letter-spacing:.24em; color:var(--gold); display:block; margin-bottom:8px; }
+  .lf-wishlist .wl-name{ font-family:var(--font-display); font-weight:400; font-size:18px; line-height:1.4; color:var(--ink); margin:0 0 6px; }
+  .lf-wishlist .wl-name a:hover{ color:var(--ink-soft); }
+  .lf-wishlist .wl-price{ font-size:13px; color:var(--muted); letter-spacing:.02em; margin:0; }
+  .lf-wishlist .wl-price s{ margin-right:6px; opacity:.7; }
+  .lf-wishlist .wl-soldout{ font-family:var(--font-sc); font-size:10px; letter-spacing:.2em; color:var(--muted); }
+
+  /* Signature: the kept-ledger caption */
+  .lf-wishlist .wl-kept-line{ width:24px; height:1px; background:var(--gold); margin:16px auto 12px; opacity:.7; }
+  .lf-wishlist .wl-kept{ font-family:var(--font-sc); font-size:9.5px; letter-spacing:.22em; color:var(--muted); display:flex; justify-content:center; align-items:baseline; gap:10px; }
+
+  /* EMPTY STATE */
+  .lf-wishlist .wl-empty{ text-align:center; padding:48px 24px 32px; }
+  .lf-wishlist .wl-empty-heart{ width:30px; height:30px; fill:none; stroke:var(--gold); stroke-width:1.2; margin-bottom:26px; opacity:.8; }
+  .lf-wishlist .wl-empty-title{ font-family:var(--font-display); font-style:italic; font-weight:300; font-size:clamp(26px,3.5vw,36px); color:var(--ink); margin:0 0 18px; }
+  .lf-wishlist .wl-empty-desc{ max-width:420px; margin:0 auto 40px; font-size:13.5px; color:var(--muted); line-height:1.9; letter-spacing:.02em; }
+  .lf-wishlist .wl-cta{ display:inline-block; background:var(--ink); color:var(--warm-white); font-family:var(--font-sc); font-size:12px; letter-spacing:.22em; padding:18px 44px; transition:background .25s; }
+  .lf-wishlist .wl-cta:hover{ background:var(--ink-soft); }
+  .lf-wishlist .wl-cta:focus-visible{ outline:1px solid var(--gold); outline-offset:3px; }
+
+  /* NOTE BAND */
+  .lf-wishlist .wl-note-band{ background:var(--warm-white); border-top:1px solid var(--divider); padding:44px 24px; text-align:center; }
+  .lf-wishlist .wl-note{ font-family:var(--font-sc); font-size:10px; letter-spacing:.18em; color:var(--muted); max-width:600px; margin:0 auto; line-height:2; }
+
+  @keyframes lfw-fadeUp{ from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);} }
+
+  @media (max-width:768px){
+    .lf-wishlist .wl-hero{ padding:64px 20px 52px; }
+    .lf-wishlist .wl-body{ padding:56px 20px 64px; }
+    .lf-wishlist .wl-grid{ grid-template-columns:repeat(2,1fr); gap:44px 14px; }
+    .lf-wishlist .wl-name{ font-size:16px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .lf-wishlist .wl-eyebrow, .lf-wishlist .wl-title, .lf-wishlist .wl-count, .lf-wishlist .wl-card{ animation:none; opacity:1; transform:none; }
+    .lf-wishlist .wl-card:hover .wl-card-img img{ transform:none; }
+  }
+</style>
+
+<script>
+  (function () {
+    var root = document.querySelector('.lf-wishlist');
+    if (!root) return;
+
+    var KEY = 'lf:wishlist';
+    var CUR = root.getAttribute('data-currency') || 'USD';
+    var grid = root.querySelector('#lfw-grid');
+    var empty = root.querySelector('#lfw-empty');
+    var count = root.querySelector('#lfw-count');
+    var note = root.querySelector('#lfw-note');
+    var cache = {}; // handle -> product json (or {dead:true} for 404s)
+    var muted = false; // suppress the change-event re-render while pruning
+
+    function read() {
+      try {
+        var v = JSON.parse(localStorage.getItem(KEY) || '[]');
+        return Array.isArray(v) ? v : [];
+      } catch (e) { return []; }
+    }
+    function write(list) {
+      try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) {}
+      document.dispatchEvent(new CustomEvent('lf:wishlist:change', { detail: { list: list } }));
+    }
+    function removeHandle(h) {
+      if (window.LFWishlist) { window.LFWishlist.remove(h); return; }
+      write(read().filter(function (x) { return x.h !== h; }));
+    }
+
+    var WORDS = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+    function countLine(n) {
+      var w = n <= 10 ? WORDS[n - 1] : String(n);
+      return n === 1 ? 'One piece, kept close.' : w + ' pieces, kept close.';
+    }
+    function money(cents) {
+      try {
+        return new Intl.NumberFormat('en-US', {
+          style: 'currency', currency: CUR,
+          minimumFractionDigits: cents % 100 === 0 ? 0 : 2
+        }).format(cents / 100);
+      } catch (e) { return '$' + (cents / 100).toFixed(2); }
+    }
+    function keptDate(t) {
+      if (!t) return 'Kept';
+      try {
+        return 'Kept ' + new Date(t).toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+      } catch (e) { return 'Kept'; }
+    }
+    function imgUrl(src, w) {
+      if (!src) return '';
+      return src + (src.indexOf('?') > -1 ? '&' : '?') + 'width=' + w;
+    }
+
+    function fetchProduct(item) {
+      if (cache[item.h]) return Promise.resolve(cache[item.h]);
+      return fetch('/products/' + encodeURIComponent(item.h) + '.js')
+        .then(function (r) {
+          if (r.ok) return r.json();
+          if (r.status === 404) return { dead: true };
+          return null; // server hiccup — keep the entry, skip this load
+        })
+        .then(function (p) { if (p) cache[item.h] = p; return p; })
+        .catch(function () { return null; }); // network error — keep the entry
+    }
+
+    function card(item, p, index) {
+      var el = document.createElement('div');
+      el.className = 'wl-card';
+      el.style.animationDelay = (Math.min(index, 7) * 0.07) + 's';
+
+      var imgLink = document.createElement('a');
+      imgLink.className = 'wl-card-img';
+      imgLink.href = p.url || ('/products/' + item.h);
+      var img = document.createElement('img');
+      img.src = imgUrl(p.featured_image, 720);
+      img.alt = p.title || '';
+      img.loading = 'lazy';
+      imgLink.appendChild(img);
+      var x = document.createElement('button');
+      x.type = 'button';
+      x.className = 'wl-x';
+      x.setAttribute('aria-label', 'Remove ' + (p.title || item.h) + ' from your wishlist');
+      x.addEventListener('click', function (e) {
+        // Inside the image link — stop the click from navigating.
+        e.preventDefault();
+        e.stopPropagation();
+        removeHandle(item.h);
+      });
+      imgLink.appendChild(x);
+      el.appendChild(imgLink);
+
+      if (p.vendor) {
+        var maker = document.createElement('span');
+        maker.className = 'wl-maker';
+        maker.textContent = p.vendor;
+        el.appendChild(maker);
+      }
+
+      var name = document.createElement('h3');
+      name.className = 'wl-name';
+      var nameLink = document.createElement('a');
+      nameLink.href = p.url || ('/products/' + item.h);
+      nameLink.textContent = p.title || item.h;
+      name.appendChild(nameLink);
+      el.appendChild(name);
+
+      var price = document.createElement('p');
+      price.className = 'wl-price';
+      if (p.available === false) {
+        var so = document.createElement('span');
+        so.className = 'wl-soldout';
+        so.textContent = 'Sold Out';
+        price.appendChild(so);
+      } else {
+        if (p.compare_at_price && p.compare_at_price > p.price) {
+          var s = document.createElement('s');
+          s.textContent = money(p.compare_at_price);
+          price.appendChild(s);
+        }
+        price.appendChild(document.createTextNode(
+          p.price_varies ? 'From ' + money(p.price_min) : money(p.price)
+        ));
+      }
+      el.appendChild(price);
+
+      var line = document.createElement('div');
+      line.className = 'wl-kept-line';
+      el.appendChild(line);
+
+      var kept = document.createElement('p');
+      kept.className = 'wl-kept';
+      var when = document.createElement('span');
+      when.textContent = keptDate(item.t);
+      kept.appendChild(when);
+      el.appendChild(kept);
+
+      return el;
+    }
+
+    function render() {
+      var list = read();
+
+      if (!list.length) {
+        grid.hidden = true;
+        note.hidden = true;
+        count.hidden = true;
+        empty.hidden = false;
+        return;
+      }
+      empty.hidden = true;
+
+      Promise.all(list.map(fetchProduct)).then(function (prods) {
+        // Prune handles whose products no longer exist (404).
+        var dead = [];
+        list.forEach(function (item, i) {
+          if (prods[i] && prods[i].dead) dead.push(item.h);
+        });
+        if (dead.length) {
+          muted = true;
+          write(list.filter(function (x) { return dead.indexOf(x.h) === -1; }));
+          muted = false;
+          list = read();
+        }
+
+        grid.textContent = '';
+        var shown = 0;
+        list.forEach(function (item) {
+          var p = cache[item.h];
+          if (!p || p.dead) return;
+          grid.appendChild(card(item, p, shown));
+          shown++;
+        });
+
+        if (!shown && !list.length) {
+          grid.hidden = true; note.hidden = true; count.hidden = true; empty.hidden = false;
+          return;
+        }
+        grid.hidden = false;
+        note.hidden = false;
+        if (shown) {
+          count.textContent = countLine(shown);
+          count.hidden = false;
+        } else {
+          count.hidden = true;
+        }
+      });
+    }
+
+    document.addEventListener('lf:wishlist:change', function () {
+      if (!muted) render();
+    });
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', render);
+    } else {
+      render();
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "LE FIGUE Wishlist",
+  "settings": [],
+  "presets": [{ "name": "LE FIGUE Wishlist" }]
+}
+{% endschema %}
