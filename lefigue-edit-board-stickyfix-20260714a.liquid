@@ -1,0 +1,348 @@
+{% comment %}
+  LE FIGUE — The FIGUE Edit board (blog-driven, v5 design)
+  Renders the editorial board from a real Shopify Blog so moderators
+  publish posts in Admin > Content > Blog posts. No code per post.
+
+  Article conventions:
+  - Category  = a tag matching one of this section's category blocks
+                (New York / Jewelry / Travel / LE FIGUE by default)
+  - Country chip (Travel) = any extra tag (e.g. "France")
+  - "Feature" tag = the article shown as the big lead; falls back to
+    the newest post if nothing is tagged Feature.
+  - Card image = the post's featured image (placeholder if none)
+  - Standfirst = the post's excerpt (summary)
+  - Small italic card note = article metafield custom.card_note
+{% endcomment %}
+
+{%- liquid
+  assign blog_obj = blogs[section.settings.blog_handle]
+  assign feature_tag = 'Feature'
+-%}
+
+<section class="lfe-board" data-lfe-board>
+{% if blog_obj == blank or blog_obj.articles == blank %}
+  <div class="lfe-wrap" style="padding:80px 30px;text-align:center;font-style:italic;">The Edit is being written. Check back shortly.</div>
+{% else %}
+{% paginate blog_obj.articles by 50 %}
+  {%- assign feature_handle = '' -%}
+  {%- for article in blog_obj.articles -%}
+    {%- if article.tags contains feature_tag -%}
+      {%- assign feature_handle = article.handle -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if feature_handle == '' and blog_obj.articles.size > 0 -%}
+    {%- assign feature_handle = blog_obj.articles.first.handle -%}
+  {%- endif -%}
+
+  <div class="lfe-masthead">
+    <div class="lfe-mastline"><span>{{ section.settings.brand }}</span><span>·</span><span>{{ section.settings.issue }}</span><span>·</span><span>{{ section.settings.season }}</span></div>
+    <h1>{{ section.settings.title }}</h1>
+    <p class="lfe-mastsub">{{ section.settings.subtitle }}</p>
+    <div class="lfe-mastrule"></div>
+  </div>
+
+  <div class="lfe-wrap">
+
+    <div class="lfe-sommaire" data-lfe-sommaire>
+      {%- assign numerals = 'I,II,III,IV,V,VI,VII,VIII' | split: ',' -%}
+      {%- for block in section.blocks -%}
+        <button class="lfe-som" type="button"
+          data-cat="{{ block.settings.name | escape }}"
+          data-intro-title="{{ block.settings.intro_title | default: block.settings.name | escape }}"
+          data-intro-sub="{{ block.settings.intro_sub | escape }}"
+          {{ block.shopify_attributes }}>
+          <div class="sc">{{ numerals[forloop.index0] }}</div>
+          <div class="sn">{{ block.settings.name }}</div>
+          <div class="sd">{{ block.settings.desc }}</div>
+        </button>
+      {%- endfor -%}
+    </div>
+
+    {%- for article in blog_obj.articles -%}
+      {%- if article.handle == feature_handle -%}
+        {%- assign cat = '' -%}
+        {%- for block in section.blocks -%}
+          {%- if article.tags contains block.settings.name -%}{%- assign cat = block.settings.name -%}{%- break -%}{%- endif -%}
+        {%- endfor -%}
+        {%- assign country = '' -%}
+        {%- for t in article.tags -%}
+          {%- if t == feature_tag or t == cat -%}{%- continue -%}{%- endif -%}
+          {%- assign is_cat = false -%}
+          {%- for block in section.blocks -%}{%- if t == block.settings.name -%}{%- assign is_cat = true -%}{%- endif -%}{%- endfor -%}
+          {%- unless is_cat -%}{%- assign country = t -%}{%- break -%}{%- endunless -%}
+        {%- endfor -%}
+        <a class="lfe-feature" href="{{ article.url }}">
+          <div class="fimg">
+            {%- if article.image -%}
+              {{ article.image | image_url: width: 1400 | image_tag: alt: article.title, loading: 'lazy' }}
+            {%- else -%}
+              <span class="ph">Lead photograph</span>
+            {%- endif -%}
+          </div>
+          <div class="ftx">
+            <div class="fk">The Latest{% if cat != '' %} · {{ cat }}{% endif %}{% if country != '' %} · {{ country }}{% endif %}</div>
+            <h2 class="ft">{{ article.title }}</h2>
+            <p class="fs">{{ article.excerpt | strip_html }}</p>
+            <span class="fr">Read the story <svg viewBox="0 0 20 12" aria-hidden="true"><path d="M1 6h17M13 1l5 5-5 5"/></svg></span>
+          </div>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+
+    <div class="lfe-filterbar">
+      <div class="lfe-filterbar-in" data-lfe-filter>
+        <button class="filt on" type="button" data-cat="all">All</button>
+        {%- for block in section.blocks -%}
+          <button class="filt" type="button"
+            data-cat="{{ block.settings.name | escape }}"
+            data-intro-title="{{ block.settings.intro_title | default: block.settings.name | escape }}"
+            data-intro-sub="{{ block.settings.intro_sub | escape }}">{{ block.settings.name }}</button>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <div class="lfe-catintro" data-lfe-intro>
+      <div class="ci-name"></div>
+      <p class="ci-sub"></p>
+      <div class="ci-rule"></div>
+    </div>
+
+    <div class="lfe-grid">
+      {%- for article in blog_obj.articles -%}
+        {%- if article.handle == feature_handle -%}{%- continue -%}{%- endif -%}
+        {%- assign cat = '' -%}
+        {%- for block in section.blocks -%}
+          {%- if article.tags contains block.settings.name -%}{%- assign cat = block.settings.name -%}{%- break -%}{%- endif -%}
+        {%- endfor -%}
+        {%- assign country = '' -%}
+        {%- for t in article.tags -%}
+          {%- if t == feature_tag or t == cat -%}{%- continue -%}{%- endif -%}
+          {%- assign is_cat = false -%}
+          {%- for block in section.blocks -%}{%- if t == block.settings.name -%}{%- assign is_cat = true -%}{%- endif -%}{%- endfor -%}
+          {%- unless is_cat -%}{%- assign country = t -%}{%- break -%}{%- endunless -%}
+        {%- endfor -%}
+        <a class="lfe-card" href="{{ article.url }}" data-cat="{{ cat | escape }}">
+          <div class="cimg">
+            {%- if country != '' -%}<span class="chip">{{ country }}</span>{%- endif -%}
+            {%- if article.image -%}
+              {{ article.image | image_url: width: 800 | image_tag: alt: article.title, loading: 'lazy' }}
+            {%- else -%}
+              <span class="ph">{{ cat | default: 'The Edit' }}</span>
+            {%- endif -%}
+          </div>
+          <div class="meta">
+            <div class="kc"><span>{{ cat }}</span><span class="sub">{{ article.metafields.custom.card_note }}</span></div>
+            <div class="ttl">{{ article.title }}</div>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+
+  </div>
+{% endpaginate %}
+{% endif %}
+</section>
+
+{% stylesheet %}
+.lfe-board{--ink:#2a2622;--ink-soft:#6b635a;--line:#e3dccf;--line-soft:#efe9dd;--cream:#faf7f1;--accent:#8a7250;--gold:#b8975f;--paper:#fdfbf6;--lfe-sans:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--cream);color:var(--ink);font-family:var(--lfe-sans);font-weight:400;line-height:1.7;}
+.lfe-board a{color:inherit;text-decoration:none;}
+.lfe-board img{display:block;}
+.lfe-wrap{max-width:1320px;margin:0 auto;padding:0 30px;}
+.lfe-masthead{text-align:center;padding:74px 0 0;}
+.lfe-mastline{font-family:var(--lfe-sans);font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--ink-soft);display:flex;align-items:center;justify-content:center;gap:22px;}
+.lfe-mastline::before,.lfe-mastline::after{content:"";height:1px;width:64px;background:var(--line);}
+.lfe-masthead h1{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(58px,9vw,124px);line-height:.96;letter-spacing:-.02em;margin:26px 0 20px;}
+.lfe-mastsub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(16px,2.2vw,20px);color:var(--ink-soft);max-width:560px;margin:0 auto;line-height:1.6;}
+.lfe-mastrule{max-width:1320px;margin:52px auto 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--line);height:4px;}
+.lfe-sommaire{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line);}
+.lfe-som{padding:30px 26px 34px;text-align:left;background:none;border:none;border-right:1px solid var(--line-soft);cursor:pointer;transition:background .25s;position:relative;font-family:inherit;}
+.lfe-som:last-child{border-right:none;}
+.lfe-som:hover,.lfe-som.on{background:var(--paper);}
+.lfe-som::after{content:"";position:absolute;left:26px;right:100%;bottom:0;height:2px;background:var(--accent);transition:right .3s ease;}
+.lfe-som:hover::after,.lfe-som.on::after{right:26px;}
+.lfe-som .sc{font-family:var(--lfe-sans);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);}
+.lfe-som .sn{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(21px,2.4vw,27px);line-height:1.1;margin:10px 0 8px;color:var(--ink);}
+.lfe-som .sd{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14.5px;line-height:1.55;color:var(--ink-soft);}
+.lfe-feature{display:grid;grid-template-columns:7fr 5fr;gap:0;border-bottom:1px solid var(--line);cursor:pointer;}
+.lfe-feature .fimg{aspect-ratio:4/3;overflow:hidden;background:linear-gradient(135deg,#ece4d4,#ddd2c0);position:relative;}
+.lfe-feature .fimg img{width:100%;height:100%;object-fit:cover;transition:transform 1.1s cubic-bezier(.2,.7,.2,1);}
+.lfe-feature:hover .fimg img{transform:scale(1.035);}
+.lfe-feature .fimg .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#c4b699;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;}
+.lfe-feature .ftx{padding:clamp(30px,4.5vw,70px) clamp(26px,4vw,64px);display:flex;flex-direction:column;justify-content:center;border-left:1px solid var(--line-soft);}
+.lfe-feature .fk{font-family:var(--lfe-sans);font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.lfe-feature .fk::after{content:"";height:1px;flex:1;max-width:48px;background:var(--line);}
+.lfe-feature .ft{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,3.6vw,48px);line-height:1.04;letter-spacing:-.015em;margin-bottom:18px;transition:color .2s;}
+.lfe-feature:hover .ft{color:var(--accent);}
+.lfe-feature .fs{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(16px,1.8vw,19px);line-height:1.6;color:var(--ink-soft);margin-bottom:30px;max-width:400px;}
+.lfe-feature .fr{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--ink);display:inline-flex;align-items:center;gap:10px;}
+.lfe-feature .fr svg{width:17px;height:12px;stroke:var(--accent);stroke-width:1.3;fill:none;transition:transform .25s;}
+.lfe-feature:hover .fr svg{transform:translateX(5px);}
+/* LF fix 2026-07-14: the bar pinned at top:var(--height-header) — but the
+   theme's sticky header slides partly up when stuck (theme.js publishes the
+   shift as NEGATIVE --header-desktop-sticky-position), so the bar hung a
+   full-header-height down with a content gap above it. Mirror the theme's
+   own .filter-bar--sticky offset formula exactly (theme.css). Same rules
+   duplicated in custom.css Edit #19 (section bundle lags on preview). */
+.lfe-filterbar{position:sticky;top:0;z-index:40;background:rgba(250,247,241,.96);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+html.sticky-header-enabled .lfe-filterbar{top:var(--height-header,0px);}
+@media (min-width:960px){
+  html.sticky-header-enabled .lfe-filterbar{top:calc(var(--height-header,0px) + var(--header-desktop-sticky-position,0px) - 1px);}
+  html.sticky-header-enabled[data-enable-sticky-announcement-bar*="desktop"] .lfe-filterbar{top:calc(var(--height-header,0px) + var(--announcement-height) + var(--header-desktop-sticky-position,0px) - 1px);}
+}
+@media (max-width:959px){
+  html.sticky-header-enabled[data-enable-sticky-announcement-bar*="mobile"] .lfe-filterbar{top:calc(var(--height-header,0px) + var(--announcement-height));}
+}
+.lfe-filterbar-in{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:17px 0;}
+.lfe-filterbar .filt{font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.04em;color:var(--ink-soft);border:none;background:none;padding:4px 2px;margin:0 16px;cursor:pointer;position:relative;transition:color .18s;}
+.lfe-filterbar .filt::after{content:"";position:absolute;left:0;right:100%;bottom:-2px;height:1px;background:var(--accent);transition:right .25s ease;}
+.lfe-filterbar .filt:hover{color:var(--ink);}
+.lfe-filterbar .filt.on{color:var(--accent);}
+.lfe-filterbar .filt.on::after{right:0;}
+.lfe-catintro{display:none;text-align:center;padding:50px 30px 6px;}
+.lfe-catintro.show{display:block;}
+.lfe-catintro .ci-name{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,4vw,44px);line-height:1.05;letter-spacing:-.01em;color:var(--ink);}
+.lfe-catintro .ci-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15.5px,2vw,18.5px);color:var(--ink-soft);max-width:600px;margin:14px auto 0;line-height:1.65;}
+.lfe-catintro .ci-rule{width:64px;height:1px;background:var(--gold);margin:28px auto 0;}
+.lfe-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:48px 24px;padding:56px 0 60px;}
+.lfe-card{cursor:pointer;display:block;}
+.lfe-card .cimg{position:relative;overflow:hidden;background:linear-gradient(135deg,#f3ede1,#e9e1d2);aspect-ratio:4/5;}
+.lfe-card .cimg img{width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.2,.7,.2,1);}
+.lfe-card:hover .cimg img{transform:scale(1.045);}
+.lfe-card .cimg .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#cbbfa6;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;}
+.lfe-card .cimg .chip{position:absolute;top:14px;left:14px;z-index:2;background:rgba(253,251,246,.93);color:var(--accent);font-family:var(--lfe-sans);font-size:9px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;padding:6px 11px 5px;}
+.lfe-card .meta{padding:16px 2px 0;border-top:1px solid var(--line);margin-top:16px;}
+.lfe-card .kc{font-family:var(--lfe-sans);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);display:flex;align-items:baseline;justify-content:space-between;gap:12px;}
+.lfe-card .kc .sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12.5px;letter-spacing:.02em;text-transform:none;color:var(--ink-soft);}
+.lfe-card .ttl{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:22px;line-height:1.18;color:var(--ink);margin-top:10px;transition:color .15s;}
+.lfe-card:hover .ttl{color:var(--accent);}
+.lfe-card.hide{display:none;}
+@media(max-width:980px){
+  .lfe-sommaire{grid-template-columns:1fr 1fr;}
+  .lfe-som{border-bottom:1px solid var(--line-soft);}
+  .lfe-som:nth-child(2n){border-right:none;}
+  .lfe-feature{grid-template-columns:1fr;}
+  .lfe-feature .ftx{border-left:none;border-top:1px solid var(--line-soft);}
+  .lfe-grid{grid-template-columns:repeat(2,1fr);gap:40px 20px;}
+}
+@media(max-width:620px){
+  .lfe-wrap{padding:0 20px;}
+  .lfe-masthead{padding-top:46px;}
+  .lfe-mastline{gap:9px;font-size:9.5px;letter-spacing:.22em;white-space:nowrap;}
+  .lfe-mastline::before,.lfe-mastline::after{display:none;}
+  .lfe-masthead h1{font-size:clamp(46px,13vw,58px);margin:20px 0 16px;}
+  .lfe-mastsub{font-size:15.5px;padding:0 6px;}
+  .lfe-mastrule{margin-top:34px;}
+  .lfe-sommaire{grid-template-columns:1fr;}
+  .lfe-som{display:grid;grid-template-columns:26px 1fr;column-gap:14px;align-items:baseline;padding:18px 6px 20px;border-right:none;}
+  .lfe-som .sc{font-size:9.5px;}
+  .lfe-som .sn{grid-column:2;font-size:22px;margin:0 0 5px;}
+  .lfe-som .sd{grid-column:2;font-size:13.5px;line-height:1.55;}
+  .lfe-som::after{left:6px;}
+  .lfe-som:hover::after,.lfe-som.on::after{right:6px;}
+  .lfe-feature .ftx{padding:26px 4px 34px;}
+  .lfe-feature .fs{font-size:16px;}
+  .lfe-filterbar-in{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;padding:0 20px;gap:0;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .lfe-filterbar-in::-webkit-scrollbar{display:none;}
+  .lfe-filterbar .filt{white-space:nowrap;margin:0 22px 0 0;font-size:16px;padding:16px 2px;}
+  .lfe-filterbar .filt::after{bottom:12px;}
+  .lfe-filterbar .filt:last-child{margin-right:0;padding-right:20px;}
+  .lfe-catintro{padding:42px 20px 2px;}
+  .lfe-catintro .ci-sub{font-size:15.5px;}
+  .lfe-grid{grid-template-columns:1fr;gap:44px;padding-top:40px;}
+  .lfe-card .ttl{font-size:23px;}
+  .lfe-card .kc{font-size:10.5px;}
+}
+{% endstylesheet %}
+
+{% javascript %}
+(function(){
+  var root = document.querySelector('.lfe-board');
+  if(!root) return;
+
+  /* position:sticky dies if any ancestor clips overflow — free the chain
+     (same rescue as the bespoke page; runs only on this page). */
+  var el = root.parentElement;
+  while(el && el !== document.body){
+    var cs = getComputedStyle(el);
+    if(cs.overflow !== 'visible' || cs.overflowX !== 'visible' || cs.overflowY !== 'visible'){
+      el.style.overflow = 'visible';
+    }
+    el = el.parentElement;
+  }
+
+  var intro = root.querySelector('[data-lfe-intro]');
+  var bar = root.querySelector('.lfe-filterbar');
+
+  function applyFilter(cat, title, sub){
+    root.querySelectorAll('.lfe-filterbar .filt').forEach(function(f){ f.classList.toggle('on', f.dataset.cat === cat); });
+    root.querySelectorAll('.lfe-som').forEach(function(s){ s.classList.toggle('on', s.dataset.cat === cat); });
+    root.querySelectorAll('.lfe-card').forEach(function(c){
+      var show = (cat === 'all') || (c.dataset.cat === cat);
+      c.classList.toggle('hide', !show);
+    });
+    if(intro){
+      if(cat !== 'all' && title){
+        intro.querySelector('.ci-name').textContent = title;
+        intro.querySelector('.ci-sub').textContent = sub || '';
+        intro.classList.add('show');
+      } else {
+        intro.classList.remove('show');
+      }
+    }
+  }
+  function scrollToBar(){
+    if(!bar) return;
+    var y = bar.getBoundingClientRect().top + window.pageYOffset - 120;
+    window.scrollTo({top: y, behavior: 'smooth'});
+  }
+  function onPick(ev, sel){
+    var b = ev.target.closest(sel);
+    if(!b) return;
+    applyFilter(b.dataset.cat, b.dataset.introTitle, b.dataset.introSub);
+    scrollToBar();
+  }
+  var fb = root.querySelector('[data-lfe-filter]');
+  if(fb) fb.addEventListener('click', function(ev){ onPick(ev, '.filt'); });
+  var so = root.querySelector('[data-lfe-sommaire]');
+  if(so) so.addEventListener('click', function(ev){ onPick(ev, '.lfe-som'); });
+})();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "LF FIGUE Edit board",
+  "settings": [
+    { "type": "text", "id": "blog_handle", "label": "Blog handle", "default": "the-figue-edit", "info": "Posts come from this blog (Admin > Content > Blog posts)." },
+    { "type": "text", "id": "brand", "label": "Masthead brand line", "default": "LE FIGUE" },
+    { "type": "text", "id": "issue", "label": "Masthead issue", "default": "No. 24" },
+    { "type": "text", "id": "season", "label": "Masthead season", "default": "Summer 2026" },
+    { "type": "text", "id": "title", "label": "Title", "default": "The FIGUE Edit" },
+    { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "From our table, our travels, and our jewelry trays. What we see, wherever we are, comes back to New York." }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Category name (must match the post tag)" },
+        { "type": "textarea", "id": "desc", "label": "Sommaire description" },
+        { "type": "text", "id": "intro_title", "label": "Filtered view title" },
+        { "type": "textarea", "id": "intro_sub", "label": "Filtered view subtitle" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "LF FIGUE Edit board",
+      "blocks": [
+        { "type": "category", "settings": { "name": "New York", "desc": "Restaurants, galleries, events, and our two doors. The city, edited.", "intro_title": "New York", "intro_sub": "Our home ground. The tables, bars, and galleries we send friends to, and the two doors we keep." } },
+        { "type": "category", "settings": { "name": "Jewelry", "desc": "How to look at it, how to wear it, and how to care for it.", "intro_title": "Jewelry", "intro_sub": "Gold, pearls, and how to look at them. Notes from our trays, written to be used." } },
+        { "type": "category", "settings": { "name": "Travel", "desc": "The places we see, hear, and feel with our jewelry on. Our travel list, kept for you.", "intro_title": "The FIGUE Travel List", "intro_sub": "The places we see, hear, and feel with our jewelry on. Beautiful rooms and tables, kept for you." } },
+        { "type": "category", "settings": { "name": "LE FIGUE", "desc": "House news. Pop ups, designers, and what our buying brings home.", "intro_title": "LE FIGUE", "intro_sub": "The designers of the house, and the rooms their work comes from." } }
+      ]
+    }
+  ]
+}
+{% endschema %}
