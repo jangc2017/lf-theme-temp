@@ -1,0 +1,281 @@
+{%- comment -%}
+  LE FIGUE — shared "Notify me" modal + Klaviyo logic (pre-order pages).
+  Rendered once per page by sections/lefigue-preorder.liquid and
+  sections/lefigue-preorder-detail.liquid — per CEO instruction the modal
+  block + script live in ONE shared snippet so go-live is a single edit.
+
+  JS API: window.lfNotify.open({ brand, title, variant, handle, openAt, trigger })
+  NB the panel class is lfn-panel, NOT "modal" — the theme's .modal rules
+  (visibility:hidden until its own .active) would keep the panel invisible
+  while the overlay blurs the page (bug found 2026-07-13).
+
+  KLAVIYO GO-LIVE (route decided 2026-07-16): fill publicKey (Klaviyo
+  public site ID — NEVER the private key) AND notifyListId in the script
+  below; optionally dispatchListId for the Dispatch checkbox. While either
+  required key is empty the modal captures REAL subscribers natively: a
+  Shopify customer tagged preorder-notify (+ preorder-piece-<handle>,
+  + preorder-variant-<id>, + newsletter if Dispatch ticked) via the
+  storefront /contact endpoint.
+  With keys filled, a submit does TWO Klaviyo client-API calls:
+  (1) subscribe to the Pre-order Notify LIST (creates email consent) with
+      profile properties preorder_piece / preorder_variant /
+      preorder_open_at;
+  (2) track a "Pre-order Notify Request" EVENT carrying the same data as
+      event properties — per-piece, so someone subscribing to two pieces
+      keeps both dates (profile properties would overwrite each other).
+  The at-open email is a Klaviyo flow: trigger on the metric, wait until
+  the event's open_at, send. Pieces already closed have no open_at — the
+  flow's conditional split parks those for manual campaigns.
+  NOT the Back-in-Stock API: BIS fires on inventory restock, but our
+  windows open by DATE (custom.preorder_open_at) while inventory stays
+  available — BIS would never fire.
+{%- endcomment -%}
+
+<div class="lf-notify modal-overlay" id="lfnModal" role="dialog" aria-modal="true" aria-labelledby="lfnTitle">
+  <div class="lfn-panel" id="lfnPanel">
+    <button class="modal-x" type="button" aria-label="Close" data-lfn-close>&times;</button>
+    <div class="m-form">
+      {% form 'customer', id: 'lfn-native' %}
+        <span class="eyebrow">Notify me</span>
+        <div class="m-bc" id="lfnBrand">Brand · City</div>
+        <h3 id="lfnTitle">This piece</h3>
+        <p class="m-lead">We will write to you the moment this piece returns. No noise in between.</p>
+        <div class="m-field">
+          <input type="email" name="contact[email]" id="lfnEmail" placeholder="Your email" autocomplete="email" value="{{ customer.email | escape }}" />
+        </div>
+        <label class="m-check"><input type="checkbox" id="lfnDispatch" /><span>Also send me the Dispatch, our letter on new arrivals and pre-orders.</span></label>
+        <input type="hidden" name="contact[tags]" data-lfn-f-tags value="preorder-notify">
+        <div class="m-err" id="lfnErr"></div>
+        <button class="m-submit" type="submit" id="lfnSubmit">Notify me</button>
+        <p class="m-fine">We use your email for this alert and, if you choose, the Dispatch. You can leave anytime.</p>
+        {% if form.posted_successfully? %}<span data-lfn-posted></span>{% endif %}
+      {% endform %}
+    </div>
+    <div class="m-done">
+      <div class="mark">&#10003;</div>
+      <h3>You are on the list.</h3>
+      <p id="lfnDoneLine">We will write to you the moment it returns.</p>
+      <button class="m-submit" type="button" data-lfn-close>Close</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .lf-notify{ --ink:#2a2622; --ink-soft:#6b635a; --line:#e3dccf; --cream:#faf7f1; --accent:#8a7250; --paper:#fdfbf6; }
+  .lf-notify.modal-overlay{ position:fixed; inset:0; z-index:100; background:rgba(42,38,34,.5);
+    backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
+    display:none; align-items:center; justify-content:center; padding:24px; }
+  .lf-notify.modal-overlay.open{ display:flex; }
+  .lf-notify .lfn-panel{ background:var(--paper); border:1px solid var(--line); max-width:440px; width:100%;
+    padding:38px 38px 32px; position:relative; animation:lfn-rise .35s cubic-bezier(.2,.7,.2,1);
+    color:var(--ink); font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; line-height:1.7; }
+  .lf-notify .lfn-panel *{ box-sizing:border-box; }
+  @keyframes lfn-rise{ from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:none;} }
+  .lf-notify .modal-x{ position:absolute; top:14px; right:18px; background:none; border:none;
+    font-family:'Cormorant Garamond',serif; font-size:26px; line-height:1; color:var(--ink-soft); cursor:pointer; }
+  .lf-notify .modal-x:hover{ color:var(--ink); }
+  .lf-notify .eyebrow{ display:block; font-size:11px; letter-spacing:.3em; text-transform:uppercase; color:var(--accent); }
+  .lf-notify .m-bc{ font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin-top:12px; }
+  .lf-notify h3{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:30px; margin:4px 0 0; line-height:1.1; }
+  .lf-notify .m-lead{ margin-top:14px; font-size:13.5px; color:var(--ink-soft); line-height:1.75; }
+  .lf-notify .m-field{ margin-top:20px; }
+  .lf-notify .m-field input{ width:100%; background:transparent; border:none; border-bottom:1px solid var(--line);
+    padding:11px 2px; font-family:inherit; font-size:14px; color:var(--ink); }
+  .lf-notify .m-field input:focus{ outline:none; border-color:var(--accent); }
+  .lf-notify .m-check{ margin-top:16px; display:flex; align-items:flex-start; gap:10px; font-size:12.5px; color:var(--ink-soft); cursor:pointer; line-height:1.6; }
+  .lf-notify .m-check input{ margin-top:2px; accent-color:var(--accent); flex-shrink:0; }
+  .lf-notify .m-err{ color:#b06a4a; font-size:12px; margin-top:10px; min-height:15px; }
+  .lf-notify .m-submit{ width:100%; margin-top:14px; background:var(--ink); color:var(--cream); border:none;
+    font-family:inherit; font-size:12.5px; letter-spacing:.18em; text-transform:uppercase; padding:15px; cursor:pointer; transition:background .2s; }
+  .lf-notify .m-submit:hover{ background:#3a342d; }
+  .lf-notify .m-submit:disabled{ opacity:.5; cursor:default; }
+  .lf-notify .m-fine{ margin-top:14px; font-size:11px; color:var(--ink-soft); line-height:1.65; }
+  .lf-notify .lfn-panel.done .m-form{ display:none; }
+  .lf-notify .m-done{ display:none; text-align:center; padding:6px 0 2px; }
+  .lf-notify .lfn-panel.done .m-done{ display:block; }
+  .lf-notify .m-done .mark{ font-family:'Cormorant Garamond',serif; font-size:42px; color:var(--accent); line-height:1; }
+  .lf-notify .m-done h3{ margin-top:8px; }
+  .lf-notify .m-done p{ font-size:13.5px; color:var(--ink-soft); margin-top:10px; line-height:1.7; }
+</style>
+
+<script>
+  (function(){
+    if (window.lfNotify) return;
+
+    /* ========================================================
+       KLAVIYO — fill these three values to go live.
+       Leave publicKey empty and the modal runs in DEMO MODE
+       (local success, no network). See snippet header comment.
+       ======================================================== */
+    var KLAVIYO = {
+      publicKey: '',          // Klaviyo public API key / site ID (NEVER the private key)
+      notifyListId: '',       // "Pre-order Notify" list ID — REQUIRED for go-live
+      dispatchListId: '',     // Klaviyo list ID for the Dispatch checkbox (optional)
+      revision: '2025-07-15'  // confirm the current revision in Klaviyo's API docs
+    };
+    var KLAVIYO_ON = !!(KLAVIYO.publicKey && KLAVIYO.notifyListId);
+
+    var modal = document.getElementById('lfnModal');
+    if (!modal) return;
+    var panel      = document.getElementById('lfnPanel');
+    var elBrand    = document.getElementById('lfnBrand');
+    var elTitle    = document.getElementById('lfnTitle');
+    var elEmail    = document.getElementById('lfnEmail');
+    var elDispatch = document.getElementById('lfnDispatch');
+    var elErr      = document.getElementById('lfnErr');
+    var elSubmit   = document.getElementById('lfnSubmit');
+    var elDone     = document.getElementById('lfnDoneLine');
+    var currentVariant = '';
+    var currentHandle = '';
+    var currentOpenAt = '';
+    var lastFocus = null;
+    var PREFILL = elEmail.value || ''; // logged-in customer's email (Liquid), editable
+
+    function open(opts){
+      opts = opts || {};
+      currentVariant = opts.variant || '';
+      currentHandle = opts.handle || '';
+      currentOpenAt = opts.openAt || '';
+      if (opts.brand) elBrand.textContent = opts.brand;
+      if (opts.title) elTitle.textContent = opts.title;
+      var name = opts.title || elTitle.textContent || 'this piece';
+      elDone.textContent = 'We will write to you the moment the ' + name + ' returns.';
+      panel.classList.remove('done');
+      elErr.textContent = ''; elEmail.value = PREFILL; elDispatch.checked = false;
+      lastFocus = opts.trigger || null;
+      modal.classList.add('open');
+      setTimeout(function(){
+        elEmail.focus();
+        try { var n = elEmail.value.length; elEmail.setSelectionRange(n, n); } catch(e) {}
+      }, 50);
+    }
+    function close(){
+      modal.classList.remove('open');
+      if (lastFocus) lastFocus.focus();
+    }
+    modal.addEventListener('click', function(e){ if (e.target === modal) close(); });
+    Array.prototype.forEach.call(modal.querySelectorAll('[data-lfn-close]'), function(b){
+      b.addEventListener('click', close);
+    });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && modal.classList.contains('open')) close();
+    });
+
+    function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+    /* Subscribe to the Pre-order Notify list — creates email consent and
+       stamps the piece data as profile properties (latest piece wins on
+       the profile; the per-piece truth lives in the event below). */
+    async function klaviyoNotify(email){
+      var props = { preorder_piece: currentHandle || '', preorder_variant: currentVariant || '' };
+      if (currentOpenAt) props.preorder_open_at = currentOpenAt;
+      var res = await fetch('https://a.klaviyo.com/client/subscriptions/?company_id=' + KLAVIYO.publicKey, {
+        method:'POST',
+        headers:{ 'accept':'application/json', 'content-type':'application/json', 'revision':KLAVIYO.revision },
+        body: JSON.stringify({ data:{ type:'subscription', attributes:{
+          profile:{ data:{ type:'profile', attributes:{ email: email, properties: props } } }
+        }, relationships:{ list:{ data:{ type:'list', id: KLAVIYO.notifyListId } } } } })
+      });
+      if(res.status !== 202 && !res.ok) throw new Error('sub');
+    }
+
+    /* Track a per-piece event — the at-open flow triggers on this metric
+       and waits until the EVENT's open_at, so multiple subscriptions per
+       shopper keep their own dates. Best-effort: a failure here must not
+       break the subscribe that already succeeded. */
+    async function klaviyoEvent(email){
+      var res = await fetch('https://a.klaviyo.com/client/events/?company_id=' + KLAVIYO.publicKey, {
+        method:'POST',
+        headers:{ 'accept':'application/json', 'content-type':'application/json', 'revision':KLAVIYO.revision },
+        body: JSON.stringify({ data:{ type:'event', attributes:{
+          properties:{
+            piece_handle: currentHandle || '',
+            piece_title: (elTitle && elTitle.textContent) || '',
+            variant: currentVariant || '',
+            open_at: currentOpenAt || ''
+          },
+          metric:{ data:{ type:'metric', attributes:{ name:'Pre-order Notify Request' } } },
+          profile:{ data:{ type:'profile', attributes:{ email: email } } }
+        } } })
+      });
+      if(res.status !== 202 && !res.ok) throw new Error('evt');
+    }
+    /* Shopify-native capture (runs whenever Klaviyo keys are not filled):
+       creates/updates a customer through the storefront contact endpoint,
+       tagged preorder-notify + preorder-piece-<handle> + preorder-variant-<id> (+ newsletter when the
+       Dispatch box is ticked). The team can segment on these tags in
+       Admin > Customers and email them the day a window opens; Klaviyo
+       inherits the same customers/tags once it is connected. If Shopify
+       answers the AJAX post with its bot challenge, fall back to a real
+       form submission so the browser can pass it (full-page nav). */
+    async function klaviyoDispatch(email){
+      if(!KLAVIYO.dispatchListId) return;
+      var res = await fetch('https://a.klaviyo.com/client/subscriptions/?company_id=' + KLAVIYO.publicKey, {
+        method:'POST',
+        headers:{ 'accept':'application/json', 'content-type':'application/json', 'revision':KLAVIYO.revision },
+        body: JSON.stringify({ data:{ type:'subscription', attributes:{
+          profile:{ data:{ type:'profile', attributes:{ email: email } } }
+        }, relationships:{ list:{ data:{ type:'list', id: KLAVIYO.dispatchListId } } } } })
+      });
+      if(res.status !== 202 && !res.ok) throw new Error('sub');
+    }
+
+    /* The modal's form IS a real Liquid customer form — Shopify's captcha
+       script intercepts its native submission exactly like the theme's own
+       newsletter form (a fetch() or JS-built form dies with "Missing CAPTCHA
+       token"). We only validate, stamp the tags, and let it through. With
+       Klaviyo keys filled, the native submit is replaced by the Klaviyo API. */
+    var nform = document.getElementById('lfn-native');
+    if (nform) nform.addEventListener('submit', function(ev){
+      var email = elEmail.value.trim();
+      elErr.textContent = '';
+      if(!validEmail(email)){
+        ev.preventDefault();
+        elErr.textContent = 'Please enter a valid email.'; elEmail.focus();
+        return;
+      }
+      var tags = 'preorder-notify';
+      if (currentHandle) tags += ',preorder-piece-' + currentHandle;
+      if (currentVariant) tags += ',preorder-variant-' + currentVariant;
+      if (elDispatch.checked) tags += ',newsletter';
+      nform.querySelector('[data-lfn-f-tags]').value = tags;
+
+      if (KLAVIYO_ON){
+        ev.preventDefault();
+        elSubmit.disabled = true; elSubmit.textContent = 'Sending';
+        (async function(){
+          try{
+            await klaviyoNotify(email);
+            try{ await klaviyoEvent(email); }catch(e){ /* best-effort — consent already stored */ }
+            if(elDispatch.checked) await klaviyoDispatch(email);
+            panel.classList.add('done');
+          }catch(err){
+            elErr.textContent = 'Something went wrong. Please try again, or write to us.';
+          }finally{
+            elSubmit.disabled = false; elSubmit.textContent = 'Notify me';
+          }
+        })();
+        return;
+      }
+
+      try { sessionStorage.setItem('lfn-pending', elTitle.textContent || 'this piece'); } catch(e) {}
+      elSubmit.disabled = true; elSubmit.textContent = 'Sending';
+      // native submission proceeds — page will reload; the done panel is
+      // restored from form.posted_successfully? + the lfn-pending flag
+    });
+
+    // After the native-form reload: show the success panel if OUR form posted.
+    (function(){
+      var pending = null;
+      try { pending = sessionStorage.getItem('lfn-pending'); } catch(e) {}
+      if (!pending) return;
+      if (!document.querySelector('[data-lfn-posted]')) return;
+      try { sessionStorage.removeItem('lfn-pending'); } catch(e) {}
+      elDone.textContent = 'We will write to you about the ' + pending + ' the moment there is news.';
+      panel.classList.add('done');
+      modal.classList.add('open');
+    })();
+
+    window.lfNotify = { open: open, close: close };
+  })();
+</script>
