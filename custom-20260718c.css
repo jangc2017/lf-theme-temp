@@ -1,0 +1,746 @@
+/* ============================================================
+   LE FIGUE — Custom overrides
+   All bespoke styling lives here. Loaded right after theme.css
+   via the useCustomCSS flag in snippets/theme-globals.liquid.
+   ============================================================ */
+
+/* ---- Edit #1: Navigation font → Cormorant Garamond ----------
+   Font is loaded via the Google Fonts <link> in theme.liquid <head>.
+   !important beats the theme's ff-body utility class on nav links. */
+.header__links-list,
+.header__links-list a,
+.header__links-list button,
+.header__links-list .link-hover,
+.navigation__submenu,
+.navigation__submenu a,
+.navigation__submenu-trigger,
+.drawer-menu__link {
+  font-family: "Cormorant Garamond", Georgia, serif !important;
+}
+
+/* ---- Edit #2b: Search overlay — lighter dim + clear header ---
+   Halve the background dimming (theme default is rgba(0,0,0,0.7))
+   and keep the announcement bar + header undimmed by starting the
+   overlay below them. Scoped to the search overlay only. */
+.quick-search__overlay {
+  background-color: rgba(0, 0, 0, 0.35);
+  top: calc(var(--announcement-height, 0) + var(--height-header, 0) - var(--scroll-y, 0));
+}
+html.sticky-header-active .quick-search__overlay {
+  top: var(--height-header, 0);
+}
+
+/* ---- Edit #2: Search → full-width bar below header ----------
+   Mobile (<960px) already drops a full-width bar from the top.
+   These desktop overrides replace the right-side sliding panel
+   so desktop matches that pattern (Ring Concierge style). */
+@media (min-width: 960px) {
+  .quick-search {
+    top: calc(var(--announcement-height, 0) + var(--height-header, 0) - var(--scroll-y, 0));
+    right: 0;
+    left: 0;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    /* Clip the drop-down animation to below the header so the sliding
+       bar never passes over / hides the header. */
+    overflow: hidden;
+  }
+
+  html.sticky-header-active .quick-search {
+    top: var(--height-header, 0);
+  }
+
+  .quick-search__container {
+    max-width: none;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    transform: translateY(-100%);
+    padding-bottom: var(--spacing-3);
+  }
+
+  .quick-search.quick-search--visible .quick-search__container {
+    transform: translateY(0);
+  }
+
+  body.quick-search-position-left .quick-search {
+    right: 0;
+    left: 0;
+  }
+  body.quick-search-position-left .quick-search.quick-search--visible .quick-search__container {
+    transform: translateY(0);
+  }
+
+  .quick-search__results-wrapper,
+  .quick-search__suggested-wrapper {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .quick-search__close {
+    position: absolute;
+    top: var(--spacing-3);
+    right: var(--spacing-7);
+    margin: 0;
+    z-index: 20;
+  }
+}
+
+/* ---- Edit #2c: One overlay at a time (header wins) ---------
+   Hovering a header nav item closes the open search bar so the two
+   never show together. Handled in assets/lefigue-custom.js (this
+   replaced the earlier CSS "search wins" suppress rule). */
+
+/* ---- Edit #3: Full-width mega-nav dropdown ------------------
+   The theme caps full_width_meganav panels at --max-width. Make
+   the panel span the full viewport (edge-to-edge background) while
+   keeping the inner content centered + padded like the Figma. */
+.meganav[data-meganav-type="full_width_meganav"] {
+  width: 100vw;
+  max-width: 100vw;
+}
+.meganav[data-meganav-type="full_width_meganav"] .meganav__inner {
+  width: 100%;
+  max-width: var(--max-width, 1400px);
+  margin-inline: auto;
+  padding-inline: var(--space-outer, 32px);
+  box-sizing: border-box;
+}
+.meganav[data-meganav-type="full_width_meganav"] .meganav__secondary {
+  align-self: center;
+  margin-block: var(--spacing-6);
+}
+
+/* ---- Edit: Agenda — remove its built-in "Be there first" band ----
+   The global "The Dispatch" newsletter (sections/lefigue-dispatch.liquid)
+   now renders above the footer on every non-home page, including Agenda,
+   so the agenda section's own subscribe band ("Be there first.") doubled
+   up. Hide it and leave the global one. */
+.lf-agenda .dispatch {
+  display: none !important;
+}
+
+/* ---- Edit #4: Header nav — underline instead of ▾ chevron ----
+   Tiffany-style indicator: no chevron next to top-level items; the
+   theme's existing animated .link-hover underline (it already shows
+   on hover AND stays while a dropdown is open via aria-expanded)
+   is made solid black and dropped a touch below the label. */
+
+/* 1. Hide the ▾ chevron on top-level nav items (desktop header).
+      The mobile drawer uses .drawer-menu classes — untouched. */
+.header__links-list .header__links-icon {
+  display: none !important;
+}
+
+/* 2. The underline: 1px solid black, ~4px below the label.
+      (Gap + thickness + color are the tunables.) Selector copies the
+      theme's exactly so this later file wins on equal specificity. */
+.header__links.header__links-primary > ul > li > [data-link] .link-hover:before {
+  background: #000;
+  height: 1px;
+  top: calc(100% + 4px);
+}
+
+/* 3. Remove the theme's *second* underline (text-decoration) on the
+      open item so only the single animated line shows. */
+html:not(.no-js) .navigation__submenu-trigger[aria-expanded="true"] {
+  text-decoration: none;
+}
+
+/* ---- Edit #5: Designers — remove the four featured boxes --------
+   The designers page (sections/lefigue-designers.liquid) renders a
+   JS-built "featured" strip of four large tiles (Alex Monroe / Romilt /
+   Atelier Stone / Miliemoon) into .dz-featured. Per request, hide the
+   whole strip. display:none removes it from layout entirely (no gap);
+   the JS still builds the nodes but they never render. To strip it from
+   source instead, delete the .dz-featured container + the FEAT_TITLES
+   block in the section's JS. */
+.lf-designers .dz-featured {
+  display: none !important;
+}
+
+/* ---- Edit #6: Designers detail — remove the "In the studio" box ----
+   Each designer detail view has a portrait box (.det-portrait, the
+   "In the studio" gradient/image tile) in the left rail. Per request,
+   remove the box on all designer detail pages. */
+.lf-designers .det-portrait {
+  display: none !important;
+}
+
+/* ---- Edit #7: Society join form — visible consent checkbox ----
+   The consent checkbox used accent-color:gold, whose auto check-mark
+   renders dark on the mid-brown fill (near-invisible). Custom-render it
+   with a white check on a filled gold box (works in light + dark). */
+.lf-society .consent input[type="checkbox"] {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  accent-color: transparent !important;
+  background-image: none !important;
+  color: transparent !important;
+  width: 18px !important;
+  height: 18px !important;
+  flex: 0 0 18px !important;
+  margin-top: 2px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--paper) !important;
+  border-radius: 3px !important;
+  position: relative !important;
+  cursor: pointer !important;
+}
+.lf-society .consent input[type="checkbox"]:checked {
+  background: var(--gold) !important;
+  border-color: var(--gold) !important;
+}
+.lf-society .consent input[type="checkbox"]:checked::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 9px;
+  border: 2px solid #fff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+/* ---- Edit #8: Mega-nav column headings are titles, not links ----
+   The 2nd-level menu items (Shop Jewelry / Collections / Shop by
+   Material / Discover / By City / ...) render as <h4><a> column
+   headings in the dropdown (snippets/meganav-nav.liquid). Per the
+   house rule they are labels, never destinations — but as anchors
+   they showed a hand cursor + hover underline, reading as broken
+   buttons. pointer-events:none makes them inert text: no hover
+   styles, no cursor change, not clickable. Applies to ALL headings
+   regardless of their menu URL, so nav-editor re-saves can't make
+   a heading clickable again by restoring a link on it. Third-level
+   items and the top-level header triggers are untouched. */
+.meganav__list-parent > li > h4 > a {
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none !important;
+}
+
+/* ---- Edit #9: Sort dropdown — keep only A-Z, Z-A, Price low→high, high→low ----
+   The collection + search sort control renders Shopify's full 8-option
+   sort set as radio items (snippets/filter-bar.liquid on desktop and
+   snippets/filter-drawer.liquid on mobile). Per request, show ONLY four:
+   Alphabetically A-Z (title-ascending), Z-A (title-descending), Price
+   low→high (price-ascending), high→low (price-descending). Hide every
+   [2026-07-10 UPDATE: set changed per user — now Best selling (best-selling)
+   + price asc/desc (Featured removed 2026-07-10 later); the two alphabeticals removed;
+   default selection switched to Featured in filter-bar/filter-drawer.]
+   other sort item — scoped to the sort lists so the filter facets are
+   untouched. A-Z is made the default SELECTION in filter-bar/filter-drawer
+   Liquid (product order left as-is). (A crafted ?sort_by= URL for another
+   key still functions; this controls the visible dropdown.) */
+.filter-group__list--sort .filter-item:has(input[name="sort_by"]:not([value="price-ascending"]):not([value="price-descending"]):not([value="best-selling"])),
+.filter-drawer__panel--sort .filter-item:has(input[name="sort_by"]:not([value="price-ascending"]):not([value="price-descending"]):not([value="best-selling"])) {
+  display: none !important;
+}
+
+/* ---- Edit #10: Ring-size dropdowns — uniform look + half-width on product page ----
+   (a) Pairing pages: the piece-row Size selects (select.lf-sizesel, rendered by
+   sizeSel() in sections/lefigue-pairing.liquid + lefigue-icon-pairing.liquid)
+   were picking up the theme's global input/select rules inconsistently — one
+   compact, one full theme-sized (see 2026-07-10 screenshot). Force one fixed
+   box for every size select: 100x34px, 12px label, custom chevron. var(--hair)/
+   var(--ink)/var(--gold)/var(--b) resolve from the section root, so light+dark
+   palettes both work.
+   (b) Product page: the variant picker's Size <select class="input"> spans the
+   full details column (theme sets .input{width:100%}). Halve it. The width goes
+   on .select-wrapper — the theme's chevron icon is absolutely positioned against
+   the wrapper, so shrinking only the select would strand the icon at the far
+   right. Applies to the quick-view modal's picker too (same snippet). */
+.lf-pairing select.lf-sizesel,
+.lf-icon-pairing select.lf-sizesel {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  width: 100px !important;
+  min-width: 100px !important;
+  height: 34px !important;
+  box-sizing: border-box !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  padding: 0 26px 0 10px !important;
+  border: 1px solid var(--hair) !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  color: var(--ink) !important;
+  font-family: var(--b) !important;
+  font-size: 12px !important;
+  letter-spacing: .04em !important;
+  line-height: 32px !important;
+  cursor: pointer;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22><path d=%22M1 1l4 4 4-4%22 fill=%22none%22 stroke=%22%23948b7a%22 stroke-width=%221.2%22/></svg>') !important;
+  background-repeat: no-repeat !important;
+  background-position: right 9px center !important;
+  background-size: 10px 6px !important;
+}
+.lf-pairing select.lf-sizesel:hover,
+.lf-pairing select.lf-sizesel:focus,
+.lf-icon-pairing select.lf-sizesel:hover,
+.lf-icon-pairing select.lf-sizesel:focus {
+  border-color: var(--gold) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.lf-pairing select.lf-sizesel.err,
+.lf-icon-pairing select.lf-sizesel.err {
+  border-color: #a33327 !important;
+}
+
+.product__variants-wrapper .select-wrapper {
+  width: 50%;
+  min-width: 170px;
+}
+.product__variants-wrapper .select-wrapper select.input {
+  width: 100%;
+}
+
+/* ---- Edit #10b: Pairing piece rows — wrap on small screens ----
+   At <=560px (esp. 375px phones) the piece row's fixed children (100px size
+   select + nowrap price + toggle + 15px gaps) crushed the product-name column
+   to ~65px. Wrap: name/maker take the full first line; size select sits left
+   on the second line with price + toggle pushed right. overflow-wrap guards
+   long single-word names at every width. */
+.lf-pairing .piece .nm,
+.lf-icon-pairing .piece .nm {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 560px) {
+  .lf-pairing .piece,
+  .lf-icon-pairing .piece {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+  .lf-pairing .piece .nav,
+  .lf-icon-pairing .piece .nav {
+    flex: 1 1 100%;
+  }
+  .lf-pairing .piece .pr,
+  .lf-icon-pairing .piece .pr {
+    margin-left: auto;
+  }
+}
+
+/* ---- Edit #11 (final): Appointment caption plaque ----
+   Moved INTO sections/lefigue-appointment.liquid (2026-07-10): the two
+   caption spans are wrapped in .lf-cap there, one #f8f2e5 @ 75% rectangle
+   per card that fits its own text. No rules needed here anymore. */
+
+/* ---- Edit #12: Pairing carousel arrows — pixel-centered chevrons ----
+   The text glyphs (&lsaquo;/&rsaquo; in Cormorant) sit off-center in the
+   30px circle (font baseline/advance quirks). Replace the glyph with an
+   SVG chevron drawn as a centered background-image — deterministic
+   centering, same technique as the ring-size dropdown chevron. */
+.lf-pairing .lf-car .cnav,
+.lf-icon-pairing .lf-car .cnav {
+  font-size: 0 !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 7px 12px !important;
+}
+.lf-pairing .lf-car .cnext,
+.lf-icon-pairing .lf-car .cnext {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%227%22 height=%2212%22 viewBox=%220 0 7 12%22><path d=%22M1 1l5 5-5 5%22 fill=%22none%22 stroke=%22%232a2622%22 stroke-width=%221.4%22 stroke-linecap=%22round%22/></svg>') !important;
+}
+.lf-pairing .lf-car .cprev,
+.lf-icon-pairing .lf-car .cprev {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%227%22 height=%2212%22 viewBox=%220 0 7 12%22><path d=%22M6 1L1 6l5 5%22 fill=%22none%22 stroke=%22%232a2622%22 stroke-width=%221.4%22 stroke-linecap=%22round%22/></svg>') !important;
+}
+
+/* ---- Edit #13: Pre-order detail — fonts + window dots (bundle-cache bypass) ----
+   The pre-order sections' {% stylesheet %} rules live in Shopify's compiled
+   section-styles bundle, which lagged behind deploys on the preview theme
+   (HTML fresh, styles stale — user saw old fonts/dots after the section was
+   verified updated). Duplicate the critical rules here with !important:
+   custom.css is a plain asset that reliably cache-busts on this store.
+   (a) Product-page fonts: theme body font everywhere, theme heading font on
+   the display elements. (b) The Window timeline dots align exactly with
+   their labels: first flush-left, middle centered, last flush-right. */
+.lf-preorder-d {
+  font-family: var(--font-body, 'Cormorant Garamond', serif) !important;
+}
+.lf-preorder-d .count-sub,
+.lf-preorder-d .node .nl,
+.lf-preorder-d .node .nd,
+.lf-preorder-d .ptag,
+.lf-preorder-d .pdesc,
+.lf-preorder-d .price-note,
+.lf-preorder-d .acc-a-in,
+.lf-preorder-d .reserve-note {
+  font-family: var(--font-body, 'Cormorant Garamond', serif) !important;
+}
+.lf-preorder-d .ptitle,
+.lf-preorder-d .count-big,
+.lf-preorder-d .pre-amt,
+.lf-preorder-d .maker-txt h2,
+.lf-preorder-d .more-head h3,
+.lf-preorder-d .mc .nm,
+.lf-preorder-d .mbar .mp,
+.lf-preorder-d .acc-q .pl,
+.lf-preorder-d .ph .mono {
+  font-family: var(--font-heading, 'Cormorant Garamond', serif) !important;
+}
+.lf-preorder-d .node .pt {
+  display: block !important;
+  margin: 0 auto 9px !important;
+}
+.lf-preorder-d .node:first-child .pt { margin-left: 0 !important; }
+.lf-preorder-d .node:last-child .pt { margin-right: 0 !important; }
+/* dot CENTERS sit on the 2px track: track(2) + its 8px bottom margin puts the
+   row 10px below track top; -14.5px lifts the 11px dot so its middle = line middle */
+.lf-preorder-d .nodes { margin-top: -14.5px !important; }
+
+/* ---- Edit #14: FIGUE Edit articles — video embeds ----
+   Mirror of the video rules added to sections/lefigue-edit-article.liquid
+   (section stylesheet bundle lags on preview — see Edit #13). Embedded
+   YouTube/Vimeo iframes and uploaded <video> files render full-width 16:9
+   with the same rhythm as article images. */
+.lfe-body iframe,
+.lfe-body video {
+  display: block !important;
+  width: 100% !important;
+  aspect-ratio: 16/9;
+  height: auto !important;
+  border: 0 !important;
+  background: #000;
+  margin: 40px 0 !important;
+}
+
+/* ---- Edit #15: Collection filters — Material facet (REVERSED 2026-07-14) ----
+   2026-07-10: the Material facet was hidden here (+ a label-zap module in
+   lefigue-custom.js) because the free-text custom.material metafield fed it
+   garbled values. 2026-07-14: custom.material was bulk-standardized to the
+   four real values (Solid Gold / Gold Vermeil / Gold Filled / Sterling
+   Silver, sourced from the material collections) and junk values cleared,
+   so the facet is CLEAN and the hide rules + JS zap were removed. If the
+   Material filter is missing from the rail entirely, re-add it in admin:
+   Search & Discovery > Filters > Material (custom.material). */
+
+/* ---- Edit #16: Product cards — swipe to the 2nd photo on touch ----
+   Desktop hover swaps the card image to the product's second photo
+   (settings.product_listing_show_second_image_on_hover, schema default
+   true; theme JS toggles .active on .product-item__image--two). The
+   theme HIDES that second image on touch devices (@media (hover:none)
+   { display:none } in theme.css) — so mobile shoppers never saw it.
+   Instead, on touch devices the card's image link becomes a 2-slide
+   scroll-snap carousel: slide 1 = featured image, slide 2 = the hover
+   image. Slide dots are built by lefigue-custom.js (.lf-card-dots).
+   Applies everywhere product-item.liquid renders: collection grids,
+   featured collections/sliders, search results, recommendations. */
+@media (hover: none) {
+  .product-item__media--multiple-images .product-item__image-link {
+    display: flex !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .product-item__media--multiple-images .product-item__image-link::-webkit-scrollbar {
+    display: none;
+  }
+  .product-item__media--multiple-images .product-item__image-link > .image {
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+  /* Undo the theme's stacked-overlay treatment + its display:none */
+  .product-item__media--multiple-images .product-item__image--two.image {
+    display: block !important;
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  /* Slide dots (markup injected by lefigue-custom.js) */
+  .lf-card-dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 8px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .lf-card-dots span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.55);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.35);
+    transition: background 0.2s;
+  }
+  .lf-card-dots span.on {
+    background: #fff;
+  }
+}
+
+/* ---- Edit #16b: card swipe — ALL photos become slides on touch ----
+   product-item.liquid (LF patch) renders media[3..8] as
+   .product-item__image--extra inside the card's image link. Desktop:
+   hidden entirely, so the hover swap stays a 2-image affair and the
+   extras are never even downloaded (lazy + no box). Touch: they join
+   the Edit #16 scroll-snap carousel; the dots JS counts the link's
+   children, so the dot count follows automatically. */
+.product-item__image--extra {
+  display: none;
+}
+@media (hover: none) {
+  .product-item__media--multiple-images .product-item__image--extra.image {
+    display: block !important;
+    position: relative !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ---- Edit #17: Wishlist heart on product cards ----
+   Markup in snippets/product-item.liquid (top-right of the card image);
+   toggle behaviour + localStorage store in assets/lefigue-custom.js
+   (window.LFWishlist); saved pieces render on /pages/wishlist
+   (sections/lefigue-wishlist.liquid). Thin-line heart on a warm-white
+   disc; saved state fills LE FIGUE gold. z-index 4 clears the touch
+   carousel dots (z-index 3, Edit #16). */
+.product-item__media .lf-wish {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 4;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(253, 252, 249, 0.88);
+  border: 0;
+  border-radius: 50%;
+  color: #2a2622;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  transition: color 0.25s, transform 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.product-item__media .lf-wish svg {
+  width: 17px;
+  height: 17px;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+}
+.product-item__media .lf-wish:hover {
+  color: #B8A882;
+}
+.product-item__media .lf-wish:active {
+  transform: scale(0.92);
+}
+.product-item__media .lf-wish:focus-visible {
+  outline: 1px solid #B8A882;
+  outline-offset: 2px;
+}
+.product-item__media .lf-wish.on {
+  color: #B8A882;
+}
+.product-item__media .lf-wish.on svg {
+  fill: #B8A882;
+  stroke: #B8A882;
+}
+
+/* ---- Edit #18: Wishlist heart in the header ----
+   Markup in sections/header.liquid (wishlist_icon capture, mirrors the
+   theme's icon-button structure) — an <a> to /pages/wishlist rendered
+   leftmost in the desktop icon cluster and both mobile rows. The theme
+   has no heart icon so the inline SVG needs its own sizing. Final look
+   per user (7/13, after three rounds): classic round-lobed OUTLINE heart
+   that matches its neighbor icons exactly — stroke rides currentColor
+   (theme icon color, e.g. #706b5f) in EVERY state; no gold, no fill, no
+   custom hover; 26px to sit optically level with search/account/bag;
+   stroke thinned 1.8 → 1.5 per user to match the neighbors' line weight.
+   (lefigue-custom.js still toggles .on by wishlist state — intentionally
+   unstyled here, kept as a hook.) */
+.header__icon-touch--wishlist .icon-button__icon svg.icon-header-wishlist {
+  width: 26px;
+  height: 26px;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+/* ---- Edit #19: FIGUE Edit board — sticky filter bar offset ----
+   The category bar (sections/lefigue-edit-board.liquid) pinned at
+   top:var(--height-header), but the theme's sticky header slides
+   partially up when stuck — theme.js publishes that shift as a
+   NEGATIVE --header-desktop-sticky-position — so the bar hung a
+   full-header-height down with a gap of scrolling content above it
+   (user screenshot 2026-07-14). These rules mirror the theme's own
+   .filter-bar--sticky offset formula (theme.css) exactly. The same
+   fix lives in the section's {% stylesheet %}; this copy exists
+   because the section bundle lags on preview themes (see Edit #13).
+   !important beats the stale bundled rule. */
+.lfe-board .lfe-filterbar {
+  top: 0 !important;
+}
+html.sticky-header-enabled .lfe-board .lfe-filterbar {
+  top: var(--height-header, 0px) !important;
+}
+@media (min-width: 960px) {
+  html.sticky-header-enabled .lfe-board .lfe-filterbar {
+    top: calc(var(--height-header, 0px) + var(--header-desktop-sticky-position, 0px) - 1px) !important;
+  }
+  html.sticky-header-enabled[data-enable-sticky-announcement-bar*="desktop"] .lfe-board .lfe-filterbar {
+    top: calc(var(--height-header, 0px) + var(--announcement-height) + var(--header-desktop-sticky-position, 0px) - 1px) !important;
+  }
+}
+@media (max-width: 959px) {
+  html.sticky-header-enabled[data-enable-sticky-announcement-bar*="mobile"] .lfe-board .lfe-filterbar {
+    top: calc(var(--height-header, 0px) + var(--announcement-height)) !important;
+  }
+}
+
+/* ---- Edit #22: Prices +2px storefront-wide ----
+   Per user 2026-07-16. The theme's price elements set no font-size of
+   their own (verified in theme.css — they inherit), so calc(1em + 2px)
+   lands exactly +2px on: product cards everywhere product-item renders
+   (collections, search, sliders, recommendations) and the product page
+   + quick-view price (same product__price markup). The cart page and
+   quick-cart drawer size prices via fs-body-75 on a wrapper — those get
+   the fs variable + 2px. Wishlist-page card price bumped 13px → 15px in
+   step (needs the extra .wl-grid specificity to beat the section's
+   inline style). Custom LF pages (pairing, pre-order) keep their own
+   bespoke type scale. */
+.product-item__price,
+.product__price {
+  font-size: calc(1em + 2px);
+}
+.quick-cart__item-price-wrapper.fs-body-75,
+.cart__form-item-price-wrapper.fs-body-75 {
+  font-size: calc(var(--font-size-body-75) + 2px);
+}
+.lf-wishlist .wl-grid .wl-price {
+  font-size: 15px;
+}
+
+/* ---- Edit #21: Jewelry Care page — one background, blended art ----
+   /pages/jewelry-care (templates/page.guide.json): the top sections set
+   background_color #f2f1eb but rich-text sections have NO background
+   setting, so the lower half fell back to the grayer body color — and
+   the Materials section paints its color as per-column tiles
+   (background_behind_columns). Scoped via the new page--<handle> body
+   class (layout/theme.liquid, LF Edit #21): paint the whole #main cream
+   so every section matches. The metal illustrations (9k_s.png etc.) are
+   PURE WHITE-background PNGs — mix-blend-mode:multiply renders white as
+   exactly the color behind it (black line art unchanged), so they melt
+   into the cream with no re-export. */
+body.page--jewelry-care #main {
+  background-color: #f2f1eb;
+}
+body.page--jewelry-care .multi-column img {
+  mix-blend-mode: multiply;
+}
+
+/* ---- Edit #20: FIGUE Edit shop band — photo in the square ----
+   sections/lefigue-edit-article.liquid renders article metafield
+   custom.shop_image (definition 246895542570, pinned, images only)
+   inside the shop band's .si square; empty metafield keeps the old
+   gradient placeholder. Mirror of the section rule — the section
+   stylesheet bundle lags on preview themes (see Edit #13). */
+.lfe-shop .si img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---- Edit #23: FIGUE Edit shop band — margin bleed + mobile stack ----
+   Two bugs, one root cause (user report 2026-07-18, live Ver.01):
+   (a) The band's image looked "broken": .lfe-body img{margin:40px 0}
+   (the article rhythm rule) also hits .si img — Edit #20 overrides
+   width/height/object-fit but NOT margin, so the photo slid 40px down
+   inside the 90px overflow:hidden square, exposing the cream gradient
+   placeholder above it and clipping the subject below.
+   (b) Mobile (<=620px): theme .rte content margins bleed into the
+   band's grid children (~110px gaps between stacked items), the .si
+   sat flush left, and the button stretched full-width (grid default
+   justify-items:stretch). .lfe-body .lfe-shop (0,2,0) outranks the
+   theme's .rte rules; base grid duplicated here because the section's
+   {% stylesheet %} bundle lags fresh publishes (see Edit #13/#19). */
+.lfe-body .lfe-shop {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  gap: 20px;
+  align-items: center;
+}
+.lfe-body .lfe-shop *:not(img) {
+  margin: 0; /* rte rhythm margins hit nested .sk/.sn/.sp too, not just direct children */
+}
+.lfe-body .lfe-shop .sn { margin-top: 2px; }
+.lfe-body .lfe-shop .sp { margin-top: 3px; }
+.lfe-body .lfe-shop .si {
+  width: 90px;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+}
+.lfe-body .lfe-shop .si img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  margin: 0 !important;
+}
+@media (max-width: 620px) {
+  .lfe-body .lfe-shop {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    gap: 16px;
+    padding: 26px 0;
+  }
+  .lfe-body .lfe-shop .si {
+    margin: 0 auto;
+  }
+  .lfe-body .lfe-shop .sbtn {
+    display: inline-block;
+    width: auto;
+    justify-self: center;
+  }
+}
+
+/* ---- Edit #24: Mobile drawer — flattened group labels ----
+   snippets/drawer-menu-list.liquid (LF edit, same date): inside a
+   top-level panel, level-2 groups ("Shop Jewelry", "Collections",
+   "By City"...) render as inert labels with their links listed
+   directly below — no third drill-down panel. Label look mirrors the
+   desktop mega-nav column headings: small Cormorant italic, gold,
+   upper-case tracking. pointer-events:none = never a destination
+   (house rule, see Edit #8). */
+.drawer-menu .lf-drawer-group-label {
+  pointer-events: none;
+  cursor: default;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #B8A882;
+}
+.drawer-menu .drawer-menu__item--lf-group {
+  margin-top: 14px;
+}
+.drawer-menu .drawer-menu__item--lf-group:nth-child(2) {
+  margin-top: 0; /* first group sits right under the panel heading */
+}
