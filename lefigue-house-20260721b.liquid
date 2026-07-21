@@ -1,0 +1,348 @@
+{%- comment -%}
+  LE FIGUE — The House (brand story page)
+  Port of designer handoff ~/Downloads/"0721 Final the House - e.k.html" (2026-07-21).
+  Renders on /pages/the-house via templates/page.lf-about.json (replaced the old
+  lefigue-about section there). Mockup's own fixed nav + footer stripped — the
+  theme provides site chrome. All styles scoped under .lf-house; inline <style>
+  NOT {% raw %}{% stylesheet %}{% endraw %} (section bundle lags fresh deploys — see custom.css
+  Edit #13). CTA links to /pages/book-appointment.
+{%- endcomment -%}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+
+<style>
+  /* Page chrome: theme.liquid stamps body.page--<handle> (LF Edit #21) */
+  body.page--the-house #main{ background:#FBF8F1; }
+
+  .lf-house{
+    --cream:#FBF8F1;
+    --cream-deep:#F4EFE3;
+    --ink:#1C1A16;
+    --ink-soft:#6B6558;
+    --gold:#A8894E;
+    --gold-soft:#C9B27E;
+    --line:#E7DFCD;
+    --white:#FFFFFF;
+    font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    font-size:16px;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .lf-house *{ margin:0; padding:0; box-sizing:border-box; }
+  .lf-house .serif{ font-family:'Cormorant Garamond',serif; }
+  .lf-house ::selection{ background:var(--gold-soft); color:var(--white); }
+
+  /* ---------------- hero ---------------- */
+  .lf-house .hero{
+    min-height:88vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:96px 28px 80px;
+    position:relative;
+  }
+  .lf-house .hero .over{
+    font-size:10.5px; letter-spacing:.46em; text-transform:uppercase;
+    color:var(--gold); font-weight:600; margin-bottom:38px;
+  }
+  .lf-house .hero h1{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:400;
+    font-size:clamp(52px,10vw,104px);
+    letter-spacing:.06em;
+    line-height:1.02;
+  }
+  .lf-house .hero .wepair{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:400; font-style:italic;
+    font-size:clamp(20px,3.4vw,32px);
+    letter-spacing:.3em;
+    color:var(--gold);
+    margin-top:22px;
+  }
+  .lf-house .hero .rule{ width:1px; height:56px; background:var(--gold-soft); margin:44px auto 40px; }
+  .lf-house .hero .def{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(19px,2.6vw,24px);
+    font-weight:500; letter-spacing:.02em;
+  }
+  .lf-house .hero .tag{
+    font-size:12px; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--ink-soft); margin-top:14px; font-weight:500;
+  }
+  .lf-house .hero .scroll{
+    position:absolute; bottom:34px; left:50%; transform:translateX(-50%);
+    font-size:10px; letter-spacing:.3em; text-transform:uppercase; color:var(--ink-soft);
+    opacity:.7;
+  }
+
+  /* ---------------- shared layout ---------------- */
+  .lf-house .wrap{ max-width:720px; margin:0 auto; padding:0 28px; } /* 680 in mockup; +40 so the
+     Beginning paragraph's ending fits its line (user 7/21) — pairing with the .nb guard below */
+  .lf-house .wide{ max-width:920px; margin:0 auto; padding:0 28px; }
+  .lf-house section{ padding:110px 0; }
+  .lf-house .eyebrow{
+    text-align:center;
+    font-size:10.5px; letter-spacing:.38em; text-transform:uppercase;
+    color:var(--gold); font-weight:700; margin-bottom:34px;
+  }
+  .lf-house .eyebrow .no{
+    font-family:'Cormorant Garamond',serif; font-size:14px; font-weight:500;
+    display:block; margin-bottom:10px; letter-spacing:.1em;
+  }
+  .lf-house h2{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(28px,4.2vw,38px);
+    font-weight:400; line-height:1.28;
+    text-align:center; margin-bottom:44px; letter-spacing:.01em;
+    text-wrap:balance;
+  }
+  .lf-house h2 em{ font-style:italic; color:var(--gold); }
+  .lf-house .nb{ white-space:nowrap; }
+  .lf-house p{ color:var(--ink-soft); margin-bottom:22px; font-weight:400; text-wrap:pretty; }
+  .lf-house p:last-child{ margin-bottom:0; }
+  .lf-house p b{ color:var(--ink); font-weight:600; }
+  .lf-house .center{ text-align:center; }
+
+  .lf-house .dropcap::first-letter{
+    font-family:'Cormorant Garamond',serif;
+    font-size:64px; line-height:.82;
+    float:left; padding:8px 12px 0 0;
+    color:var(--gold); font-weight:500;
+  }
+  .lf-house .voice{
+    font-family:'Cormorant Garamond',serif; font-style:italic;
+    font-size:clamp(20px,3vw,25px);
+    color:var(--ink); line-height:1.55; text-align:center;
+    margin:52px 0; text-wrap:balance;
+  }
+  .lf-house .div{ width:44px; height:1px; background:var(--gold-soft); margin:0 auto; }
+  .lf-house .band{ background:var(--cream-deep); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+
+  /* ---------------- manifesto ---------------- */
+  .lf-house .manifesto{ text-align:center; }
+  .lf-house .manifesto .big{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(34px,6vw,58px);
+    font-weight:400; line-height:1.22; letter-spacing:.01em;
+    margin-bottom:48px;
+  }
+  .lf-house .manifesto .big em{ font-style:italic; color:var(--gold); }
+  .lf-house .compare{
+    display:grid; grid-template-columns:1fr 1px 1fr;
+    gap:0; align-items:stretch;
+    max-width:720px; margin:0 auto 52px;
+  }
+  .lf-house .compare .mid{ background:var(--line); }
+  .lf-house .compare>div:not(.mid){ padding:10px 40px; }
+  .lf-house .compare h3{
+    font-family:'Cormorant Garamond',serif;
+    font-size:24px; font-weight:500; margin-bottom:6px;
+  }
+  .lf-house .compare .role{
+    font-size:10px; letter-spacing:.3em; text-transform:uppercase;
+    color:var(--gold); font-weight:700; margin-bottom:14px;
+  }
+  .lf-house .compare p{ font-size:14.5px; line-height:1.8; margin:0; }
+  @media(max-width:640px){
+    .lf-house .compare{ grid-template-columns:1fr; }
+    .lf-house .compare .mid{ height:1px; width:44px; margin:26px auto; }
+    .lf-house .compare>div:not(.mid){ padding:0 12px; }
+  }
+
+  /* ---------------- studio ---------------- */
+  .lf-house .studio-card{
+    background:var(--white); border:1px solid var(--line);
+    padding:64px 56px; text-align:center;
+    max-width:760px; margin:0 auto;
+  }
+  .lf-house .studio-card h3{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(24px,3.6vw,32px); font-weight:400; font-style:italic;
+    line-height:1.4; margin-bottom:24px; text-wrap:balance;
+  }
+  .lf-house .studio-card p{ font-size:15px; }
+  .lf-house .studio-card .soft-line b{ color:#8A7E68; font-weight:600; letter-spacing:.02em; }
+  .lf-house .cta{
+    display:inline-block;
+    font-size:11px; letter-spacing:.28em; text-transform:uppercase; font-weight:700;
+    color:var(--gold); text-decoration:none;
+    padding:16px 38px; border:1px solid var(--gold-soft);
+    transition:background .25s,color .25s,border-color .25s;
+  }
+  .lf-house .cta:hover{ background:var(--gold); border-color:var(--gold); color:var(--cream); }
+  @media(max-width:560px){ .lf-house .studio-card{ padding:44px 26px; } }
+
+  /* ---------------- rhythm ---------------- */
+  .lf-house .rhythm{
+    display:grid; grid-template-columns:1fr 1fr; gap:1px;
+    background:var(--line); border:1px solid var(--line);
+    max-width:860px; margin:0 auto;
+  }
+  .lf-house .rday{ background:var(--cream); padding:52px 44px; text-align:center; }
+  .lf-house .rday .dow{
+    font-size:10px; letter-spacing:.34em; text-transform:uppercase;
+    color:var(--gold); font-weight:700; margin-bottom:16px;
+  }
+  .lf-house .rday h3{
+    font-family:'Cormorant Garamond',serif;
+    font-size:27px; font-weight:500; margin-bottom:14px; letter-spacing:.02em;
+  }
+  .lf-house .rday .line{
+    font-family:'Cormorant Garamond',serif; font-style:italic;
+    font-size:17px; color:var(--ink); margin-bottom:14px; line-height:1.5;
+    text-wrap:balance;
+  }
+  .lf-house .rday p{ font-size:14px; margin:0; }
+  @media(max-width:640px){ .lf-house .rhythm{ grid-template-columns:1fr; } }
+
+  /* ---------------- closing ---------------- */
+  .lf-house .closing{ text-align:center; padding:130px 28px 120px; }
+  .lf-house .closing .story{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(19px,2.8vw,24px); font-weight:400;
+    color:var(--ink-soft); max-width:600px; margin:0 auto 26px; line-height:1.75;
+    text-wrap:balance;
+  }
+  .lf-house .closing .story em{ font-style:italic; color:var(--ink); }
+  .lf-house .closing .revealline{
+    font-family:'Cormorant Garamond',serif; font-style:italic;
+    font-size:clamp(16px,2.2vw,19px); color:var(--gold);
+    letter-spacing:.06em; margin:0 auto 56px;
+  }
+  .lf-house .closing .welcome{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(30px,5vw,44px); font-weight:400; letter-spacing:.04em;
+  }
+  .lf-house .closing .final{
+    font-size:11.5px; letter-spacing:.3em; text-transform:uppercase;
+    color:var(--gold); margin-top:20px; font-weight:600;
+  }
+
+  /* ---------------- reveal ---------------- */
+  .lf-house .reveal{ opacity:0; transform:translateY(22px); transition:opacity .9s ease,transform .9s ease; }
+  .lf-house .reveal.in{ opacity:1; transform:none; }
+  @media(prefers-reduced-motion:reduce){
+    .lf-house .reveal{ opacity:1; transform:none; transition:none; }
+  }
+</style>
+
+<div class="lf-house" data-lf-house>
+
+  <header class="hero">
+    <div class="over reveal">The House</div>
+    <h1 class="reveal">LE FIGUE</h1>
+    <div class="wepair reveal">WE PAIR IT.</div>
+    <div class="rule reveal"></div>
+    <div class="def serif reveal">A styling-first jewelry house <span class="nb">in New York.</span></div>
+    <div class="tag reveal">Curated globally &middot; Paired in New York</div>
+    <div class="scroll">Scroll</div>
+  </header>
+
+  <section>
+    <div class="wrap">
+      <div class="eyebrow reveal"><span class="no">I</span>The Beginning</div>
+      <h2 class="reveal">It began the way <span class="nb">most good things do:</span><br><em>by noticing.</em></h2>
+      <p class="dropcap reveal">A piece discovered one city at a time. An atelier down a side street. A name passed quietly between people who knew. What began as a habit of collecting while traveling became a point of view, and that point of view <span class="nb">became a house.</span></p>
+      <p class="reveal">Today, LE FIGUE brings together more than 150 independent designers from around the world. Each is chosen with intention and rotated seasonally, so the edit always feels alive. Alongside jewelry, we collect a small selection of travel- and hotel-inspired objects, beautifully made pieces that complete a mood, like souvenirs you would actually want to keep.</p>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wide">
+      <div class="eyebrow reveal"><span class="no">II</span>What Pairing Means</div>
+      <div class="manifesto">
+        <div class="big reveal">Layering <em>adds.</em><br>Pairing <em>edits.</em></div>
+        <div class="compare reveal">
+          <div>
+            <h3>Layering</h3>
+            <div class="role">Adds</div>
+            <p>Layering puts pieces together.</p>
+          </div>
+          <div class="mid"></div>
+          <div>
+            <h3>Pairing</h3>
+            <div class="role">Edits</div>
+            <p>Pairing considers proportion, texture, metal, placement, and the one piece that brings everything into focus.</p>
+          </div>
+        </div>
+      </div>
+      <div class="wrap" style="padding:0">
+        <p class="center reveal">A foundation chain with a charm that means something. A ring you already own with one you have yet to meet. Different designers, different cities, different points of view, brought together to feel as though they were always meant to belong.</p>
+        <p class="center reveal">The pieces may come from anywhere. The pairing happens here, in New York, through LE FIGUE.</p>
+        <p class="voice reveal">We do not simply show you another piece.<br>We show you what belongs with it.</p>
+        <div class="div reveal"></div>
+        <p class="center reveal" style="margin-top:30px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--gold);text-wrap:balance">By designer &middot; By occasion &middot; <span class="nb">And most importantly, by you</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wide">
+      <div class="eyebrow reveal"><span class="no">III</span>The Pairing Studio</div>
+      <div class="studio-card reveal">
+        <h3>Bring what you already wear.<br>We&rsquo;ll pair what comes next.</h3>
+        <p>Across our New York boutiques, styling begins with conversation: how you dress, what you reach for every day, the jewelry you never take off, and the pieces that still feel missing. We consider your daily uniform, your proportions, and the way you actually move through the world, so choosing feels effortless, intuitive, and personal.</p>
+        <p class="soft-line" style="margin-bottom:40px"><b>Styling first, always. And we remember.</b></p>
+        <a class="cta" href="/pages/book-appointment">Reserve a Styling Session</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wide">
+      <div class="eyebrow reveal"><span class="no">IV</span>Each Week at LE FIGUE</div>
+      <div class="rhythm reveal">
+        <div class="rday">
+          <div class="dow">Thursday</div>
+          <h3>The Pairing Drop</h3>
+          <div class="line">A new pairing, edited by LE FIGUE.</div>
+          <p>A weekly edit of pieces selected to be worn together as one thought.</p>
+        </div>
+        <div class="rday">
+          <div class="dow">Friday</div>
+          <h3>The Styling Session</h3>
+          <div class="line">How we wear it, why it works, and what we would pair with it next.</div>
+          <p>A closer look at Thursday&rsquo;s pairing: its balance, proportions, details, and possibilities.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="closing">
+    <p class="story reveal">LE FIGUE takes its name from the fig,<br>a fruit whose blossoms remain <em>hidden within.</em></p>
+    <p class="revealline reveal">Quietly formed, richly revealed.</p>
+    <div class="welcome serif reveal">Welcome to LE FIGUE.</div>
+    <div class="final reveal">Curated globally &middot; Paired in New York</div>
+  </div>
+
+</div>
+
+<script>
+  (function(){
+    var root = document.querySelector('[data-lf-house]');
+    if(!root) return;
+    var els = root.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){
+      els.forEach(function(el){ el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    },{threshold:.12});
+    els.forEach(function(el,i){
+      el.style.transitionDelay = (i%4)*0.08 + 's';
+      io.observe(el);
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "LF — The House",
+  "settings": [],
+  "presets": [{ "name": "LF — The House" }]
+}
+{% endschema %}
