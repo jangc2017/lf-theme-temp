@@ -1,0 +1,46 @@
+{%- comment -%}
+  LE FIGUE — cart packaging chooser (2026-07-21).
+  Per-ORDER choice: Full packaging (+$2, default) vs Reduced (free).
+  Charged via hidden product "Full Packaging" (handle full-packaging,
+  variant 52110086013226, type "Packaging" — excluded from the `all`
+  smart collection by TYPE != Packaging rule, seo.hidden=1).
+  The $2 line is added/removed by assets/lefigue-custom.js AT CHECKOUT
+  CLICK (never while browsing), so cart re-render fights are avoided;
+  leftover packaging lines (customer backed out of checkout) are
+  scrubbed on page load. Choice persists in localStorage lf:packaging.
+  Rendered in sections/quick-cart.liquid + sections/main-cart.liquid.
+  Styles: custom.css Edit #26.
+
+  Accepts: context — 'drawer' | 'page' (unique radio group names).
+{%- endcomment -%}
+
+{%- liquid
+  assign lfp_real_items = 0
+  for item in cart.items
+    unless item.product.type == 'Packaging'
+      assign lfp_real_items = lfp_real_items | plus: 1
+    endunless
+  endfor
+-%}
+
+{%- if lfp_real_items > 0 -%}
+  <div class="lf-pack" data-lf-pack>
+    <div class="lfp-head">Packaging</div>
+    <label class="lfp-opt">
+      <input type="radio" name="lf-packaging-{{ context | default: 'cart' }}" value="full" checked>
+      <span class="lfp-txt">
+        <span class="lfp-t">Full packaging</span>
+        <span class="lfp-d">Signature box &amp; ribbon</span>
+      </span>
+      <span class="lfp-pr">+$2.00</span>
+    </label>
+    <label class="lfp-opt">
+      <input type="radio" name="lf-packaging-{{ context | default: 'cart' }}" value="reduced">
+      <span class="lfp-txt">
+        <span class="lfp-t">Reduced packaging</span>
+        <span class="lfp-d">Delivered in a LE FIGUE pouch</span>
+      </span>
+      <span class="lfp-pr">Free</span>
+    </label>
+  </div>
+{%- endif -%}
