@@ -1,0 +1,49 @@
+{%- comment -%}
+  LE FIGUE — cart packaging chooser (2026-07-21; v3 model 2026-07-22).
+  Per-ORDER choice, BOTH FREE: Full packaging (signature box & pouch,
+  default) vs Reduced (pouch only). No money involved — the choice is
+  recorded as cart/order attribute "Packaging" so fulfillment sees it on
+  every order (admin: Additional details). The radios are literally
+  named attributes[Packaging], so the native cart-form checkout POST
+  carries the choice with zero JS; assets/lefigue-custom.js ALSO
+  persists it to /cart/update.js on every toggle (covers dynamic
+  checkout buttons that bypass the form) and remembers the preference
+  in localStorage lf:packaging (absent = full).
+  History: v1 = hidden +$2 product (10223951118634, now DRAFT; JS still
+  scrubs legacy lines, cart templates still skip type-Packaging items);
+  v2 = −$2 code REDUCED-PACKAGING (node 1632895303978, DEACTIVATED).
+  Rendered in sections/quick-cart.liquid + sections/main-cart.liquid.
+  Styles: custom.css Edit #26.
+
+  Accepts: context — 'drawer' | 'page' (unused for the input name — the
+  two renders live in different <form>s, so the groups stay separate).
+{%- endcomment -%}
+
+{%- liquid
+  assign lfp_real_items = 0
+  for item in cart.items
+    unless item.product.type == 'Packaging'
+      assign lfp_real_items = lfp_real_items | plus: 1
+    endunless
+  endfor
+-%}
+
+{%- if lfp_real_items > 0 -%}
+  <div class="lf-pack" data-lf-pack>
+    <div class="lfp-head">Packaging</div>
+    <label class="lfp-opt">
+      <input type="radio" name="attributes[Packaging]" value="Full packaging" checked>
+      <span class="lfp-txt">
+        <span class="lfp-t">Full packaging</span>
+        <span class="lfp-d">LE FIGUE&rsquo;s signature box &amp; pouch</span>
+      </span>
+    </label>
+    <label class="lfp-opt">
+      <input type="radio" name="attributes[Packaging]" value="Reduced packaging">
+      <span class="lfp-txt">
+        <span class="lfp-t">Reduced packaging</span>
+        <span class="lfp-d">Delivered in a LE FIGUE pouch</span>
+      </span>
+    </label>
+  </div>
+{%- endif -%}
