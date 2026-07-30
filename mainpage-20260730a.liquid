@@ -1,0 +1,84 @@
+<div
+  class="
+    page
+    section
+    {% if settings.enable_section_animations and section.settings.enable_animation %}
+      animation
+      animation--page
+    {% endif %}
+  "
+  data-section-id="{{ section.id }}"
+  data-section-type="page"
+  style="
+    {% if section.settings.content_width == 'custom' %}
+      --content-width: {{ section.settings.custom_content_width }}px;
+    {% endif %}
+  "
+>
+  <div class="page__inner">
+    <header class="page__header">
+      <h1 class="page__heading ff-heading fs-heading-2-base fs-heading-1-base-ns ta-c">
+        {{ page.title }}
+      </h1>
+    </header>
+
+    <div class="page__rte ff-body rte rte--page">
+      {%- comment -%} LF 2026-07-30 TEMPORARY OVERRIDE: the revised Return &
+          Exchange policy (team notice 2026-07-26) must show on /pages/returns,
+          but the connected account currently lacks the pages API permission to
+          edit the page body in admin. Until access is restored — then paste
+          the snippet's copy into Admin > Pages > "Returns & Exchanges" and
+          DELETE this branch plus snippets/lefigue-returns-copy.liquid — the
+          returns page renders the snippet instead of its admin body. NB admin
+          edits to that page body will NOT appear while this is in place. {%- endcomment -%}
+      {%- if page.handle == 'returns' -%}
+        {% render 'lefigue-returns-copy' %}
+      {%- else -%}
+        {{ page.content }}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.main_page.name",
+  "tag": "section",
+  "class": "page-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_animation",
+      "label": "t:shared.settings.section_style.enable_animation.label",
+      "default": true,
+      "info": "t:shared.settings.section_style.enable_animation.info"
+    },
+    {
+      "type": "radio",
+      "id": "content_width",
+      "label": "t:shared.settings.section_style.content_width.label",
+      "options": [
+        {
+          "value": "full",
+          "label": "t:shared.settings.section_style.content_width.options.full"
+        },
+        {
+          "value": "custom",
+          "label": "t:shared.settings.section_style.content_width.options.custom"
+        }
+      ],
+      "default": "custom"
+    },
+    {
+      "type": "range",
+      "id": "custom_content_width",
+      "label": "t:shared.settings.section_style.custom_content_width.label",
+      "min": 400,
+      "max": 1000,
+      "step": 50,
+      "unit": "px",
+      "default": 700
+    }
+  ]
+}
+{% endschema %}
